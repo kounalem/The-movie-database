@@ -1,0 +1,129 @@
+plugins {
+    id 'com.android.application'
+    alias(libs.plugins.compose.compiler)
+    id 'com.google.dagger.hilt.android'
+    id 'com.google.devtools.ksp'
+}
+
+ext {
+    appversion = "1.0"
+}
+
+kotlin {
+    jvmToolchain(17)
+    sourceSets {
+        debug {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
+}
+android {
+    namespace 'com.kounalem.moviedatabase'
+    compileSdk 37
+
+    buildFeatures {
+        buildConfig true
+        resValues true
+    }
+
+    defaultConfig {
+        applicationId "com.kounalem.moviedatabase"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName = appversion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+        buildConfigField("String", "APP_VERSION", "\"$appversion\"")
+    }
+
+    buildTypes {
+        debug {
+            resValue("string", "app_name", "mdbDebug")
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        release {
+            signingConfigs.create("config") {
+                storeFile = file("/Users/emmanouilkounalakis/moviedb")
+                storePassword "Mykey1!"
+                keyAlias "moviedb"
+                keyPassword "Mykey1!"
+            }
+
+            resValue("string", "app_name", "mdb")
+            signingConfig = signingConfigs["config"]
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions = ["mode"]
+    productFlavors {
+        production {
+            dimension "mode"
+        }
+        dev {
+            dimension "mode"
+        }
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("main").java.srcDirs("src/dev/kotlin")
+        getByName("main").java.srcDirs("src/production/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose true
+    }
+    packaging {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
+}
+
+dependencies {
+    implementation(project(":core:ui"))
+    implementation(project(":feature:movies:presentation"))
+    implementation(project(":feature:tvshow:presentation"))
+    implementation(project(":feature:saved:presentation"))
+    implementation(project(":core:domain:repo"))
+    implementation(project(":core:domain:model"))
+    implementation(project(":feature:movies:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":core:datastore"))
+    implementation project(':core:network')
+    implementation project(':shared')
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material.icons)
+    implementation libs.androidx.appcompat
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.tracing)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.androidx.hilt.compiler
+    implementation libs.androidx.hilt.navigation.compose
+
+}

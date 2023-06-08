@@ -1,0 +1,96 @@
+package com.kounalem.moviedatabase.core.ui.theming
+
+import androidx.compose.ui.graphics.Color
+
+internal val Blue10 = Color(0xFF001F28)
+internal val Blue40 = Color(0xFF006780)
+internal val Blue90 = Color(0xFFB8EAFF)
+internal val DarkGreen20 = Color(0xFF223526)
+internal val DarkGreen30 = Color(0xFF394B3C)
+internal val DarkGreen80 = Color(0xFFB7CCB8)
+internal val DarkGreen90 = Color(0xFFD3E8D3)
+internal val DarkGreenGray10 = Color(0xFF1A1C1A)
+internal val DarkGreenGray90 = Color(0xFFE2E3DE)
+internal val DarkPurpleGray10 = Color(0xFF201A1B)
+internal val DarkPurpleGray20 = Color(0xFF362F30)
+internal val DarkPurpleGray99 = Color(0xFFFCFCFC)
+internal val Green20 = Color(0xFF003919)
+internal val Green30 = Color(0xFF005227)
+internal val Green80 = Color(0xFF0EE37C)
+internal val Green90 = Color(0xFF5AFF9D)
+internal val GreenGray30 = Color(0xFF414941)
+internal val GreenGray60 = Color(0xFF8B938A)
+internal val GreenGray80 = Color(0xFFC1C9BF)
+internal val Orange10 = Color(0xFF380D00)
+internal val Orange40 = Color(0xFFA23F16)
+internal val Orange90 = Color(0xFFFFDBCF)
+internal val Purple10 = Color(0xFF36003C)
+internal val Purple40 = Color(0xFF8B418F)
+internal val Purple90 = Color(0xFFFFD6FA)
+internal val PurpleGray30 = Color(0xFF4D444C)
+internal val PurpleGray50 = Color(0xFF7F747C)
+internal val PurpleGray90 = Color(0xFFEDDEE8)
+internal val Red10 = Color(0xFF410002)
+internal val Red20 = Color(0xFF690005)
+internal val Red30 = Color(0xFF93000A)
+internal val Red40 = Color(0xFFBA1A1A)
+internal val Red80 = Color(0xFFFFB4AB)
+internal val Red90 = Color(0xFFFFDAD6)
+internal val Teal20 = Color(0xFF02363F)
+internal val Teal30 = Color(0xFF214D56)
+internal val Teal80 = Color(0xFFA2CED9)
+internal val Teal90 = Color(0xFFBEEAF6)
+
+// Light color scheme
+val light_primary = Purple40
+val light_onPrimary = Color.White
+val light_primaryContainer = Purple90
+val light_onPrimaryContainer = Purple10
+val light_secondary = Orange40
+val light_onSecondary = Color.White
+val light_secondaryContainer = Orange90
+val light_onSecondaryContainer = Orange10
+val light_tertiary = Blue40
+val light_onTertiary = Color.White
+val light_tertiaryContainer = Blue90
+val light_onTertiaryContainer = Blue10
+val light_error = Red40
+val light_errorContainer = Red90
+val light_onError = Color.White
+val light_onErrorContainer = Red10
+val light_background = DarkPurpleGray99
+val light_onBackground = DarkPurpleGray10
+val light_surface = DarkPurpleGray99
+val light_onSurface = DarkPurpleGray10
+val light_surfaceVariant = PurpleGray90
+val light_onSurfaceVariant = PurpleGray30
+val light_outline = PurpleGray50
+val light_inverseOnSurface = DarkPurpleGray20
+val light_inverseSurface = DarkPurpleGray20
+
+// Dark color scheme
+val dark_primary = Green80
+val dark_onPrimary = Green20
+val dark_primaryContainer = Green30
+val dark_onPrimaryContainer = Green90
+val dark_secondary = DarkGreen80
+val dark_onSecondary = DarkGreen20
+val dark_secondaryContainer = DarkGreen30
+val dark_onSecondaryContainer = DarkGreen90
+val dark_tertiary = Teal80
+val dark_onTertiary = Teal20
+val dark_tertiaryContainer = Teal30
+val dark_onTertiaryContainer = Teal90
+val dark_error = Red80
+val dark_errorContainer = Red30
+val dark_onError = Red20
+val dark_onErrorContainer = Red90
+val dark_background = DarkGreenGray10
+val dark_onBackground = DarkGreenGray90
+val dark_surface = DarkGreenGray10
+val dark_onSurface = DarkGreenGray90
+val dark_surfaceVariant = GreenGray30
+val dark_onSurfaceVariant = GreenGray80
+val dark_outline = GreenGray60
+val dark_inverseOnSurface = DarkGreenGray10
+val dark_inverseSurface = DarkGreenGray90

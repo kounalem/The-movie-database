@@ -1,0 +1,39 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+android {
+    namespace 'com.kounalem.moviedatabase.saved.domain'
+    compileSdk 34
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+
+    implementation(project(':core:domain:model'))
+    implementation(project(":core:domain:repo"))
+
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.androidx.hilt.compiler
+    testImplementation libs.junit
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.mockk
+    testImplementation libs.turbine
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}

@@ -1,0 +1,14 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+**/build/
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+# Paparazzi snapshot baselines – filenames contain Windows-incompatible chars ([ ] : spaces)
+# Regenerate locally with: ./gradlew recordPaparazziDebug
+**/snapshots/images/

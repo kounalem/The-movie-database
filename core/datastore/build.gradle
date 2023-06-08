@@ -1,0 +1,32 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+android {
+    namespace 'com.kounalem.moviedatabase.datastore'
+    compileSdk 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation project(':shared')
+    implementation project(':core:domain:model')
+    implementation project(':core:datastore-proto')
+    implementation libs.androidx.datastore
+    implementation libs.protobuf.kotlin.lite
+    implementation(libs.androidx.ktx)
+
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.androidx.hilt.compiler
+}

@@ -1,0 +1,62 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
+}
+
+
+def getProp(String propName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propName]
+    } else {
+        throw IllegalStateException("Cannot find $propName in local.properties")
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+android {
+    namespace 'com.kounalem.moviedatabase.network'
+    compileSdk 34
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        minSdk 24
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        buildConfigField "String", "DATABASE_API_KEY", getProp("DATABASE_API_KEY")
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation(project(":core:domain:model"))
+    implementation(project(":core:datastore"))
+    implementation(project(":shared"))
+
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.okhttp
+    implementation libs.logging.interceptor
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.androidx.hilt.compiler
+    testImplementation libs.junit
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.mockk
+    testImplementation libs.turbine
+}
+

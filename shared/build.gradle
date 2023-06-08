@@ -1,0 +1,25 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+android {
+    namespace 'com.kounalem.moviedatabase.shared'
+    compileSdk 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.androidx.hilt.compiler
+}

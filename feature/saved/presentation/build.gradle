@@ -1,0 +1,70 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.paparazzi)
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+android {
+    namespace 'ccom.kounalem.moviedatabase.saved.presentation'
+    compileSdk 34
+
+    buildFeatures {
+        compose true
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain:model"))
+    implementation(project(':feature:saved:domain'))
+    implementation(project(":core:domain:repo"))
+
+    implementation libs.androidx.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.runtime.compose
+    implementation platform(libs.androidx.compose.bom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.accompanist.swiperefresh)
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.androidx.hilt.compiler
+    implementation libs.androidx.hilt.navigation.compose
+    implementation(libs.androidx.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation libs.landscapist.glide
+    implementation libs.flow.combinetuple.kt
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation platform(libs.androidx.compose.bom)
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.turbine
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation(project(":core:test"))
+}
+
+// Paparazzi 1.3.1 uses internal Gradle HTML report APIs removed in Gradle 9
+// https://github.com/cashapp/paparazzi/issues/2111
+tasks.withType(Test).configureEach {
+    reports.html.required = false
+}
