@@ -136,9 +136,31 @@ private fun PopularMoviesView(
                                 maxLines = 1,
                             )
                         }
-
                     }
                 }
+            }
+        } else {
+            if (state.isLoading) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            if (state.errorText?.isNotEmpty() == true) {
+                Text(
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                    text = "Oooopsie",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                )
             }
         }
     }

@@ -96,7 +96,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
     testImplementation "io.mockk:mockk:1.13.5"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:<version>'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
     testImplementation 'app.cash.turbine:turbine:0.13.0'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
