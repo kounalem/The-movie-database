@@ -130,7 +130,7 @@ internal class MovieRepositoryImplTest {
     fun `GIVEN network error and local element does not exist WHEN now playing THEN resource error`() =
         runTest {
             coEvery { serverDataSource.nowPlaying(1) } throws NetworkErrorException("")
-            coEvery { localDataSource.nowPlaying() } throws Exception("")
+            coEvery { localDataSource.nowPlaying() } returns emptyList()
 
             SUT.nowPlaying(1).test {
                 assertTrue(awaitItem() is Resource.Loading)

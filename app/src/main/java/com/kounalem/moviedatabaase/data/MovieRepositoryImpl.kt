@@ -1,6 +1,5 @@
 package com.kounalem.moviedatabaase.data
 
-import android.accounts.NetworkErrorException
 import com.kounalem.moviedatabaase.data.db.LocalDataSource
 import com.kounalem.moviedatabaase.data.db.models.MovieDAO
 import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
@@ -58,13 +57,13 @@ class MovieRepositoryImpl @Inject constructor(
                 emit(Resource.Success(popularMovies))
 
             } catch (e: Exception) {
-                try {
-                    localDataSource.nowPlaying().map {
+                val dbInfo = localDataSource.nowPlaying()
+                if(dbInfo.isNotEmpty())
+                    dbInfo.map {
                         val popularMovies: PopularMovies = popularMoviesDataMapper.map(it)
                         emit(Resource.Loading(false))
                         emit(Resource.Success(popularMovies))
-                    }
-                } catch (e: Exception) {
+                    } else {
                     emit(Resource.Error("Couldn't load data"))
                 }
             }
@@ -93,10 +92,9 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovieById(id: Int): Resource<MovieDescription> {
         return try {
             val dbInfo = localDataSource.getMovieDescriptionById(id)
-            Resource.Success(movieDescriptionDataMapper.map(dbInfo))
-
-        } catch (e: NullPointerException) {
-            try {
+            if (dbInfo != null) {
+                Resource.Success(movieDescriptionDataMapper.map(dbInfo))
+            } else {
                 val serverInfo = serverDataSource.getMovieById(id)
                 localDataSource.saveMovieDescription(
                     MovieDescriptionDAO(
@@ -112,11 +110,9 @@ class MovieRepositoryImpl @Inject constructor(
                         isFavourite = false,
                     )
                 )
-                val dbInfo = localDataSource.getMovieDescriptionById(id)
-                Resource.Success(movieDescriptionDataMapper.map(dbInfo))
-            } catch (e: Exception) {
-                Resource.Error(e.localizedMessage.orEmpty())
+                Resource.Success(movieDescriptionDataMapper.map(serverInfo))
             }
+
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage.orEmpty())
         }
