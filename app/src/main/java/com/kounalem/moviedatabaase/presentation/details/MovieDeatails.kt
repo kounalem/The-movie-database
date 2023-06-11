@@ -47,9 +47,7 @@ data class MovieDetailsScreenArgs(
 @Composable
 @RootNavGraph
 @Destination(navArgsDelegate = MovieDetailsScreenArgs::class)
-fun MovieDetails(
-    movieDetailsScreenArgs: MovieDetailsScreenArgs,
-) {
+fun MovieDetails() {
     val viewModel = hiltViewModel<DetailsViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
     DetailsView(state, event = viewModel::onEvent)

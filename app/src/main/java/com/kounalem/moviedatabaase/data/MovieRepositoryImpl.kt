@@ -28,14 +28,14 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieDataMapper by lazy { MovieDataMapper() }
     private val popularMoviesDataMapper by lazy { PopularMoviesDataMapper() }
 
-    override suspend fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>> {
+    override fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>> {
         return flow {
             emit(Resource.Loading(true))
             try {
                 val serverInfo = serverDataSource.nowPlaying(pageNo)
                 val popularMoviesDao = PopularMoviesDAO(
                     page = serverInfo.page,
-                    movies = serverInfo.movies?.distinctBy { it.title }?.sortedBy { it.title }
+                    movies = serverInfo.movies?.distinctBy { it.id }?.sortedBy { it.title }
                         ?.mapTo(ArrayList()) {
                             MovieDAO(
                                 originalTitle = it.originalTitle,
@@ -95,7 +95,7 @@ class MovieRepositoryImpl @Inject constructor(
             val dbInfo = localDataSource.getMovieDescriptionById(id)
             Resource.Success(movieDescriptionDataMapper.map(dbInfo))
 
-        } catch (e: Exception) {
+        } catch (e: NullPointerException) {
             try {
                 val serverInfo = serverDataSource.getMovieById(id)
                 localDataSource.saveMovieDescription(
@@ -114,11 +114,12 @@ class MovieRepositoryImpl @Inject constructor(
                 )
                 val dbInfo = localDataSource.getMovieDescriptionById(id)
                 Resource.Success(movieDescriptionDataMapper.map(dbInfo))
-            } catch (e: NetworkErrorException) {
-                Resource.Error(e.localizedMessage)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage.orEmpty())
             }
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage.orEmpty())
         }
-
     }
 
     override suspend fun favouriteAction(id: Int, favouriteAction: Boolean) {

@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.kounalem.moviedatabaase.domain.models.Movie
 import com.kounalem.moviedatabaase.presentation.destinations.MovieDetailsDestination
 import com.kounalem.moviedatabaase.presentation.details.MovieDetailsScreenArgs
@@ -65,7 +67,9 @@ private fun PopularMoviesView(
     event: (PopularMoviesContract.MovieListingsEvent) -> Unit,
     loadNextItems: () -> Unit,
 ) {
-
+    val swipeRefreshState = rememberSwipeRefreshState(
+        isRefreshing = state.isRefreshing
+    )
     val listState = rememberLazyListState()
     Column(
         modifier = Modifier.fillMaxSize()
@@ -87,46 +91,53 @@ private fun PopularMoviesView(
         )
 
         if (state.movies.isNotEmpty()) {
-            LazyColumn(state = listState) {
-                itemsIndexed(state.movies) { index, item ->
-                    if (index >= state.movies.size - 1 && !state.endReached && !state.isLoading) {
-                        loadNextItems()
-                    }
-                    MovieItem(item, selected = { movie ->
-                        navigate(
-                            MovieDetailsDestination(
-                                MovieDetailsScreenArgs(
-                                    title = movie.title,
-                                    overview = movie.overview,
-                                    id = movie.id,
-                                    rate = movie.voteAverage
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    event(PopularMoviesContract.MovieListingsEvent.Refresh)
+                }
+            ) {
+                LazyColumn(state = listState) {
+                    itemsIndexed(state.movies) { index, item ->
+                        if (index >= state.movies.size - 1 && !state.endReached && !state.isLoading) {
+                            loadNextItems()
+                        }
+                        MovieItem(item, selected = { movie ->
+                            navigate(
+                                MovieDetailsDestination(
+                                    MovieDetailsScreenArgs(
+                                        title = movie.title,
+                                        overview = movie.overview,
+                                        id = movie.id,
+                                        rate = movie.voteAverage
+                                    )
                                 )
                             )
-                        )
-                    })
-                }
-                item {
-                    if (state.isLoading) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            CircularProgressIndicator()
+                        })
+                    }
+                    item {
+                        if (state.isLoading) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
                         }
-                    }
-                    if (state.errorText?.isNotEmpty() == true) {
-                        Text(
-                            text = "Oooopsie",
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                        )
-                    }
+                        if (state.errorText?.isNotEmpty() == true) {
+                            Text(
+                                text = "Oooopsie",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                            )
+                        }
 
+                    }
                 }
             }
         }
@@ -192,6 +203,7 @@ fun PopularMoviesScreenPreview() {
             endReached = false,
             errorText = null,
             searchQuery = "",
+            isRefreshing = false,
             movies = listOf(
                 Movie(
                     id = 0,

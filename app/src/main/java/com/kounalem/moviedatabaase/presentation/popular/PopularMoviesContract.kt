@@ -11,10 +11,12 @@ interface PopularMoviesContract {
         val page: Int,
         val endReached: Boolean,
         val searchQuery: String,
+        val isRefreshing: Boolean,
     )
 
     sealed class MovieListingsEvent {
         data class OnSearchQueryChange(val query: String) : MovieListingsEvent()
+        object Refresh: MovieListingsEvent()
     }
 
 }

@@ -18,47 +18,58 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
 
     private var searchJob: Job? = null
 
-     val state = MutableStateFlow(
+    val state = MutableStateFlow(
         PopularMoviesContract.State(
             isLoading = false,
             movies = emptyList(),
             errorText = null,
             page = 1,
             endReached = false,
-            searchQuery = ""
+            searchQuery = "",
+            isRefreshing = false,
         )
     )
 
     private val paginator = Paginator(
         initialKey = state.value.page,
-        onLoadUpdated = {
-            state.value = state.value.copy(isLoading = it)
-        },
         onRequest = { nextPage ->
             movieRepository.nowPlaying(nextPage)
         },
         getNextKey = {
             state.value.page + 1
         },
-        onError = {
-            state.value = state.value.copy(
-                isLoading = false,
-                errorText = it?.localizedMessage,
-                endReached = false,
-            )
-        },
-        onSuccess = { items, newKey ->
-            state.value = state.value.copy(
-                isLoading = false,
-                errorText = null,
-                movies = state.value.movies + items.movies,
-                page = newKey,
-                endReached = items.movies.isEmpty()
-            )
-        }
     )
 
     init {
+        viewModelScope.launch {
+            paginator.result().collectLatest {
+                when (it) {
+                    is Resource.Error -> {
+                        state.value = state.value.copy(
+                            isLoading = false,
+                            errorText = it.message,
+                            endReached = false,
+                            isRefreshing = false,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        val fetchedMovies = it.data?.first?.movies ?: emptyList()
+                        state.value = state.value.copy(
+                            isLoading = false,
+                            errorText = null,
+                            movies = (state.value.movies + fetchedMovies).distinctBy { it.id },
+                            page = it.data?.second ?: 1,
+                            endReached = it.data?.first?.totalPages == state.value.page,
+                            isRefreshing = false,
+                        )
+                    }
+
+                    is Resource.Loading -> state.value = state.value.copy(isLoading = it.isLoading)
+                }
+            }
+        }
+
         loadNextItems()
     }
 
@@ -66,6 +77,19 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
         viewModelScope.launch {
             paginator.loadNextItems()
         }
+    }
+
+    private fun refreshElements() {
+        state.value = PopularMoviesContract.State(
+            isLoading = false,
+            movies = emptyList(),
+            errorText = null,
+            page = 1,
+            endReached = false,
+            searchQuery = "",
+            isRefreshing = true,
+        )
+        loadNextItems()
     }
 
     fun onEvent(event: PopularMoviesContract.MovieListingsEvent) {
@@ -98,6 +122,8 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
                     }
                 }
             }
+
+            PopularMoviesContract.MovieListingsEvent.Refresh -> refreshElements()
         }
     }
 }

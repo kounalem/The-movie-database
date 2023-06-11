@@ -7,7 +7,7 @@ import com.kounalem.moviedatabaase.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    suspend fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>>
+    fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>>
 
     fun search(query: String): Flow<Resource<List<Movie>>>
 
