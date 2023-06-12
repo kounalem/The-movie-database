@@ -89,6 +89,7 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
             searchQuery = "",
             isRefreshing = true,
         )
+        paginator.reset()
         loadNextItems()
     }
 
