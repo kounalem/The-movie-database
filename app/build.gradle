@@ -19,11 +19,11 @@ kotlin {
 }
 
 android {
-    namespace 'com.kounalem.moviedatabaase'
+    namespace 'com.kounalem.moviedatabase'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.kounalem.moviedatabaase"
+        applicationId "com.kounalem.moviedatabase"
         minSdk 26
         targetSdk 33
         versionCode 1
