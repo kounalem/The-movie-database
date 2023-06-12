@@ -1,39 +1,36 @@
 package com.kounalem.moviedatabaase.data.db
 
 import androidx.room.*
-import com.kounalem.moviedatabaase.data.db.models.MovieDAO
-import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
-import com.kounalem.moviedatabaase.data.db.models.PopularMoviesDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
+import com.kounalem.moviedatabaase.data.db.models.RoomMovieDescription
+import com.kounalem.moviedatabaase.data.db.models.RoomPopularMovies
 
 @Dao
 interface MovieDao {
 
     @Query("SELECT * FROM popular_movies")
-    suspend fun nowPlaying(): List<PopularMoviesDAO>
+    suspend fun nowPlaying(): List<RoomPopularMovies>
 
     @Query("SELECT * FROM movie WHERE id=:movieId")
-    suspend fun getMovieById(movieId: Int): MovieDAO
+    suspend fun getMovieById(movieId: Int): RoomMovie
 
     @Query("SELECT * FROM movie_description WHERE id=:movieId")
-    suspend fun getMovieDescriptionById(movieId: Int): MovieDescriptionDAO
-
-    @Query("SELECT * FROM movie WHERE LOWER(title) LIKE '%' || LOWER(:query)  || '%' ORDER BY title")
-    suspend fun search(query: String): List<MovieDAO>
+    suspend fun getMovieDescriptionById(movieId: Int): RoomMovieDescription
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveMovie(popularMovies: PopularMoviesDAO)
+    suspend fun saveMovie(popularMovies: RoomPopularMovies)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveMovie(movie: MovieDAO)
+    suspend fun saveMovie(movie: RoomMovie)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveMovieDescription(movieDescription: MovieDescriptionDAO)
+    suspend fun saveMovieDescription(movieDescription: RoomMovieDescription)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun saveAllMovies(movies: List<MovieDAO>)
+    suspend fun saveAllMovies(movies: List<RoomMovie>)
 
     @Delete
-    suspend fun removeMovie(movie: MovieDAO)
+    suspend fun removeMovie(movie: RoomMovie)
 
     @Query("DELETE FROM movie")
     suspend fun clear()

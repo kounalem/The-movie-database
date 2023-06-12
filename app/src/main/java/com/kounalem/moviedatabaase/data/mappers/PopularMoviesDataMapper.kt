@@ -1,10 +1,13 @@
 package com.kounalem.moviedatabaase.data.mappers
 
-import com.kounalem.moviedatabaase.data.db.models.PopularMoviesDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
+import com.kounalem.moviedatabaase.data.db.models.RoomPopularMovies
+import com.kounalem.moviedatabaase.data.remote.models.PopularMoviesDTO
 import com.kounalem.moviedatabaase.domain.models.PopularMovies
+import javax.inject.Inject
 
-internal class PopularMoviesDataMapper {
-    fun map(input: PopularMoviesDAO): PopularMovies {
+class PopularMoviesDataMapper @Inject constructor() {
+    fun map(input: RoomPopularMovies): PopularMovies {
         val movieDataMapper = MovieDataMapper()
         val movieList = input.movies?.let {
             it.map { item ->
@@ -18,6 +21,25 @@ internal class PopularMoviesDataMapper {
             movies = movieList,
             totalPages = input.totalPages ?: 0,
             totalResults = input.totalResults ?: 0
+        )
+    }
+
+    fun map (input: PopularMoviesDTO): RoomPopularMovies{
+       return  RoomPopularMovies(
+            page = input.page,
+            movies = input.movies?.distinctBy { it.id }?.sortedBy { it.title }
+                ?.mapTo(ArrayList()) {
+                    RoomMovie(
+                        originalTitle = it.originalTitle,
+                        overview = it.overview,
+                        posterPath = it.poster_path,
+                        title = it.title,
+                        voteAverage = it.voteAverage,
+                        id = it.id
+                    )
+                },
+            totalPages = input.totalPages,
+            totalResults = input.totalResults,
         )
     }
 }

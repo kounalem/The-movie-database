@@ -45,7 +45,7 @@ class DetailsViewModel @Inject constructor(
                 )
 
                 is Resource.Loading -> state.value.copy(
-                    isLoading = details.isLoading,
+                    isLoading = true,
                     errorText = null,
                 )
 

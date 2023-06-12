@@ -65,7 +65,7 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
                         )
                     }
 
-                    is Resource.Loading -> state.value = state.value.copy(isLoading = it.isLoading)
+                    is Resource.Loading -> state.value = state.value.copy(isLoading = true)
                 }
             }
         }
@@ -109,12 +109,13 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
 
                             is Resource.Loading -> {
                                 state.value.copy(
-                                    isLoading = it.isLoading
+                                    isLoading = true
                                 )
                             }
 
                             is Resource.Success -> {
                                 state.value.copy(
+                                    isLoading = false,
                                     movies = it.data.orEmpty(),
                                 )
                             }

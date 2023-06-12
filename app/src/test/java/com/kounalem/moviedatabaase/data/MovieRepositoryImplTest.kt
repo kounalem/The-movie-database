@@ -4,18 +4,24 @@ import android.accounts.NetworkErrorException
 import app.cash.turbine.test
 import com.kounalem.moviedatabaase.CoroutineTestRule
 import com.kounalem.moviedatabaase.data.db.LocalDataSource
-import com.kounalem.moviedatabaase.data.db.models.MovieDAO
-import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
-import com.kounalem.moviedatabaase.data.db.models.PopularMoviesDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
+import com.kounalem.moviedatabaase.data.db.models.RoomMovieDescription
+import com.kounalem.moviedatabaase.data.db.models.RoomPopularMovies
+import com.kounalem.moviedatabaase.data.mappers.MovieDataMapper
+import com.kounalem.moviedatabaase.data.mappers.MovieDescriptionDataMapper
+import com.kounalem.moviedatabaase.data.mappers.PopularMoviesDataMapper
 import com.kounalem.moviedatabaase.data.remote.ServerDataSource
 import com.kounalem.moviedatabaase.data.remote.models.MovieDTO
 import com.kounalem.moviedatabaase.data.remote.models.PopularMoviesDTO
 import com.kounalem.moviedatabaase.domain.models.Movie
+import com.kounalem.moviedatabaase.domain.models.MovieDescription
+import com.kounalem.moviedatabaase.domain.models.PopularMovies
 import com.kounalem.moviedatabaase.util.Resource
 import com.kounalem.moviedatabaase.utils.onLatestItem
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -35,8 +41,22 @@ internal class MovieRepositoryImplTest {
     @MockK
     private lateinit var localDataSource: LocalDataSource
 
+    @MockK
+    private lateinit var movieDescriptionDataMapper: MovieDescriptionDataMapper
+
+    @MockK
+    private lateinit var movieDataMapper: MovieDataMapper
+
+    @MockK
+    private lateinit var popularMoviesDataMapper: PopularMoviesDataMapper
     private val SUT by lazy {
-        MovieRepositoryImpl(serverDataSource, localDataSource)
+        MovieRepositoryImpl(
+            serverDataSource = serverDataSource,
+            localDataSource = localDataSource,
+            movieDescriptionDataMapper = movieDescriptionDataMapper,
+            movieDataMapper = movieDataMapper,
+            popularMoviesDataMapper = popularMoviesDataMapper
+        )
     }
 
     @Before
@@ -58,26 +78,51 @@ internal class MovieRepositoryImplTest {
                     voteAverage = 1.0
                 )
             ),
-            totalPages = 5, totalResults = 20,
+            totalPages = 5,
+            totalResults = 20,
         )
+        val localMovies = RoomPopularMovies(
+            page = 0,
+            id = 1,
+            totalPages = 5,
+            totalResults = 20,
+            movies = arrayListOf(
+                RoomMovie(
+                    originalTitle = "originalTitle",
+                    overview = "overview",
+                    title = "title",
+                    id = 1,
+                    posterPath = "posterPath",
+                    voteAverage = 1.0
+                )
+            )
+        )
+        val popularMovies = PopularMovies(
+            id = 1,
+            page = 0,
+            totalPages = 5,
+            totalResults = 20,
+            movies = listOf(
+                Movie(
+                    id = 1,
+                    posterPath = "posterPath",
+                    title = "title",
+                    voteAverage = 1.0,
+                    overview = "overview"
+                )
+            )
+        )
+        every { popularMoviesDataMapper.map(dao) } returns localMovies
         coEvery { serverDataSource.nowPlaying(1) } returns dao
-        coEvery { localDataSource.saveMovie(any<MovieDAO>()) } returns Unit
-        coEvery { localDataSource.saveMovie(any<PopularMoviesDAO>()) } returns Unit
+        coEvery { localDataSource.saveMovie(any<RoomPopularMovies>()) } returns Unit
+        every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
 
         SUT.nowPlaying(1).test {
             assertTrue(awaitItem() is Resource.Loading)
             onLatestItem {
                 assertTrue(it is Resource.Success)
                 assertEquals(
-                    it.data?.movies ?: emptyList(), listOf(
-                        Movie(
-                            title = "title",
-                            overview = "overview",
-                            id = 1,
-                            posterPath = "https://image.tmdb.org/t/p/w342posterPath",
-                            voteAverage = 1.0
-                        )
-                    )
+                    it.data, popularMovies
                 )
             }
         }
@@ -86,11 +131,14 @@ internal class MovieRepositoryImplTest {
     @Test
     fun `GIVEN network error WHEN now playing THEN requests then get local favourite movies`() =
         runTest {
-            val dao = listOf(
-                PopularMoviesDAO(
+            val localMovies =
+                RoomPopularMovies(
                     page = 0,
+                    id = 1,
+                    totalPages = 5,
+                    totalResults = 20,
                     movies = arrayListOf(
-                        MovieDAO(
+                        RoomMovie(
                             originalTitle = "originalTitle",
                             overview = "overview",
                             title = "title",
@@ -98,29 +146,36 @@ internal class MovieRepositoryImplTest {
                             posterPath = "posterPath",
                             voteAverage = 1.0
                         )
-                    ),
-                    totalPages = 5, totalResults = 20,
+                    )
+                )
+            val popularMovies = PopularMovies(
+                id = 1,
+                page = 0,
+                totalPages = 5,
+                totalResults = 20,
+                movies = listOf(
+                    Movie(
+                        id = 1,
+                        posterPath = "posterPath",
+                        title = "title",
+                        voteAverage = 1.0,
+                        overview = "overview"
+                    )
                 )
             )
+            every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
+
             coEvery { serverDataSource.nowPlaying(1) } throws NetworkErrorException("")
-            coEvery { localDataSource.nowPlaying() } returns dao
-            coEvery { localDataSource.saveMovie(any<MovieDAO>()) } returns Unit
-            coEvery { localDataSource.saveMovie(any<PopularMoviesDAO>()) } returns Unit
+            coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
+            coEvery { localDataSource.saveMovie(any<RoomMovie>()) } returns Unit
+            coEvery { localDataSource.saveMovie(any<RoomPopularMovies>()) } returns Unit
 
             SUT.nowPlaying(1).test {
                 assertTrue(awaitItem() is Resource.Loading)
                 onLatestItem {
                     assertTrue(it is Resource.Success)
                     assertEquals(
-                        it.data?.movies ?: emptyList(), listOf(
-                            Movie(
-                                title = "title",
-                                overview = "overview",
-                                id = 1,
-                                posterPath = "https://image.tmdb.org/t/p/w342posterPath",
-                                voteAverage = 1.0
-                            )
-                        )
+                        it.data, popularMovies
                     )
                 }
             }
@@ -143,7 +198,7 @@ internal class MovieRepositoryImplTest {
     @Test
     fun `GIVEN local element does not exist WHEN search THEN requests THEN resource error`() =
         runTest {
-            coEvery { localDataSource.search("") } throws Exception("")
+            coEvery { localDataSource.nowPlaying() } throws Exception("")
 
             SUT.search("").test {
                 assertTrue(awaitItem() is Resource.Loading)
@@ -156,30 +211,50 @@ internal class MovieRepositoryImplTest {
     @Test
     fun `GIVEN local element does exist WHEN search THEN requests THEN return movie list`() =
         runTest {
-
-            coEvery { localDataSource.search("") } returns arrayListOf(
-                MovieDAO(
-                    originalTitle = "originalTitle",
-                    overview = "overview",
-                    title = "title",
+            val roomMovie = RoomMovie(
+                originalTitle = "originalTitle",
+                overview = "overview",
+                title = "title",
+                id = 1,
+                posterPath = "posterPath",
+                voteAverage = 1.0
+            )
+            val localMovies =
+                RoomPopularMovies(
+                    page = 0,
                     id = 1,
-                    posterPath = "posterPath",
-                    voteAverage = 1.0
+                    totalPages = 5,
+                    totalResults = 20,
+                    movies = arrayListOf(
+                        roomMovie
+                    )
+                )
+            val movie = Movie(
+                id = 1,
+                posterPath = "posterPath",
+                title = "title",
+                voteAverage = 1.0,
+                overview = "overview"
+            )
+            val popularMovies = PopularMovies(
+                id = 1,
+                page = 0,
+                totalPages = 5,
+                totalResults = 20,
+                movies = listOf(
+                    movie
                 )
             )
+            every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
+            coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
+            every { movieDataMapper.map(roomMovie) } returns movie
 
             SUT.search("").test {
                 assertTrue(awaitItem() is Resource.Loading)
                 onLatestItem {
                     assertEquals(
                         it.data ?: emptyList(), listOf(
-                            Movie(
-                                title = "title",
-                                overview = "overview",
-                                id = 1,
-                                posterPath = "https://image.tmdb.org/t/p/w342posterPath",
-                                voteAverage = 1.0
-                            )
+                            movie
                         )
                     )
                 }
@@ -190,7 +265,7 @@ internal class MovieRepositoryImplTest {
     fun `WHEN favouriteAction THEN update local element`() =
         runTest {
 
-            val info = MovieDescriptionDAO(
+            val info = RoomMovieDescription(
                 originalTitle = "originalTitle",
                 overview = "overview",
                 title = "title",
@@ -213,7 +288,7 @@ internal class MovieRepositoryImplTest {
     fun `GIVEN local element does exist WHEN getMovieById THEN requests THEN return movie list`() =
         runTest {
 
-            val info = MovieDescriptionDAO(
+            val info = RoomMovieDescription(
                 originalTitle = "originalTitle",
                 overview = "overview",
                 title = "title",
@@ -226,35 +301,22 @@ internal class MovieRepositoryImplTest {
                 voteAverage = 1.0
             )
             coEvery { localDataSource.getMovieDescriptionById(1) } returns info
-
+            val movieDescription = MovieDescription(
+                originalTitle = "originalTitle",
+                overview = "overview",
+                title = "title",
+                id = 1,
+                posterPath = "posterPath",
+                isFavourite = true,
+                voteAverage = 1.0,
+            )
+            every { movieDescriptionDataMapper.map(info) } returns movieDescription
             val result = SUT.getMovieById(1)
 
             assertEquals(
-                result.data?.id ?: -1,
-                1
+                result.data,
+                movieDescription
             )
-            assertEquals(
-                result.data?.originalTitle.orEmpty(),
-                "originalTitle"
-            )
-
-            assertEquals(
-                result.data?.overview.orEmpty(),
-                "overview"
-            )
-            assertEquals(
-                result.data?.title.orEmpty(),
-                "title"
-            )
-            assertEquals(
-                result.data?.posterPath.orEmpty(),
-                "https://image.tmdb.org/t/p/w342posterPath"
-            )
-            assertEquals(
-                result.data?.voteAverage ?: -1.0,
-                1.0
-            )
-            assertTrue(result.data?.isFavourite ?: false)
         }
 
 }

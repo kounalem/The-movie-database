@@ -1,10 +1,11 @@
 package com.kounalem.moviedatabaase.data.mappers
 
-import com.kounalem.moviedatabaase.data.db.models.MovieDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
 import com.kounalem.moviedatabaase.domain.models.Movie
+import javax.inject.Inject
 
-internal class MovieDataMapper {
-    fun map(input: MovieDAO): Movie {
+class MovieDataMapper @Inject constructor() {
+    fun map(input: RoomMovie): Movie {
         return Movie(
             id = input.id ?: -1,
             posterPath = getPosterPath(input.posterPath),

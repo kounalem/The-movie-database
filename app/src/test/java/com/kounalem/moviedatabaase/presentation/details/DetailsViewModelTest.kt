@@ -75,9 +75,7 @@ internal class DetailsViewModelTest {
 
     @Test
     fun `GIVEN loading response WHEN init THEN requests then update the state`() = runTest {
-        coEvery { movieRepository.getMovieById(1) } returns Resource.Loading(
-            true
-        )
+        coEvery { movieRepository.getMovieById(1) } returns Resource.Loading()
 
         viewModel.state.test {
             assertTrue(awaitItem().isLoading)

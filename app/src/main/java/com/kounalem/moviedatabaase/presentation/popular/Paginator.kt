@@ -20,16 +20,16 @@ internal class Paginator<Key, Item>(
             return
         }
         isMakingRequest = true
-        mutableFlowOf.emit(Resource.Loading(true))
+        mutableFlowOf.emit(Resource.Loading())
         val result: Flow<Resource<Item>> = onRequest(currentKey)
         isMakingRequest = false
         result.collectLatest {
             if (it.message != null) {
-                mutableFlowOf.emit(Resource.Loading(false))
+                mutableFlowOf.emit(Resource.Loading())
                 mutableFlowOf.emit(Resource.Error("Data could not be retrieved."))
             } else if (it.data != null) {
                 currentKey = getNextKey(it)
-                mutableFlowOf.emit(Resource.Loading(false))
+                mutableFlowOf.emit(Resource.Loading())
                 mutableFlowOf.emit(Resource.Success(Pair(it.data, currentKey)))
             }
         }

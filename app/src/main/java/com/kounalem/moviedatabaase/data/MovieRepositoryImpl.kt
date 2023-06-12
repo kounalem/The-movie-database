@@ -1,9 +1,9 @@
 package com.kounalem.moviedatabaase.data
 
 import com.kounalem.moviedatabaase.data.db.LocalDataSource
-import com.kounalem.moviedatabaase.data.db.models.MovieDAO
-import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
-import com.kounalem.moviedatabaase.data.db.models.PopularMoviesDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
+import com.kounalem.moviedatabaase.data.db.models.RoomMovieDescription
+import com.kounalem.moviedatabaase.data.db.models.RoomPopularMovies
 import com.kounalem.moviedatabaase.data.mappers.MovieDataMapper
 import com.kounalem.moviedatabaase.data.mappers.MovieDescriptionDataMapper
 import com.kounalem.moviedatabaase.data.mappers.PopularMoviesDataMapper
@@ -21,47 +21,25 @@ import javax.inject.Inject
 class MovieRepositoryImpl @Inject constructor(
     private val serverDataSource: ServerDataSource,
     private val localDataSource: LocalDataSource,
-) : MovieRepository {
+    private val movieDescriptionDataMapper: MovieDescriptionDataMapper,
+    private val movieDataMapper: MovieDataMapper,
+    private val popularMoviesDataMapper: PopularMoviesDataMapper,
 
-    private val movieDescriptionDataMapper by lazy { MovieDescriptionDataMapper() }
-    private val movieDataMapper by lazy { MovieDataMapper() }
-    private val popularMoviesDataMapper by lazy { PopularMoviesDataMapper() }
-
+    ) : MovieRepository {
     override fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>> {
         return flow {
-            emit(Resource.Loading(true))
+            emit(Resource.Loading())
             try {
                 val serverInfo = serverDataSource.nowPlaying(pageNo)
-                val popularMoviesDao = PopularMoviesDAO(
-                    page = serverInfo.page,
-                    movies = serverInfo.movies?.distinctBy { it.id }?.sortedBy { it.title }
-                        ?.mapTo(ArrayList()) {
-                            MovieDAO(
-                                originalTitle = it.originalTitle,
-                                overview = it.overview,
-                                posterPath = it.poster_path,
-                                title = it.title,
-                                voteAverage = it.voteAverage,
-                                id = it.id
-                            )
-                        },
-                    totalPages = serverInfo.totalPages,
-                    totalResults = serverInfo.totalResults,
-                )
-                localDataSource.saveMovie(popularMoviesDao)
-                popularMoviesDao.movies?.forEach {
-                    localDataSource.saveMovie(it)
-                }
-                val popularMovies: PopularMovies = popularMoviesDataMapper.map(popularMoviesDao)
-                emit(Resource.Loading(false))
+                val localPopularMovies = popularMoviesDataMapper.map(serverInfo)
+                localDataSource.saveMovie(localPopularMovies)
+                val popularMovies: PopularMovies = popularMoviesDataMapper.map(localPopularMovies)
                 emit(Resource.Success(popularMovies))
-
             } catch (e: Exception) {
-                val dbInfo = localDataSource.nowPlaying()
-                if(dbInfo.isNotEmpty())
-                    dbInfo.map {
+                val localInfo = localDataSource.nowPlaying()
+                if (localInfo.isNotEmpty())
+                    localInfo.map {
                         val popularMovies: PopularMovies = popularMoviesDataMapper.map(it)
-                        emit(Resource.Loading(false))
                         emit(Resource.Success(popularMovies))
                     } else {
                     emit(Resource.Error("Couldn't load data"))
@@ -72,18 +50,22 @@ class MovieRepositoryImpl @Inject constructor(
 
     override fun search(query: String): Flow<Resource<List<Movie>>> {
         return flow {
-            emit(Resource.Loading(true))
+            emit(Resource.Loading())
             try {
-                val movieList = localDataSource.search(query)
-                    .map { dtoMovie ->
-                        emit(Resource.Loading(false))
-                        dtoMovie.let {
-                            movieDataMapper.map(it)
+                val movieList: List<Movie> = localDataSource.nowPlaying()
+                    .flatMap { localMovie ->
+                        val list = mutableListOf<Movie>()
+                        localMovie.let {
+                            it.movies?.map {
+                                list.add(movieDataMapper.map(it))
+                            }
                         }
-                    }.distinctBy { it.title }
+                        list
+                    }.filter { it.title.contains(query, true) }.sortedBy {
+                        it.title
+                    }.distinctBy { it.id }
                 emit(Resource.Success(movieList))
             } catch (e: Exception) {
-                emit(Resource.Loading(false))
                 emit(Resource.Error("Couldn't load data"))
             }
         }
@@ -97,7 +79,7 @@ class MovieRepositoryImpl @Inject constructor(
             } else {
                 val serverInfo = serverDataSource.getMovieById(id)
                 localDataSource.saveMovieDescription(
-                    MovieDescriptionDAO(
+                    RoomMovieDescription(
                         id = id,
                         originalTitle = serverInfo.original_title,
                         overview = serverInfo.overview,

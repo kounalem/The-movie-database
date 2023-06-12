@@ -6,6 +6,9 @@ import com.kounalem.moviedatabaase.data.MovieRepositoryImpl
 import com.kounalem.moviedatabaase.data.db.AppDatabase
 import com.kounalem.moviedatabaase.data.db.LocalDataSource
 import com.kounalem.moviedatabaase.data.db.MovieDao
+import com.kounalem.moviedatabaase.data.mappers.MovieDataMapper
+import com.kounalem.moviedatabaase.data.mappers.MovieDescriptionDataMapper
+import com.kounalem.moviedatabaase.data.mappers.PopularMoviesDataMapper
 import com.kounalem.moviedatabaase.data.remote.MoviesApiService
 import com.kounalem.moviedatabaase.data.remote.ServerDataSource
 import com.kounalem.moviedatabaase.domain.MovieRepository
@@ -57,11 +60,17 @@ object AppModule {
     @Singleton
     fun bindMovieRepository(
         serverDataSource: ServerDataSource,
-        localDataSource: LocalDataSource
+        localDataSource: LocalDataSource,
+        movieDescriptionDataMapper: MovieDescriptionDataMapper,
+        movieDataMapper: MovieDataMapper,
+        popularMoviesDataMapper: PopularMoviesDataMapper,
     ): MovieRepository {
         return MovieRepositoryImpl(
             serverDataSource = serverDataSource,
-            localDataSource = localDataSource
+            localDataSource = localDataSource,
+            movieDescriptionDataMapper = movieDescriptionDataMapper,
+            movieDataMapper = movieDataMapper,
+            popularMoviesDataMapper = popularMoviesDataMapper,
         )
     }
 

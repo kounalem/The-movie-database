@@ -90,9 +90,7 @@ internal class PopularMoviesViewModelTest {
     @Test
     fun `GIVEN loading response WHEN onEvent THEN requests then update the state`() = runTest {
         coEvery { movieRepository.search("hi") } returns flowOf(
-            Resource.Loading(
-                true
-            )
+            Resource.Loading()
         )
         viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange("hi"))
         advanceTimeBy(600L)

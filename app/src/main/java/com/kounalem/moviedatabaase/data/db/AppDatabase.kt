@@ -3,13 +3,13 @@ package com.kounalem.moviedatabaase.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.kounalem.moviedatabaase.data.db.models.MovieDAO
-import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
-import com.kounalem.moviedatabaase.data.db.models.PopularMoviesDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
+import com.kounalem.moviedatabaase.data.db.models.RoomMovieDescription
+import com.kounalem.moviedatabaase.data.db.models.RoomPopularMovies
 
 @Database(
     entities = [
-        MovieDAO::class, MovieDescriptionDAO::class, PopularMoviesDAO::class
+        RoomMovie::class, RoomMovieDescription::class, RoomPopularMovies::class
     ], version = 1,
 )
 @TypeConverters(value = [(MovieDescriptionConverters::class), (MovieConverters::class), (IntConverters::class), (PopularMoviesConverters::class)])

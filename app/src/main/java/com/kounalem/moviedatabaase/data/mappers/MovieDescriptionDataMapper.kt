@@ -1,11 +1,12 @@
 package com.kounalem.moviedatabaase.data.mappers
 
-import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovieDescription
 import com.kounalem.moviedatabaase.data.remote.models.MovieDescriptionDTO
 import com.kounalem.moviedatabaase.domain.models.MovieDescription
+import javax.inject.Inject
 
-internal class MovieDescriptionDataMapper {
-    fun map(input: MovieDescriptionDAO): MovieDescription {
+class MovieDescriptionDataMapper @Inject constructor() {
+    fun map(input: RoomMovieDescription): MovieDescription {
         return MovieDescription(
             id = input.id ?: -1,
             originalTitle = input.originalTitle.orEmpty(),

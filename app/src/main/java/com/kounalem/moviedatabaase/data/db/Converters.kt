@@ -3,48 +3,48 @@ package com.kounalem.moviedatabaase.data.db
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.kounalem.moviedatabaase.data.db.models.MovieDAO
-import com.kounalem.moviedatabaase.data.db.models.MovieDescriptionDAO
-import com.kounalem.moviedatabaase.data.db.models.PopularMoviesDAO
+import com.kounalem.moviedatabaase.data.db.models.RoomMovie
+import com.kounalem.moviedatabaase.data.db.models.RoomMovieDescription
+import com.kounalem.moviedatabaase.data.db.models.RoomPopularMovies
 
 
 class MovieDescriptionConverters {
     @TypeConverter
-    fun fromString(value: String): ArrayList<MovieDescriptionDAO> {
+    fun fromString(value: String): ArrayList<RoomMovieDescription> {
         val listType = object : TypeToken<ArrayList<String>>() {}.type
         return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
-    fun fromArrayList(list: ArrayList<MovieDescriptionDAO>): String {
+    fun fromArrayList(list: ArrayList<RoomMovieDescription>): String {
         return Gson().toJson(list)
     }
 }
 
 class PopularMoviesConverters {
     @TypeConverter
-    fun fromString(value: String): ArrayList<PopularMoviesDAO> {
-        val listType = object : TypeToken<PopularMoviesDAO>() {}.type
+    fun fromString(value: String): ArrayList<RoomPopularMovies> {
+        val listType = object : TypeToken<RoomPopularMovies>() {}.type
 
         return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
-    fun fromArrayList(list: PopularMoviesDAO): String {
+    fun fromArrayList(list: RoomPopularMovies): String {
         return Gson().toJson(list)
     }
 }
 
 class MovieConverters {
     @TypeConverter
-    fun fromString(value: String): ArrayList<MovieDAO> {
-        val listType = object : TypeToken<ArrayList<MovieDAO>>() {}.type
+    fun fromString(value: String): ArrayList<RoomMovie> {
+        val listType = object : TypeToken<ArrayList<RoomMovie>>() {}.type
 
         return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
-    fun fromArrayList(list: ArrayList<MovieDAO>): String {
+    fun fromArrayList(list: ArrayList<RoomMovie>): String {
         return Gson().toJson(list)
     }
 }
