@@ -5,10 +5,14 @@ import com.kounalem.moviedatabase.CoroutineTestRule
 import com.kounalem.moviedatabase.domain.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.PopularMovies
+import com.kounalem.moviedatabase.util.paginator.Paginator
+import com.kounalem.moviedatabase.util.paginator.PaginatorFactory
 import com.kounalem.moviedatabase.util.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -28,8 +32,13 @@ internal class PopularMoviesViewModelTest {
     @MockK
     private lateinit var movieRepository: MovieRepository
 
+    @MockK
+    private lateinit var paginatorFactory: PaginatorFactory<Int, Resource<PopularMovies>>
+
+    @MockK
+    private lateinit var paginator: Paginator<Int, Resource<PopularMovies>>
     private val viewModel by lazy {
-        PopularMoviesViewModel(movieRepository)
+        PopularMoviesViewModel(movieRepository, paginatorFactory)
     }
 
     @Before
@@ -48,10 +57,21 @@ internal class PopularMoviesViewModelTest {
                         )
                     )
                 )
+
+        every {
+            paginatorFactory.create(
+                initialKey = 1,
+                onUpdate = any(),
+                getNextKey = any(),
+                onLoadUpdated = any(),
+                onRequest = any(),
+            )
+        } returns paginator
+
     }
 
     @Test
-    fun `GIVEN success response WHEN onEvent THEN requests then update the state`() = runTest {
+    fun `GIVEN search query and success response WHEN onEvent THEN requests then update the state`() = runTest {
         val given = listOf(
             Movie(
                 id = 1,
@@ -88,7 +108,7 @@ internal class PopularMoviesViewModelTest {
     }
 
     @Test
-    fun `GIVEN loading response WHEN onEvent THEN requests then update the state`() = runTest {
+    fun `GIVEN search query and loading response WHEN onEvent THEN requests then update the state`() = runTest {
         coEvery { movieRepository.search("hi") } returns flowOf(
             Resource.Loading()
         )
@@ -103,7 +123,7 @@ internal class PopularMoviesViewModelTest {
     }
 
     @Test
-    fun `GIVEN error response WHEN onEvent THEN requests then update the state`() = runTest {
+    fun `GIVEN search query and error response WHEN onEvent THEN requests then update the state`() = runTest {
         coEvery { movieRepository.search("hi") } returns flowOf(
             Resource.Error(
                 "epic fail"
@@ -120,5 +140,53 @@ internal class PopularMoviesViewModelTest {
         }
     }
 
+    @Test
+    fun `WHEN loadNextItems THEN state gets updated`() = runTest {
+        coEvery { movieRepository.nowPlaying(any()) } returns flowOf(
+            Resource.Success(
+                PopularMovies(
+                    id = 0,
+                    page = 1,
+                    movies = emptyList(),
+                    totalPages = 1,
+                    totalResults = 1,
+                )
+            )
+        )
+        coEvery { paginator.loadNextItems() } returns Unit
 
+        viewModel.loadNextItems()
+
+        viewModel.state.test {
+            val item = awaitItem()
+            assertEquals(
+                actual = item.movies,
+                expected = emptyList()
+            )
+            assertEquals(
+                actual = item.page,
+                expected = 1
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN refresh WHEN onEvent THEN refresh the elements`() = runTest {
+        coEvery { movieRepository.nowPlaying(any()) } returns flowOf(
+            Resource.Success(
+                PopularMovies(
+                    id = 0,
+                    page = 1,
+                    movies = emptyList(),
+                    totalPages = 1,
+                    totalResults = 1,
+                )
+            )
+        )
+        coEvery { paginator.loadNextItems() } returns Unit
+
+        viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.Refresh)
+
+        verify { viewModel.loadNextItems() }
+    }
 }

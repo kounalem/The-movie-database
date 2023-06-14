@@ -3,6 +3,8 @@ package com.kounalem.moviedatabase.presentation.popular
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kounalem.moviedatabase.domain.MovieRepository
+import com.kounalem.moviedatabase.domain.models.PopularMovies
+import com.kounalem.moviedatabase.util.paginator.PaginatorFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,9 +15,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @HiltViewModel
-class PopularMoviesViewModel @Inject constructor(private val movieRepository: MovieRepository) :
+class PopularMoviesViewModel @Inject constructor(
+    private val movieRepository: MovieRepository,
+    paginatorFactory: PaginatorFactory<Int, Resource<PopularMovies>>
+) :
     ViewModel() {
-
     private var searchJob: Job? = null
 
     val state = MutableStateFlow(
@@ -30,7 +34,7 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
         )
     )
 
-    private val paginator = Paginator(
+    private var paginator = paginatorFactory.create(
         initialKey = state.value.page,
         onRequest = { nextPage ->
             movieRepository.nowPlaying(nextPage)
@@ -38,38 +42,32 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
         getNextKey = {
             state.value.page + 1
         },
+        onUpdate = { item, newkey ->
+            if (item.message != null) {
+                state.value = state.value.copy(
+                    isLoading = false,
+                    errorText = "Data could not be retrieved.",
+                    endReached = false,
+                    isRefreshing = false,
+                )
+            } else {
+                val fetchedMovies = item.data?.movies ?: emptyList()
+                state.value = state.value.copy(
+                    isLoading = false,
+                    errorText = null,
+                    movies = (state.value.movies + fetchedMovies).distinctBy { it.id },
+                    page = newkey,
+                    endReached = item.data?.totalPages == state.value.page,
+                    isRefreshing = false,
+                )
+            }
+        },
+        onLoadUpdated = {
+            state.value = state.value.copy(isLoading = true)
+        }
     )
 
     init {
-        viewModelScope.launch {
-            paginator.result().collectLatest {
-                when (it) {
-                    is Resource.Error -> {
-                        state.value = state.value.copy(
-                            isLoading = false,
-                            errorText = it.message,
-                            endReached = false,
-                            isRefreshing = false,
-                        )
-                    }
-
-                    is Resource.Success -> {
-                        val fetchedMovies = it.data?.first?.movies ?: emptyList()
-                        state.value = state.value.copy(
-                            isLoading = false,
-                            errorText = null,
-                            movies = (state.value.movies + fetchedMovies).distinctBy { it.id },
-                            page = it.data?.second ?: 1,
-                            endReached = it.data?.first?.totalPages == state.value.page,
-                            isRefreshing = false,
-                        )
-                    }
-
-                    is Resource.Loading -> state.value = state.value.copy(isLoading = true)
-                }
-            }
-        }
-
         loadNextItems()
     }
 
