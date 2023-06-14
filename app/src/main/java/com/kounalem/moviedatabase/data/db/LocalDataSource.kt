@@ -10,8 +10,6 @@ class LocalDataSource @Inject constructor(private val movieDao: MovieDao) {
     suspend fun getMovieDescriptionById(movieId: Int): RoomMovieDescription =
         movieDao.getMovieDescriptionById(movieId)
 
-    suspend fun saveMovie(movie: RoomMovie) = movieDao.saveMovie(movie)
-
     suspend fun saveMovie(movie: RoomPopularMovies) = movieDao.saveMovie(movie)
 
     suspend fun nowPlaying(): List<RoomPopularMovies> = movieDao.nowPlaying()

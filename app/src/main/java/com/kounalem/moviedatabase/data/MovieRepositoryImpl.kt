@@ -29,15 +29,15 @@ class MovieRepositoryImpl @Inject constructor(
             emit(Resource.Loading())
             try {
                 val serverInfo = serverDataSource.nowPlaying(pageNo)
-                val localPopularMovies = popularMoviesDataMapper.map(serverInfo)
+                val localPopularMovies = popularMoviesDataMapper.mapToRoom(serverInfo)
                 localDataSource.saveMovie(localPopularMovies)
-                val popularMovies: PopularMovies = popularMoviesDataMapper.map(localPopularMovies)
+                val popularMovies: PopularMovies = popularMoviesDataMapper.mapToDomain(localPopularMovies)
                 emit(Resource.Success(popularMovies))
             } catch (e: Exception) {
                 val localInfo = localDataSource.nowPlaying()
                 if (localInfo.isNotEmpty())
                     localInfo.map {
-                        val popularMovies: PopularMovies = popularMoviesDataMapper.map(it)
+                        val popularMovies: PopularMovies = popularMoviesDataMapper.mapToDomain(it)
                         emit(Resource.Success(popularMovies))
                     } else {
                     emit(Resource.Error("Couldn't load data"))

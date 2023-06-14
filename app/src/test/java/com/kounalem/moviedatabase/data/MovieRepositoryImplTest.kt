@@ -65,14 +65,14 @@ internal class MovieRepositoryImplTest {
     }
 
     @Test
-    fun `WHEN now playing THEN requests then get network favourite movie`() = runTest {
+    fun `WHEN now playing THEN requests then get network favourite movieS`() = runTest {
         val dao = mockk<PopularMoviesDTO>()
         val localMovies = mockk<RoomPopularMovies>()
         val popularMovies = mockk<PopularMovies>()
-        every { popularMoviesDataMapper.map(dao) } returns localMovies
+        every { popularMoviesDataMapper.mapToRoom(dao) } returns localMovies
         coEvery { serverDataSource.nowPlaying(1) } returns dao
         coEvery { localDataSource.saveMovie(any<RoomPopularMovies>()) } returns Unit
-        every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
+        every { popularMoviesDataMapper.mapToDomain(localMovies) } returns popularMovies
 
         SUT.nowPlaying(1).test {
             assertTrue(awaitItem() is Resource.Loading)
@@ -90,12 +90,11 @@ internal class MovieRepositoryImplTest {
         runTest {
             val localMovies = mockk<RoomPopularMovies>()
             val popularMovies = mockk<PopularMovies>()
-            every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
+            every { popularMoviesDataMapper.mapToDomain(localMovies) } returns popularMovies
 
             coEvery { serverDataSource.nowPlaying(1) } throws NetworkErrorException("")
             coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
-            coEvery { localDataSource.saveMovie(any<RoomMovie>()) } returns Unit
-            coEvery { localDataSource.saveMovie(any<RoomPopularMovies>()) } returns Unit
+            coEvery { localDataSource.saveMovie(any()) } returns Unit
 
             SUT.nowPlaying(1).test {
                 assertTrue(awaitItem() is Resource.Loading)
@@ -146,7 +145,7 @@ internal class MovieRepositoryImplTest {
             val popularMovies = mockk<PopularMovies> {
                 every { movies } returns listOf(movie)
             }
-            every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
+            every { popularMoviesDataMapper.mapToDomain(localMovies) } returns popularMovies
             coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
             every { movieDataMapper.map(roomMovie) } returns movie
 
@@ -186,7 +185,7 @@ internal class MovieRepositoryImplTest {
         }
 
     @Test
-    fun `GIVEN local element does exist WHEN getMovieById THEN requests THEN return movie list`() =
+    fun `GIVEN local element WHEN getMovieById THEN requests THEN return movie list`() =
         runTest {
 
             val info = mockk<RoomMovieDescription> {

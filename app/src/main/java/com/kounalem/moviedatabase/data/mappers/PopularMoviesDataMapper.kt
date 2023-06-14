@@ -7,7 +7,7 @@ import com.kounalem.moviedatabase.domain.models.PopularMovies
 import javax.inject.Inject
 
 class PopularMoviesDataMapper @Inject constructor() {
-    fun map(input: RoomPopularMovies): PopularMovies {
+    fun mapToDomain(input: RoomPopularMovies): PopularMovies {
         val movieDataMapper = MovieDataMapper()
         val movieList = input.movies?.let {
             it.map { item ->
@@ -24,7 +24,7 @@ class PopularMoviesDataMapper @Inject constructor() {
         )
     }
 
-    fun map (input: PopularMoviesDTO): RoomPopularMovies{
+    fun mapToRoom (input: PopularMoviesDTO): RoomPopularMovies{
        return  RoomPopularMovies(
             page = input.page,
             movies = input.movies?.distinctBy { it.id }?.sortedBy { it.title }
