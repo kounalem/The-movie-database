@@ -3,48 +3,32 @@ package com.kounalem.moviedatabase.data.db
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.kounalem.moviedatabase.data.db.models.RoomMovie
-import com.kounalem.moviedatabase.data.db.models.RoomMovieDescription
-import com.kounalem.moviedatabase.data.db.models.RoomPopularMovies
-
+import com.kounalem.moviedatabase.data.db.models.MovieDescriptionEntity
+import com.kounalem.moviedatabase.data.db.models.MovieEntity
 
 class MovieDescriptionConverters {
     @TypeConverter
-    fun fromString(value: String): ArrayList<RoomMovieDescription> {
+    fun fromString(value: String): ArrayList<MovieDescriptionEntity> {
         val listType = object : TypeToken<ArrayList<String>>() {}.type
         return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
-    fun fromArrayList(list: ArrayList<RoomMovieDescription>): String {
-        return Gson().toJson(list)
-    }
-}
-
-class PopularMoviesConverters {
-    @TypeConverter
-    fun fromString(value: String): ArrayList<RoomPopularMovies> {
-        val listType = object : TypeToken<RoomPopularMovies>() {}.type
-
-        return Gson().fromJson(value, listType)
-    }
-
-    @TypeConverter
-    fun fromArrayList(list: RoomPopularMovies): String {
+    fun fromArrayList(list: ArrayList<MovieDescriptionEntity>): String {
         return Gson().toJson(list)
     }
 }
 
 class MovieConverters {
     @TypeConverter
-    fun fromString(value: String): ArrayList<RoomMovie> {
-        val listType = object : TypeToken<ArrayList<RoomMovie>>() {}.type
+    fun fromString(value: String): ArrayList<MovieEntity> {
+        val listType = object : TypeToken<ArrayList<MovieEntity>>() {}.type
 
         return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
-    fun fromArrayList(list: ArrayList<RoomMovie>): String {
+    fun fromArrayList(list: ArrayList<MovieEntity>): String {
         return Gson().toJson(list)
     }
 }

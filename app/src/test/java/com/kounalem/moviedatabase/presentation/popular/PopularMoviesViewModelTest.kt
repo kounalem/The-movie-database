@@ -4,19 +4,22 @@ import app.cash.turbine.test
 import com.kounalem.moviedatabase.CoroutineTestRule
 import com.kounalem.moviedatabase.domain.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
-import com.kounalem.moviedatabase.domain.models.PopularMovies
+import com.kounalem.moviedatabase.domain.usecases.FilterMoviesUC
 import com.kounalem.moviedatabase.util.Resource
+import com.kounalem.moviedatabase.util.paginator.Paginator
+import com.kounalem.moviedatabase.util.paginator.PaginatorFactory
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import junit.framework.TestCase.assertTrue
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -28,97 +31,214 @@ internal class PopularMoviesViewModelTest {
     @MockK
     private lateinit var movieRepository: MovieRepository
 
+    @MockK
+    private lateinit var filterMoviesUC: FilterMoviesUC
+
+    @MockK
+    private lateinit var paginator: Paginator<Int>
+    private var paginatorFactory: PaginatorFactory<Int> = object : PaginatorFactory<Int> {
+        override fun create(
+            initialKey: Int,
+            onRequest: suspend (nextKey: Int) -> Unit,
+            getNextKey: suspend (currentKey: Int) -> Int
+        ): Paginator<Int> = paginator
+    }
+
     private val viewModel by lazy {
-        PopularMoviesViewModel(movieRepository)
+        PopularMoviesViewModel(
+            repo = movieRepository,
+            paginatorFactory = paginatorFactory,
+            filterMoviesUC = filterMoviesUC,
+        )
     }
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
 
-        coEvery { movieRepository.nowPlaying(0) } returns
-                flowOf(
-                    Resource.Success(
-                        PopularMovies(
-                            id = 0,
-                            page = 0,
-                            movies = emptyList(),
-                            totalPages = 1,
-                            totalResults = 1,
-                        )
-                    )
-                )
+        coEvery { movieRepository.movies } returns flowOf(Resource.Success(emptyList()))
     }
 
     @Test
-    fun `GIVEN success response WHEN onEvent THEN requests then update the state`() = runTest {
-        val given = listOf(
-            Movie(
+    fun `GIVEN movies THEN update the state with mapped info`() = runTest {
+        val firstMovie = Movie(
+            id = 1,
+            posterPath = "",
+            title = "title1",
+            voteAverage = 2.0,
+            overview = "overview1",
+            date = 123
+        )
+        val secondMovie = Movie(
+            id = 2,
+            posterPath = "",
+            title = "title2",
+            voteAverage = 2.0,
+            overview = "overview2",
+            date = 123
+        )
+        coEvery { movieRepository.movies } returns flowOf(
+            Resource.Success(
+                listOf(
+                    firstMovie,
+                    secondMovie
+                )
+            )
+        )
+
+        viewModel.state.test {
+            assertEquals(
+                actual = awaitItem(),
+                expected = PopularMoviesContract.State.Info(
+                    movies = listOf(
+                        PopularMoviesContract.State.Info.Movie(
+                            id = 1,
+                            posterPath = "",
+                            title = "title1",
+                            overview = "overview1",
+                        ), PopularMoviesContract.State.Info.Movie(
+                            id = 2,
+                            posterPath = "",
+                            title = "title2",
+                            overview = "overview2",
+                        )
+                    ),
+                    isRefreshing = false,
+                    searchQuery = null,
+                    endReached = false,
+                    fetchingNewMovies = false,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN search query THEN requests then update the state with the filtered info`() =
+        runTest {
+            val firstMovie = Movie(
                 id = 1,
                 posterPath = "",
                 title = "title1",
-                voteAverage = 1.0,
+                voteAverage = 2.0,
                 overview = "overview1",
-            ),
-            Movie(
+                date = 123
+            )
+            val secondMovie = Movie(
                 id = 2,
                 posterPath = "",
                 title = "title2",
                 voteAverage = 2.0,
                 overview = "overview2",
+                date = 123
             )
-        )
-        coEvery { movieRepository.search("hi") } returns
-                flowOf(
-                    Resource.Success(
-                        given
+            val thirdMovie = Movie(
+                id = 3,
+                posterPath = "",
+                title = "title3",
+                voteAverage = 2.0,
+                overview = "overview3",
+                date = 123
+            )
+
+            val given = listOf(firstMovie, secondMovie)
+            coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
+            coEvery { movieRepository.movies } returns flowOf(
+                Resource.Success(
+                    listOf(
+                        firstMovie,
+                        secondMovie,
+                        thirdMovie
                     )
                 )
+            )
 
+            viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange("hi"))
+            advanceTimeBy(600L)
 
-        viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange("hi"))
-        advanceTimeBy(600L)
+            viewModel.state.test {
+                assertEquals(
+                    actual = awaitItem(),
+                    expected = PopularMoviesContract.State.Info(
+                        movies = listOf(
+                            PopularMoviesContract.State.Info.Movie(
+                                id = 1,
+                                posterPath = "",
+                                title = "title1",
+                                overview = "overview1",
+                            ), PopularMoviesContract.State.Info.Movie(
+                                id = 2,
+                                posterPath = "",
+                                title = "title2",
+                                overview = "overview2",
+                            )
+                        ),
+                        isRefreshing = false,
+                        searchQuery = "hi",
+                        endReached = false,
+                        fetchingNewMovies = false,
+                    )
+                )
+            }
+        }
+
+    @Test
+    fun `WHEN loadNextItems THEN state gets updated`() = runTest {
+        coEvery { movieRepository.movies } returns flowOf(
+            Resource.Success(
+                listOf(
+                    Movie(
+                        id = 1,
+                        posterPath = "",
+                        title = "title",
+                        voteAverage = 2.0,
+                        overview = "overview",
+                        date = 123
+                    )
+                )
+            )
+        )
+
+        viewModel.loadNextItems()
 
         viewModel.state.test {
             assertEquals(
-                actual = awaitItem().movies,
-                expected = given
+                actual = awaitItem(),
+                expected = PopularMoviesContract.State.Info(
+                    movies = listOf(
+                        PopularMoviesContract.State.Info.Movie(
+                            id = 1,
+                            posterPath = "",
+                            title = "title",
+                            overview = "overview",
+                        )
+                    ),
+                    isRefreshing = false,
+                    searchQuery = null,
+                    endReached = false,
+                    fetchingNewMovies = false,
+                )
             )
         }
     }
 
     @Test
-    fun `GIVEN loading response WHEN onEvent THEN requests then update the state`() = runTest {
-        coEvery { movieRepository.search("hi") } returns flowOf(
-            Resource.Loading()
+    fun `GIVEN refresh THEN reset and  paginate`() = runTest {
+        val movie = Movie(
+            id = 1,
+            posterPath = "",
+            title = "title",
+            voteAverage = 2.0,
+            overview = "overview",
+            date = 123
         )
-        viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange("hi"))
-        advanceTimeBy(600L)
 
-        viewModel.state.test {
-            assertTrue(
-                awaitItem().isLoading,
-            )
-        }
+        val given = listOf(movie)
+        coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
+        coEvery { movieRepository.movies } returns flowOf(Resource.Success(listOf(movie)))
+
+        viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.Refresh)
+
+        verify { paginator.reset() }
+        coVerify { paginator.loadNextItems() }
     }
-
-    @Test
-    fun `GIVEN error response WHEN onEvent THEN requests then update the state`() = runTest {
-        coEvery { movieRepository.search("hi") } returns flowOf(
-            Resource.Error(
-                "epic fail"
-            )
-        )
-        viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange("hi"))
-        advanceTimeBy(600L)
-
-        viewModel.state.test {
-            assertEquals(
-                actual = awaitItem().errorText,
-                expected = "Data could not be retrieved."
-            )
-        }
-    }
-
-
 }

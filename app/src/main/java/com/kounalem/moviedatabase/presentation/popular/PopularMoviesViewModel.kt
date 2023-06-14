@@ -3,75 +3,133 @@ package com.kounalem.moviedatabase.presentation.popular
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kounalem.moviedatabase.domain.MovieRepository
+import com.kounalem.moviedatabase.domain.usecases.FilterMoviesUC
+import com.kounalem.moviedatabase.util.Resource
+import com.kounalem.moviedatabase.util.paginator.Paginator
+import com.kounalem.moviedatabase.util.paginator.PaginatorFactory
+import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.kounalem.moviedatabase.util.Resource
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 
 @HiltViewModel
-class PopularMoviesViewModel @Inject constructor(private val movieRepository: MovieRepository) :
-    ViewModel() {
+class PopularMoviesViewModel @Inject constructor(
+    private val repo: MovieRepository,
+    paginatorFactory: PaginatorFactory<Int>,
+    private val filterMoviesUC: FilterMoviesUC,
+) : ViewModel() {
 
-    private var searchJob: Job? = null
+    private val isLoading = MutableStateFlow(false)
+    private val error: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val currentList: MutableStateFlow<LinkedHashSet<PopularMoviesContract.State.Info.Movie>> =
+        MutableStateFlow(LinkedHashSet())
 
-    val state = MutableStateFlow(
-        PopularMoviesContract.State(
-            isLoading = false,
-            movies = emptyList(),
-            errorText = null,
-            page = 1,
-            endReached = false,
-            searchQuery = "",
-            isRefreshing = false,
+    private var endReached: Boolean = false
+    private val isRefreshing = MutableStateFlow(false)
+    private val searchQuery: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val fetchingNewMovies: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val filteredMovies: MutableStateFlow<List<PopularMoviesContract.State.Info.Movie>> =
+        MutableStateFlow(emptyList())
+    private val paginator: Paginator<Int> by lazy {
+        paginatorFactory.create(
+            initialKey = 2,
+            onRequest = { nextPage ->
+                fetchingNewMovies.value = true
+                repo.getServerMovies(nextPage)
+            },
+            getNextKey = { currentKey ->
+                currentKey + 1
+            }
         )
-    )
+    }
 
-    private val paginator = Paginator(
-        initialKey = state.value.page,
-        onRequest = { nextPage ->
-            movieRepository.nowPlaying(nextPage)
-        },
-        getNextKey = {
-            state.value.page + 1
-        },
-    )
-
-    init {
-        viewModelScope.launch {
-            paginator.result().collectLatest {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val results: StateFlow<LinkedHashSet<PopularMoviesContract.State.Info.Movie>> =
+        repo.movies.onEach {
+            isRefreshing.value = true
+            isLoading.value = true
+        }
+            .flatMapLatest {
                 when (it) {
                     is Resource.Error -> {
-                        state.value = state.value.copy(
-                            isLoading = false,
-                            errorText = it.message,
-                            endReached = false,
-                            isRefreshing = false,
-                        )
+                        error.value = it.message
+                        emptyFlow()
                     }
 
                     is Resource.Success -> {
-                        val fetchedMovies = it.data?.first?.movies ?: emptyList()
-                        state.value = state.value.copy(
-                            isLoading = false,
-                            errorText = null,
-                            movies = (state.value.movies + fetchedMovies).distinctBy { it.id },
-                            page = it.data?.second ?: 1,
-                            endReached = it.data?.first?.totalPages == state.value.page,
-                            isRefreshing = false,
-                        )
+                        this.endReached = it.data?.isEmpty() ?: true
+                        it.data?.let { data ->
+                            currentList.value += data.map { movie ->
+                                PopularMoviesContract.State.Info.Movie(
+                                    id = movie.id,
+                                    title = movie.title,
+                                    posterPath = movie.posterPath,
+                                    overview = movie.overview,
+                                )
+                            }
+                            currentList
+                        } ?: run {
+                            error.value = "No info available"
+                            emptyFlow()
+                        }
                     }
-
-                    is Resource.Loading -> state.value = state.value.copy(isLoading = true)
                 }
             }
-        }
+            .onEach {
+                isLoading.value = false
+                error.value = null
+                isRefreshing.value = false
+                fetchingNewMovies.value = false
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LinkedHashSet())
 
-        loadNextItems()
-    }
+    val state: StateFlow<PopularMoviesContract.State>
+        get() = combineTuple(
+            results,
+            isLoading,
+            error,
+            searchQuery,
+            isRefreshing,
+            filteredMovies,
+            fetchingNewMovies,
+        )
+            .map { (movies, isLoading, error, searchQuery, isRefreshing, filteredMovies, fetchingNewMovies) ->
+                if (error != null)
+                    PopularMoviesContract.State.Error(error)
+                else if (isLoading)
+                    PopularMoviesContract.State.Loading(movies.toList())
+                else if (movies.isEmpty())
+                    PopularMoviesContract.State.Loading(movies.toList())
+                else if (filteredMovies.isNotEmpty() && searchQuery?.isNotEmpty() == true) {
+                    PopularMoviesContract.State.Info(
+                        movies = filteredMovies,
+                        isRefreshing = false,
+                        searchQuery = searchQuery,
+                        endReached = false,
+                        fetchingNewMovies = false
+                    )
+                } else
+                    PopularMoviesContract.State.Info(
+                        movies = movies.toList(),
+                        isRefreshing = isRefreshing,
+                        searchQuery = searchQuery,
+                        endReached = endReached,
+                        fetchingNewMovies = fetchingNewMovies
+                    )
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                PopularMoviesContract.State.Loading(emptyList())
+            )
 
     fun loadNextItems() {
         viewModelScope.launch {
@@ -80,15 +138,7 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
     }
 
     private fun refreshElements() {
-        state.value = PopularMoviesContract.State(
-            isLoading = false,
-            movies = emptyList(),
-            errorText = null,
-            page = 1,
-            endReached = false,
-            searchQuery = "",
-            isRefreshing = true,
-        )
+        isRefreshing.value = true
         paginator.reset()
         loadNextItems()
     }
@@ -96,31 +146,18 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
     fun onEvent(event: PopularMoviesContract.MovieListingsEvent) {
         when (event) {
             is PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange -> {
-                state.value = state.value.copy(searchQuery = event.query)
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    delay(500L)
-                    movieRepository.search(event.query).collectLatest {
-                        state.value = when (it) {
-                            is Resource.Error -> state.value.copy(
-                                isLoading = false,
-                                errorText = "Data could not be retrieved.",
-                                endReached = false,
+                searchQuery.value = event.query
+                viewModelScope.launch {
+                    filterMoviesUC.invoke(event.query).collect { movieList ->
+                        val query = movieList.map { movie ->
+                            PopularMoviesContract.State.Info.Movie(
+                                id = movie.id,
+                                title = movie.title,
+                                posterPath = movie.posterPath,
+                                overview = movie.overview,
                             )
-
-                            is Resource.Loading -> {
-                                state.value.copy(
-                                    isLoading = true
-                                )
-                            }
-
-                            is Resource.Success -> {
-                                state.value.copy(
-                                    isLoading = false,
-                                    movies = it.data.orEmpty(),
-                                )
-                            }
                         }
+                        filteredMovies.value = query
                     }
                 }
             }
@@ -129,3 +166,6 @@ class PopularMoviesViewModel @Inject constructor(private val movieRepository: Mo
         }
     }
 }
+
+// check the tests
+// do the workaround for the details

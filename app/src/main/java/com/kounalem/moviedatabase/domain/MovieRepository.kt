@@ -7,10 +7,9 @@ import com.kounalem.moviedatabase.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>>
-
-    fun search(query: String): Flow<Resource<List<Movie>>>
-
-    suspend fun getMovieById(id: Int): Resource<MovieDescription>
-    suspend fun favouriteAction(id: Int, favouriteAction: Boolean)
+    val movies: Flow<Resource<List<Movie>>>
+    suspend fun getServerMovies(pageNo: Int)
+    fun search(query: String): Flow<List<Movie>>
+    fun getMovieByIdObs(id: Int = -1): Flow<Resource<MovieDescription>>
+    suspend fun updateMovieFavStatus(id: Int)
 }

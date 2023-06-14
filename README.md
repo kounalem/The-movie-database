@@ -6,4 +6,4 @@ The project is a simple app showing a list of the most popular movies and their 
 Despite being simple in features, I wanted the project to showcase the use of the MVI design pattern to improve the overall architecture of the app, allowing the behaviour of the app to be unit testable.
 
 ### Libraries used:
-Retrofit, Hilt, GSON, Glide, timber, Room, compose-destinations and mockk
+Retrofit, Hilt, Glide, Room and mockk

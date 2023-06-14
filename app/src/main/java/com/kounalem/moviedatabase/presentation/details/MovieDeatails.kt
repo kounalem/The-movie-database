@@ -1,24 +1,26 @@
 package com.kounalem.moviedatabase.presentation.details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,66 +31,78 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.kounalem.moviedatabase.presentation.HorizontalSpace
+import com.kounalem.moviedatabase.presentation.large
+import com.kounalem.moviedatabase.presentation.small
+import com.kounalem.moviedatabase.presentation.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
-data class MovieDetailsScreenArgs(
-    val title: String,
-    val overview: String,
-    val rate: Double,
-    val id: Int,
-)
-
 @Composable
-@RootNavGraph
-@Destination(navArgsDelegate = MovieDetailsScreenArgs::class)
-fun MovieDetails() {
+fun MovieDetails(
+    popBackStack: () -> Unit,
+    id: Int,
+) {
     val viewModel = hiltViewModel<DetailsViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
-    DetailsView(state, event = viewModel::onEvent)
+    DetailsView(popBackStack, state, event = viewModel::onEvent)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsView(
+    popBackStack: () -> Unit,
     state: DetailsContract.State,
     event: (DetailsContract.MovieDetailsEvent) -> Unit,
 ) {
     Box {
-        if (state.errorText?.isNotEmpty() == true) {
+        (state as? DetailsContract.State.Error)?.let {
             Text(
-                text = state.errorText,
+                text = it.value,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
             )
+        }
+        (state as? DetailsContract.State.Loading)?.let {
 
-        } else if (state.isLoading) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(small),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CircularProgressIndicator()
             }
-        } else {
+        }
+        (state as? DetailsContract.State.Info)?.let {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-
+                TopAppBar(
+                    title = { Text(text = state.title) },
+                    navigationIcon = {
+                        IconButton(onClick = popBackStack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
+                )
                 Box {
                     state.poster?.let {
                         GlideImage(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),
+                                .fillMaxWidth(),
                             imageModel = { state.poster },
                             imageOptions = ImageOptions(
                                 contentScale = ContentScale.Crop,
@@ -96,51 +110,46 @@ private fun DetailsView(
                             )
                         )
                     }
-                    CircleButtonWithHeart(
-                        modifier = Modifier.align(Alignment.TopEnd),
-                        buttonColor = if (state.isFavourite) Color.Red.copy(alpha = 0.6f) else Color.Red,
-                        iconTint = if (state.isFavourite) Color.White.copy(alpha = 0.6f) else Color.White,
-                        onClick = { event(DetailsContract.MovieDetailsEvent.FavouriteAction) }
-                    )
+
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.4f))
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            CircleButtonWithHeart(
+                                modifier = Modifier.align(Alignment.TopEnd),
+                                buttonColor = if (state.isFavourite) Color.Red.copy(alpha = 0.6f) else Color.Red,
+                                iconTint = if (state.isFavourite) Color.White.copy(alpha = 0.6f) else Color.White,
+                                onClick = { event(DetailsContract.MovieDetailsEvent.FavouriteAction) }
+                            )
+                        }
+
+                        Text(
+                            modifier = Modifier.padding(start = large),
+                            text = state.rate,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                        )
+
+                        HorizontalSpace(xsmall)
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(large),
+                            overflow = TextOverflow.Ellipsis,
+                            text = state.overview,
+                            fontWeight = FontWeight.Light,
+                            color = Color.White
+                        )
+                    }
                 }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = state.title,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                    )
-
-                    Text(
-                        text = state.rate,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    overflow = TextOverflow.Ellipsis,
-                    text = state.overview,
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
             }
         }
     }
@@ -156,7 +165,7 @@ private fun CircleButtonWithHeart(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.padding(8.dp),
+        modifier = modifier.padding(small),
         shape = androidx.compose.foundation.shape.CircleShape,
         colors = ButtonDefaults.buttonColors(buttonColor)
     ) {
@@ -172,16 +181,15 @@ private fun CircleButtonWithHeart(
 @Composable
 fun PopularMoviesScreenPreview() {
     DetailsView(
-        state = DetailsContract.State(
-            errorText = null,
+        state = DetailsContract.State.Info(
             title = "title",
             overview = "overview",
             rate = "rate'",
             poster = null,
             isFavourite = true,
-            isLoading = false,
         ),
         event = {},
+        popBackStack = {},
     )
 }
 
@@ -189,16 +197,9 @@ fun PopularMoviesScreenPreview() {
 @Composable
 fun PopularMoviesScreenLoadingPreview() {
     DetailsView(
-        state = DetailsContract.State(
-            errorText = null,
-            title = "title",
-            overview = "overview",
-            rate = "rate'",
-            poster = null,
-            isFavourite = true,
-            isLoading = true,
-        ),
+        state = DetailsContract.State.Loading,
         event = {},
+        popBackStack = {},
     )
 }
 
@@ -206,15 +207,8 @@ fun PopularMoviesScreenLoadingPreview() {
 @Composable
 fun PopularMoviesScreenErrorPreview() {
     DetailsView(
-        state = DetailsContract.State(
-            errorText = "error",
-            title = "title",
-            overview = "overview",
-            rate = "rate'",
-            poster = null,
-            isFavourite = true,
-            isLoading = false,
-        ),
+        popBackStack = {},
+        state = DetailsContract.State.Error("error"),
         event = {},
     )
 }

@@ -1,10 +1,11 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
-    id 'kotlin-parcelize'
-    id 'com.google.devtools.ksp' version '1.8.10-1.0.9'
+    id 'com.google.devtools.ksp'
 }
 
 kotlin {
@@ -17,15 +18,14 @@ kotlin {
         }
     }
 }
-
 android {
     namespace 'com.kounalem.moviedatabase'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.kounalem.moviedatabase"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -42,11 +42,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
     buildFeatures {
         compose true
@@ -67,65 +67,59 @@ android {
 }
 
 allprojects {
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    tasks.withType(KotlinCompile).configureEach {
         kotlinOptions {
-            jvmTarget = "1.8"
+            jvmTarget = JavaVersion.VERSION_11
         }
     }
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
-    implementation "androidx.activity:activity-compose:1.6.0-alpha01"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
-
-    implementation platform('androidx.compose:compose-bom:2023.05.01')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
-
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.05.01')
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
-    testImplementation "io.mockk:mockk:1.13.5"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
-    testImplementation 'app.cash.turbine:turbine:0.13.0'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    //androidx
+    implementation libs.androidx.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.runtime.compose
+    implementation platform(libs.androidx.compose.bom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.accompanist.swiperefresh)
 
     //Hilt
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+    kapt libs.androidx.hilt.compiler
+    implementation libs.androidx.hilt.navigation.compose
 
-    // Compose Nav Destinations
-    implementation 'io.github.raamcosta.compose-destinations:core:1.8.41-beta'
-    ksp 'io.github.raamcosta.compose-destinations:ksp:1.8.41-beta'
+    // Compose navigation
+    implementation(libs.androidx.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
-    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.3"
-    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3"
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.okhttp
+    implementation libs.logging.interceptor
 
     // Room
-    implementation "androidx.room:room-runtime:2.5.1"
-    kapt "androidx.room:room-compiler:2.5.1"
-    implementation "androidx.room:room-ktx:2.4.2"
+    implementation libs.androidx.room.runtime
+    kapt libs.androidx.room.compiler
+    implementation libs.androidx.room.ktx
 
-    implementation "com.google.code.gson:gson:2.10.1"
+    //other
+    implementation libs.landscapist.glide
+    implementation libs.flow.combinetuple.kt
 
-    implementation "com.github.skydoves:landscapist-glide:2.2.1"
-
-    implementation 'com.jakewharton.timber:timber:5.0.1'
+    //tests
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation platform(libs.androidx.compose.bom)
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.turbine
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
 // Allow references to generated code

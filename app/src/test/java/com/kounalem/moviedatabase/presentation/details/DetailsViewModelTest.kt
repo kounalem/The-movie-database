@@ -5,36 +5,34 @@ import app.cash.turbine.test
 import com.kounalem.moviedatabase.CoroutineTestRule
 import com.kounalem.moviedatabase.domain.MovieRepository
 import com.kounalem.moviedatabase.domain.models.MovieDescription
+import com.kounalem.moviedatabase.presentation.navigation.NavRoute
 import com.kounalem.moviedatabase.util.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-
 
 internal class DetailsViewModelTest {
     @get:Rule
     val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @MockK
-    private lateinit var movieRepository: MovieRepository
+    private lateinit var repository: MovieRepository
     private val savedStateHandle: SavedStateHandle = SavedStateHandle(
-        mapOf(
-            "title" to "the title",
-            "overview" to "the overview",
-            "rate" to 1.0,
-            "id" to 1,
-        )
+        mapOf(NavRoute.Details.DETAILS_ID to 1)
     )
 
     private val viewModel by lazy {
-        DetailsViewModel(movieRepository, savedStateHandle)
+        DetailsViewModel(
+            movieRepository = repository,
+            savedStateHandle = savedStateHandle,
+        )
     }
 
     @Before
@@ -43,83 +41,51 @@ internal class DetailsViewModelTest {
     }
 
     @Test
-    fun `GIVEN success response WHEN init THEN requests then update the state`() = runTest {
-        val given = Resource.Success(
-            MovieDescription(
-                id = 1,
-                originalTitle = "original title",
-                overview = "overview",
-                posterPath = "posterPath",
-                title = "the title",
-                voteAverage = 1.0,
-                isFavourite = true,
+    fun `GIVEN repo returns error WHEN  init THEN update the state`() = runTest {
+        coEvery { repository.getMovieByIdObs(1) } returns flowOf(Resource.Error("epic fail"))
+
+        viewModel.state.test {
+            assertEquals(
+                actual = awaitItem(), expected = DetailsContract.State.Error("epic fail")
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN repo returns info WHEN  init THEN update the state`() = runTest {
+        coEvery { repository.getMovieByIdObs(1) } returns flowOf(
+            Resource.Success(
+                MovieDescription(
+                    id = 1,
+                    originalTitle = "original_title",
+                    overview = "overview",
+                    posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+                    title = "title",
+                    voteAverage = 0.0,
+                    isFavourite = false
+                )
             )
         )
-        coEvery { movieRepository.getMovieById(1) } returns given
 
         viewModel.state.test {
             assertEquals(
                 actual = awaitItem(),
-                expected = DetailsContract.State(
-                    isLoading = false,
-                    title = "the title",
+                expected = DetailsContract.State.Info(
+                    title = "title",
                     overview = "overview",
-                    rate = "rate: 1.0",
-                    poster = "posterPath",
-                    errorText = null,
-                    isFavourite = true,
+                    rate = "Movie rating: 0.0",
+                    poster = "https://image.tmdb.org/t/p/w342poster_path",
+                    isFavourite = false
                 )
             )
         }
     }
 
     @Test
-    fun `GIVEN loading response WHEN init THEN requests then update the state`() = runTest {
-        coEvery { movieRepository.getMovieById(1) } returns Resource.Loading()
-
-        viewModel.state.test {
-            assertTrue(awaitItem().isLoading)
-        }
-    }
-
-    @Test
-    fun `GIVEN failed response WHEN init THEN requests then update the state`() = runTest {
-        coEvery { movieRepository.getMovieById(1) } returns Resource.Error(
-            "epic fail"
-        )
-
-        viewModel.state.test {
-            assertEquals(
-                actual = awaitItem().errorText,
-                expected = "Data could not be retrieved."
-            )
-        }
-    }
-
-    @Test
-    fun `GIVEN favouriteAction WHEN onEvent THEN requests then update repo and the state`() =
+    fun `WHEN favouriteAction event trigger repo call`() =
         runTest {
-            coEvery { movieRepository.getMovieById(1) } returns Resource.Success(
-                MovieDescription(
-                    id = 1,
-                    originalTitle = "original title",
-                    overview = "overview",
-                    posterPath = "posterPath",
-                    title = "the title",
-                    voteAverage = 1.0,
-                    isFavourite = false,
-                )
-            )
-            coEvery { movieRepository.favouriteAction(1, true) } returns Unit
             viewModel.onEvent(DetailsContract.MovieDetailsEvent.FavouriteAction)
 
-            viewModel.state.test {
-                assertTrue(
-                    awaitItem().isFavourite,
-                )
-            }
-
-            coVerify { movieRepository.favouriteAction(1, true) }
+            coVerify { repository.updateMovieFavStatus(1) }
         }
-
 }

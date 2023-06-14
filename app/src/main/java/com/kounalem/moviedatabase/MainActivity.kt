@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.kounalem.moviedatabase.presentation.NavGraphs
+import androidx.navigation.compose.rememberNavController
+import com.kounalem.moviedatabase.presentation.navigation.NavGraph
 import com.kounalem.moviedatabase.ui.theme.MovieDatabaseTheme
-import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DestinationsNavHost(navGraph = NavGraphs.root)
+                    val navController = rememberNavController()
+                    NavGraph(navController)
                 }
             }
         }

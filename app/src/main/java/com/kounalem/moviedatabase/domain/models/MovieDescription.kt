@@ -8,4 +8,6 @@ data class MovieDescription(
     val title: String,
     val voteAverage: Double,
     val isFavourite: Boolean
-)
+) {
+    val rate = "Movie rating: $voteAverage"
+}

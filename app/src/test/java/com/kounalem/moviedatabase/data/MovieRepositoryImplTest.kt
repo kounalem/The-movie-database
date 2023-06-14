@@ -2,16 +2,8 @@ package com.kounalem.moviedatabase.data
 
 import android.accounts.NetworkErrorException
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.CoroutineTestRule
 import com.kounalem.moviedatabase.data.db.LocalDataSource
-import com.kounalem.moviedatabase.data.db.models.RoomMovie
-import com.kounalem.moviedatabase.data.db.models.RoomMovieDescription
-import com.kounalem.moviedatabase.data.db.models.RoomPopularMovies
-import com.kounalem.moviedatabase.data.mappers.MovieDataMapper
-import com.kounalem.moviedatabase.data.mappers.MovieDescriptionDataMapper
-import com.kounalem.moviedatabase.data.mappers.PopularMoviesDataMapper
 import com.kounalem.moviedatabase.data.remote.ServerDataSource
-import com.kounalem.moviedatabase.data.remote.models.PopularMoviesDTO
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.PopularMovies
@@ -23,39 +15,24 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class MovieRepositoryImplTest {
-    @get:Rule
-    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @MockK
-    private lateinit var serverDataSource: ServerDataSource
+    private lateinit var server: ServerDataSource
 
     @MockK
-    private lateinit var localDataSource: LocalDataSource
+    private lateinit var local: LocalDataSource
 
-    @MockK
-    private lateinit var movieDescriptionDataMapper: MovieDescriptionDataMapper
-
-    @MockK
-    private lateinit var movieDataMapper: MovieDataMapper
-
-    @MockK
-    private lateinit var popularMoviesDataMapper: PopularMoviesDataMapper
-    private val SUT by lazy {
+    private val repository by lazy {
         MovieRepositoryImpl(
-            serverDataSource = serverDataSource,
-            localDataSource = localDataSource,
-            movieDescriptionDataMapper = movieDescriptionDataMapper,
-            movieDataMapper = movieDataMapper,
-            popularMoviesDataMapper = popularMoviesDataMapper
+            server = server, local = local
         )
     }
 
@@ -65,144 +42,113 @@ internal class MovieRepositoryImplTest {
     }
 
     @Test
-    fun `WHEN now playing THEN requests then get network favourite movie`() = runTest {
-        val dao = mockk<PopularMoviesDTO>()
-        val localMovies = mockk<RoomPopularMovies>()
-        val popularMovies = mockk<PopularMovies>()
-        every { popularMoviesDataMapper.map(dao) } returns localMovies
-        coEvery { serverDataSource.nowPlaying(1) } returns dao
-        coEvery { localDataSource.saveMovie(any<RoomPopularMovies>()) } returns Unit
-        every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
+    fun `GIVEN server info available THEN get latest info`() = runTest {
+        val given = listOf(mockk<Movie>())
+        coEvery { server.nowPlaying(1) } returns mockk<PopularMovies> {
+            every { this@mockk.movies } returns given
+        }
+        coEvery { local.getAllMovies() } returns flowOf(given)
 
-        SUT.nowPlaying(1).test {
-            assertTrue(awaitItem() is Resource.Loading)
+        repository.movies.test {
+            assertEquals(given, awaitItem().data ?: emptyList())
+        }
+    }
+
+    @Test
+    fun `GIVEN server info available THEN get save the latest info`() = runTest {
+        val given = listOf(mockk<Movie>())
+        coEvery { local.getAllMovies() } returns flowOf(given)
+        coEvery { server.nowPlaying(1) } returns mockk<PopularMovies> {
+            every { this@mockk.movies } returns given
+        }
+
+        repository.movies.test {
+            awaitItem()
+            coVerify { local.saveMovieList(given) }
+        }
+    }
+
+    @Test
+    fun `GIVEN network error THEN requests then get local movies`() = runTest {
+        val given = listOf(mockk<Movie>())
+        coEvery { server.nowPlaying(1) } throws NetworkErrorException("")
+        coEvery { local.getAllMovies() } returns flowOf(given)
+
+        repository.movies.test {
             onLatestItem {
                 assertTrue(it is Resource.Success)
-                assertEquals(
-                    it.data, popularMovies
-                )
+                assertEquals(it.data, given)
             }
         }
     }
 
     @Test
-    fun `GIVEN network error WHEN now playing THEN requests then get local favourite movies`() =
-        runTest {
-            val localMovies = mockk<RoomPopularMovies>()
-            val popularMovies = mockk<PopularMovies>()
-            every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
-
-            coEvery { serverDataSource.nowPlaying(1) } throws NetworkErrorException("")
-            coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
-            coEvery { localDataSource.saveMovie(any<RoomMovie>()) } returns Unit
-            coEvery { localDataSource.saveMovie(any<RoomPopularMovies>()) } returns Unit
-
-            SUT.nowPlaying(1).test {
-                assertTrue(awaitItem() is Resource.Loading)
-                onLatestItem {
-                    assertTrue(it is Resource.Success)
-                    assertEquals(
-                        it.data, popularMovies
-                    )
-                }
-            }
-        }
-
-    @Test
-    fun `GIVEN network error and local element does not exist WHEN now playing THEN resource error`() =
-        runTest {
-            coEvery { serverDataSource.nowPlaying(1) } throws NetworkErrorException("")
-            coEvery { localDataSource.nowPlaying() } returns emptyList()
-
-            SUT.nowPlaying(1).test {
-                assertTrue(awaitItem() is Resource.Loading)
-                onLatestItem {
-                    assertTrue(it is Resource.Error)
-                }
-            }
-        }
-
-    @Test
-    fun `GIVEN local element does not exist WHEN search THEN requests THEN resource error`() =
-        runTest {
-            coEvery { localDataSource.nowPlaying() } throws Exception("")
-
-            SUT.search("").test {
-                assertTrue(awaitItem() is Resource.Loading)
-                onLatestItem {
-                    assertTrue(it is Resource.Error)
-                }
-            }
-        }
-
-    @Test
     fun `GIVEN local element does exist WHEN search THEN requests THEN return movie list`() =
         runTest {
-            val roomMovie = mockk<RoomMovie>()
-            val localMovies = mockk<RoomPopularMovies> {
-                every { movies } returns arrayListOf(roomMovie)
-            }
-            val movie = mockk<Movie>(relaxed = true)
-            val popularMovies = mockk<PopularMovies> {
-                every { movies } returns listOf(movie)
-            }
-            every { popularMoviesDataMapper.map(localMovies) } returns popularMovies
-            coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
-            every { movieDataMapper.map(roomMovie) } returns movie
+            val given = mockk<Movie>()
+            coEvery { local.getFilteredMovies("") } returns flowOf(listOf(given))
 
-            SUT.search("").test {
-                assertTrue(awaitItem() is Resource.Loading)
-                onLatestItem {
-                    assertEquals(
-                        it.data ?: emptyList(), listOf(
-                            movie
-                        )
-                    )
-                }
+            repository.search("").collect {
+                assertEquals(listOf(given), it)
             }
         }
 
     @Test
-    fun `WHEN favouriteAction THEN update local element`() =
-        runTest {
+    fun `WHEN updateMovieFavStatus THEN update local element`() = runTest {
+        repository.updateMovieFavStatus(1)
 
-            val info = RoomMovieDescription(
-                originalTitle = "originalTitle",
-                overview = "overview",
-                title = "title",
+        coVerify { local.updateMovieFavStatus(1) }
+    }
+
+    @Test
+    fun `GIVEN local info WHEN get movie by id THEN then return value`() = runTest {
+        val given = MovieDescription(
+            id = 1,
+            originalTitle = "original_title",
+            overview = "overview",
+            posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+            title = "title",
+            voteAverage = 0.0,
+            isFavourite = false
+        )
+        coEvery { local.getMovieDescriptionById(1) } returns flowOf(given)
+
+        repository.getMovieByIdObs(1).collect {
+            assertEquals(given, it.data)
+        }
+    }
+
+    @Test
+    fun `GIVEN local info do not exist WHEN get movie by id THEN then return server value`() =
+        runTest {
+            val given = MovieDescription(
                 id = 1,
-                posterPath = "posterPath",
-                isFavourite = true,
-                popularity = 1.0,
-                status = "",
-                tagline = "",
-                voteAverage = 1.0
+                originalTitle = "original_title",
+                overview = "overview",
+                posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+                title = "title",
+                voteAverage = 0.0,
+                isFavourite = false
             )
-            coEvery { localDataSource.getMovieDescriptionById(1) } returns
-                    info.copy(isFavourite = false)
+            coEvery { local.getMovieDescriptionById(1) } returns flowOf(null)
+            coEvery { server.getMovieById(1) } returns flowOf(given)
 
-            SUT.favouriteAction(1, false)
-            coVerify { localDataSource.saveMovieDescription(info.copy(isFavourite = false)) }
+            repository.getMovieByIdObs(1).collect {
+                assertEquals(given, it.data)
+            }
+
+            coVerify { local.saveMovieDescription(given) }
         }
 
     @Test
-    fun `GIVEN local element does exist WHEN getMovieById THEN requests THEN return movie list`() =
+    fun `GIVEN local info do not exist and no network WHEN get movie by id THEN then fail`() =
         runTest {
+            coEvery { local.getMovieDescriptionById(1) } returns flowOf(null)
+            coEvery { server.getMovieById(1) } throws Throwable("epic fail")
 
-            val info = mockk<RoomMovieDescription> {
-                every { id } returns 1
+            repository.getMovieByIdObs(1).collect {
+                assertEquals(Resource.Error("Movie info not available"), it)
             }
-            coEvery { localDataSource.getMovieDescriptionById(1) } returns info
-            val movieDescription = mockk<MovieDescription>() {
-                every { id } returns 1
-            }
-            every { movieDescriptionDataMapper.map(info) } returns movieDescription
-            val result = SUT.getMovieById(1)
-
-            assertEquals(
-                result.data,
-                movieDescription
-            )
         }
 
 }
