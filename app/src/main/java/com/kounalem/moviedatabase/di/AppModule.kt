@@ -4,13 +4,11 @@ import android.app.Application
 import androidx.room.Room
 import com.kounalem.moviedatabase.data.MovieRepositoryImpl
 import com.kounalem.moviedatabase.data.db.AppDatabase
-import com.kounalem.moviedatabase.data.db.LocalDataSource
 import com.kounalem.moviedatabase.data.db.MovieDao
 import com.kounalem.moviedatabase.data.mappers.MovieDataMapper
 import com.kounalem.moviedatabase.data.mappers.MovieDescriptionDataMapper
 import com.kounalem.moviedatabase.data.mappers.PopularMoviesDataMapper
 import com.kounalem.moviedatabase.data.remote.MoviesApiService
-import com.kounalem.moviedatabase.data.remote.ServerDataSource
 import com.kounalem.moviedatabase.domain.MovieRepository
 import dagger.Module
 import dagger.Provides
@@ -55,12 +53,17 @@ object AppModule {
             .create()
     }
 
+    @Provides
+    @Singleton
+    fun provideMovieDao(localDatabase: AppDatabase): MovieDao {
+        return localDatabase.movieDao
+    }
 
     @Provides
     @Singleton
     fun bindMovieRepository(
-        serverDataSource: ServerDataSource,
-        localDataSource: LocalDataSource,
+        serverDataSource: MoviesApiService,
+        localDataSource: MovieDao,
         movieDescriptionDataMapper: MovieDescriptionDataMapper,
         movieDataMapper: MovieDataMapper,
         popularMoviesDataMapper: PopularMoviesDataMapper,
@@ -72,18 +75,6 @@ object AppModule {
             movieDataMapper = movieDataMapper,
             popularMoviesDataMapper = popularMoviesDataMapper,
         )
-    }
-
-    @Provides
-    @Singleton
-    fun provideMovieDao(localDatabase: AppDatabase): MovieDao {
-        return localDatabase.movieDao
-    }
-
-    @Provides
-    @Singleton
-    fun provideDataSource(movieDao: MovieDao): LocalDataSource {
-        return LocalDataSource(movieDao)
     }
 
     private class RequestInterceptor: Interceptor {

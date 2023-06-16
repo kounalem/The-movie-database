@@ -3,14 +3,14 @@ package com.kounalem.moviedatabase.data
 import android.accounts.NetworkErrorException
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.CoroutineTestRule
-import com.kounalem.moviedatabase.data.db.LocalDataSource
+import com.kounalem.moviedatabase.data.db.MovieDao
 import com.kounalem.moviedatabase.data.db.models.RoomMovie
 import com.kounalem.moviedatabase.data.db.models.RoomMovieDescription
 import com.kounalem.moviedatabase.data.db.models.RoomPopularMovies
 import com.kounalem.moviedatabase.data.mappers.MovieDataMapper
 import com.kounalem.moviedatabase.data.mappers.MovieDescriptionDataMapper
 import com.kounalem.moviedatabase.data.mappers.PopularMoviesDataMapper
-import com.kounalem.moviedatabase.data.remote.ServerDataSource
+import com.kounalem.moviedatabase.data.remote.MoviesApiService
 import com.kounalem.moviedatabase.data.remote.models.PopularMoviesDTO
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
@@ -36,10 +36,10 @@ internal class MovieRepositoryImplTest {
     val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @MockK
-    private lateinit var serverDataSource: ServerDataSource
+    private lateinit var serverDataSource: MoviesApiService
 
     @MockK
-    private lateinit var localDataSource: LocalDataSource
+    private lateinit var localDataSource: MovieDao
 
     @MockK
     private lateinit var movieDescriptionDataMapper: MovieDescriptionDataMapper
@@ -94,7 +94,7 @@ internal class MovieRepositoryImplTest {
 
             coEvery { serverDataSource.nowPlaying(1) } throws NetworkErrorException("")
             coEvery { localDataSource.nowPlaying() } returns listOf(localMovies)
-            coEvery { localDataSource.saveMovie(any()) } returns Unit
+            coEvery { localDataSource.saveMovie(any<RoomMovie>()) } returns Unit
 
             SUT.nowPlaying(1).test {
                 assertTrue(awaitItem() is Resource.Loading)

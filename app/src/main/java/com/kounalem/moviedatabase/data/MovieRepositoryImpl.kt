@@ -1,11 +1,11 @@
 package com.kounalem.moviedatabase.data
 
-import com.kounalem.moviedatabase.data.db.LocalDataSource
+import com.kounalem.moviedatabase.data.db.MovieDao
 import com.kounalem.moviedatabase.data.db.models.RoomMovieDescription
 import com.kounalem.moviedatabase.data.mappers.MovieDataMapper
 import com.kounalem.moviedatabase.data.mappers.MovieDescriptionDataMapper
 import com.kounalem.moviedatabase.data.mappers.PopularMoviesDataMapper
-import com.kounalem.moviedatabase.data.remote.ServerDataSource
+import com.kounalem.moviedatabase.data.remote.MoviesApiService
 import com.kounalem.moviedatabase.domain.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
@@ -17,8 +17,8 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
-    private val serverDataSource: ServerDataSource,
-    private val localDataSource: LocalDataSource,
+    private val serverDataSource: MoviesApiService,
+    private val localDataSource: MovieDao,
     private val movieDescriptionDataMapper: MovieDescriptionDataMapper,
     private val movieDataMapper: MovieDataMapper,
     private val popularMoviesDataMapper: PopularMoviesDataMapper,
