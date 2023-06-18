@@ -4,11 +4,12 @@ import android.app.Application
 import androidx.room.Room
 import com.kounalem.moviedatabase.data.MovieRepositoryImpl
 import com.kounalem.moviedatabase.data.db.AppDatabase
+import com.kounalem.moviedatabase.data.db.LocalDataSource
 import com.kounalem.moviedatabase.data.db.MovieDao
-import com.kounalem.moviedatabase.data.mappers.MovieDataMapper
-import com.kounalem.moviedatabase.data.mappers.MovieDescriptionDataMapper
-import com.kounalem.moviedatabase.data.mappers.PopularMoviesDataMapper
+import com.kounalem.moviedatabase.data.db.mapper.DescriptionDataMapper
+import com.kounalem.moviedatabase.data.remote.mapper.mappers.MovieDescriptionMapper
 import com.kounalem.moviedatabase.data.remote.MoviesApiService
+import com.kounalem.moviedatabase.data.remote.ServerDataSource
 import com.kounalem.moviedatabase.domain.MovieRepository
 import dagger.Module
 import dagger.Provides
@@ -31,26 +32,19 @@ object AppModule {
     @Singleton
     fun provideLocalDatabase(app: Application): AppDatabase {
         return Room.databaseBuilder(
-            app,
-            AppDatabase::class.java,
-            AppDatabase.NAME
+            app, AppDatabase::class.java, AppDatabase.NAME
         ).build()
     }
 
     @Provides
     @Singleton
     fun provideMovieApi(): MoviesApiService {
-        return Retrofit.Builder()
-            .baseUrl("http://api.themoviedb.org/3/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(OkHttpClient.Builder()
-                .addInterceptor(HttpLoggingInterceptor().apply {
+        return Retrofit.Builder().baseUrl("http://api.themoviedb.org/3/")
+            .addConverterFactory(GsonConverterFactory.create()).client(
+                OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BASIC
-                })
-                .addInterceptor(RequestInterceptor()).build()
-            )
-            .build()
-            .create()
+                }).addInterceptor(RequestInterceptor()).build()
+            ).build().create()
     }
 
     @Provides
@@ -61,29 +55,48 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun bindMovieRepository(
-        serverDataSource: MoviesApiService,
+    fun provideServerDataSource(
+        service: MoviesApiService,
+        descriptionDataMapper: MovieDescriptionMapper,
+        popularMoviesMapper: com.kounalem.moviedatabase.data.remote.mapper.mappers.PopularMoviesMapper,
+    ) = ServerDataSource(
+        service = service,
+        popularMoviesMapper = popularMoviesMapper,
+        descriptionMapper = descriptionDataMapper,
+    )
+
+    @Provides
+    @Singleton
+    fun provideLocalDataSource(
         localDataSource: MovieDao,
-        movieDescriptionDataMapper: MovieDescriptionDataMapper,
-        movieDataMapper: MovieDataMapper,
-        popularMoviesDataMapper: PopularMoviesDataMapper,
+        movieMapper: com.kounalem.moviedatabase.data.db.mapper.MovieMapper,
+        descriptionDataMapper: DescriptionDataMapper,
+        popularMoviesMapper: com.kounalem.moviedatabase.data.db.mapper.PopularMoviesMapper,
+    ) = LocalDataSource(
+        dao = localDataSource,
+        movieMapper = movieMapper,
+        descriptionDataMapper = descriptionDataMapper,
+        popularMoviesMapper = popularMoviesMapper
+    )
+
+    @Provides
+    @Singleton
+    fun bindMovieRepository(
+        serverDataSource: ServerDataSource,
+        localDataSource: LocalDataSource,
     ): MovieRepository {
         return MovieRepositoryImpl(
             serverDataSource = serverDataSource,
             localDataSource = localDataSource,
-            movieDescriptionDataMapper = movieDescriptionDataMapper,
-            movieDataMapper = movieDataMapper,
-            popularMoviesDataMapper = popularMoviesDataMapper,
         )
     }
 
-    private class RequestInterceptor: Interceptor {
+    private class RequestInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url
             val url = originalUrl.newBuilder()
-                .addQueryParameter("api_key", "0154126bcc52cfe539c99204454466a9")
-                .build()
+                .addQueryParameter("api_key", "0154126bcc52cfe539c99204454466a9").build()
 
             val requestBuilder = originalRequest.newBuilder().url(url)
             val request = requestBuilder.build()

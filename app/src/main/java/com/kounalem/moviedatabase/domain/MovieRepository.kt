@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
     fun nowPlaying(pageNo: Int): Flow<Resource<PopularMovies>>
-
     fun search(query: String): Flow<Resource<List<Movie>>>
-
     suspend fun getMovieById(id: Int): Resource<MovieDescription>
     suspend fun favouriteAction(id: Int, favouriteAction: Boolean)
 }

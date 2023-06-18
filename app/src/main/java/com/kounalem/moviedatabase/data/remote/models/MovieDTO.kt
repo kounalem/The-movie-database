@@ -20,4 +20,6 @@ data class MovieDTO(
 
     @SerializedName("vote_average")
     val voteAverage: Double?,
+    @SerializedName("release_date")
+    val date: String
 )

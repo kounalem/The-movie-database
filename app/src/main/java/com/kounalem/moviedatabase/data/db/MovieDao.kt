@@ -11,10 +11,13 @@ interface MovieDao {
     @Query("SELECT * FROM popular_movies")
     suspend fun nowPlaying(): List<RoomPopularMovies>
 
+    @Query("SELECT * FROM popular_movies WHERE page=:pageNo LIMIT 1")
+    suspend fun nowPlaying(pageNo: Int): RoomPopularMovies
+
     @Query("SELECT * FROM movie WHERE id=:movieId")
     suspend fun getMovieById(movieId: Int): RoomMovie
 
-    @Query("SELECT * FROM movie_description WHERE id=:movieId")
+    @Query("SELECT * FROM movie_description WHERE id=:movieId LIMIT 1")
     suspend fun getMovieDescriptionById(movieId: Int): RoomMovieDescription
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -34,4 +37,7 @@ interface MovieDao {
 
     @Query("DELETE FROM movie")
     suspend fun clear()
+
+    @Query("SELECT * FROM movie WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%' ORDER BY date ASC")
+    suspend fun getFilteredMovies(query: String): List<RoomMovie>
 }

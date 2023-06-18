@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 data class RoomMovie(
     @PrimaryKey
     val id: Int? = null,
-    val originalTitle: String?,
     val overview: String?,
     val posterPath: String?,
     val title: String?,
     val voteAverage: Double?,
+    val date: Long,
 )

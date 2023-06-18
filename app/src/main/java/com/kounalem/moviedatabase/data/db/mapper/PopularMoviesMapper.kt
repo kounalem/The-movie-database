@@ -1,22 +1,20 @@
-package com.kounalem.moviedatabase.data.mappers
+package com.kounalem.moviedatabase.data.db.mapper
 
 import com.kounalem.moviedatabase.data.db.models.RoomMovie
 import com.kounalem.moviedatabase.data.db.models.RoomPopularMovies
-import com.kounalem.moviedatabase.data.remote.models.PopularMoviesDTO
 import com.kounalem.moviedatabase.domain.models.PopularMovies
 import javax.inject.Inject
 
-class PopularMoviesDataMapper @Inject constructor() {
+class PopularMoviesMapper @Inject constructor() {
     fun mapToDomain(input: RoomPopularMovies): PopularMovies {
-        val movieDataMapper = MovieDataMapper()
+        val movieDataMapper = MovieMapper()
         val movieList = input.movies?.let {
             it.map { item ->
-                movieDataMapper.map(item)
-            }.sortedByDescending { it.voteAverage }
+                movieDataMapper.mapToDomain(item)
+            }.sortedBy { it.date }
         } ?: emptyList()
 
         return PopularMovies(
-            id = input.id?:-1,
             page = input.page ?: 0,
             movies = movieList,
             totalPages = input.totalPages ?: 0,
@@ -24,18 +22,18 @@ class PopularMoviesDataMapper @Inject constructor() {
         )
     }
 
-    fun mapToRoom (input: PopularMoviesDTO): RoomPopularMovies{
-       return  RoomPopularMovies(
+    fun mapToRoom(input: PopularMovies): RoomPopularMovies {
+        return RoomPopularMovies(
             page = input.page,
-            movies = input.movies?.distinctBy { it.id }?.sortedBy { it.title }
-                ?.mapTo(ArrayList()) {
+            movies = input.movies.distinctBy { it.id }.sortedBy { it.title }
+                .mapTo(ArrayList()) {
                     RoomMovie(
-                        originalTitle = it.originalTitle,
                         overview = it.overview,
-                        posterPath = it.poster_path,
+                        posterPath = it.posterPath,
                         title = it.title,
                         voteAverage = it.voteAverage,
-                        id = it.id
+                        id = it.id,
+                        date = it.date,
                     )
                 },
             totalPages = input.totalPages,

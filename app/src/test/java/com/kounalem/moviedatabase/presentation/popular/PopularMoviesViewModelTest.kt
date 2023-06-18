@@ -38,7 +38,11 @@ internal class PopularMoviesViewModelTest {
     @MockK
     private lateinit var paginator: Paginator<Int, Resource<PopularMovies>>
     private val viewModel by lazy {
-        PopularMoviesViewModel(movieRepository, paginatorFactory)
+        PopularMoviesViewModel(
+            movieRepository = movieRepository,
+            ioDispatcher = coroutineTestRule.testDispatcher,
+            paginatorFactory = paginatorFactory
+        )
     }
 
     @Before
@@ -49,7 +53,6 @@ internal class PopularMoviesViewModelTest {
                 flowOf(
                     Resource.Success(
                         PopularMovies(
-                            id = 0,
                             page = 0,
                             movies = emptyList(),
                             totalPages = 1,
@@ -79,6 +82,7 @@ internal class PopularMoviesViewModelTest {
                 title = "title1",
                 voteAverage = 1.0,
                 overview = "overview1",
+                date = 123,
             ),
             Movie(
                 id = 2,
@@ -86,6 +90,7 @@ internal class PopularMoviesViewModelTest {
                 title = "title2",
                 voteAverage = 2.0,
                 overview = "overview2",
+                date = 123
             )
         )
         coEvery { movieRepository.search("hi") } returns
@@ -145,7 +150,6 @@ internal class PopularMoviesViewModelTest {
         coEvery { movieRepository.nowPlaying(any()) } returns flowOf(
             Resource.Success(
                 PopularMovies(
-                    id = 0,
                     page = 1,
                     movies = emptyList(),
                     totalPages = 1,
@@ -175,7 +179,6 @@ internal class PopularMoviesViewModelTest {
         coEvery { movieRepository.nowPlaying(any()) } returns flowOf(
             Resource.Success(
                 PopularMovies(
-                    id = 0,
                     page = 1,
                     movies = emptyList(),
                     totalPages = 1,

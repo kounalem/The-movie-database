@@ -96,7 +96,7 @@ private fun PopularMoviesView(
             ) {
                 LazyColumn(state = listState) {
                     itemsIndexed(state.movies) { index, item ->
-                        if (index >= state.movies.size - 1 && !state.endReached && !state.isLoading) {
+                        if (index >= state.movies.size - 1 && !state.endReached && !state.isLoading && state.searchQuery.isEmpty()) {
                             loadNextItems()
                         }
                         MovieItem(item, selected = { movie ->
@@ -230,6 +230,7 @@ fun PopularMoviesScreenPreview() {
                     title = "title1",
                     voteAverage = 1.0,
                     overview = "overview",
+                    date = 123L,
                 )
             ),
         ),

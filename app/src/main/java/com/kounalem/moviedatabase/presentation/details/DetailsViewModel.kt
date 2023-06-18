@@ -9,13 +9,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.SavedStateHandle
 import com.kounalem.moviedatabase.presentation.destinations.MovieDetailsDestination
+import com.kounalem.moviedatabase.util.IO
 import com.kounalem.moviedatabase.util.Resource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     savedStateHandle: SavedStateHandle,
+    @IO private val ioDispatcher: CoroutineDispatcher,
 ) :
     ViewModel() {
     private val info = MovieDetailsDestination.argsFrom(savedStateHandle)
@@ -33,7 +38,7 @@ class DetailsViewModel @Inject constructor(
     )
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             state.value = when (val details = movieRepository.getMovieById(info.id)) {
                 is Resource.Error -> state.value.copy(
                     errorText = "Data could not be retrieved.",
@@ -48,7 +53,9 @@ class DetailsViewModel @Inject constructor(
                 )
 
                 is Resource.Success -> {
-                    isFavourite.value = details.data?.isFavourite ?: false
+                    withContext(Dispatchers.Main) {
+                        isFavourite.value = details.data?.isFavourite ?: false
+                    }
                     state.value.copy(
                         errorText = null,
                         isLoading = false,

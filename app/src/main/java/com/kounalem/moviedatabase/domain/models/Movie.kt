@@ -6,4 +6,5 @@ data class Movie(
     val title: String,
     val voteAverage: Double,
     val overview: String,
+    val date: Long,
 )

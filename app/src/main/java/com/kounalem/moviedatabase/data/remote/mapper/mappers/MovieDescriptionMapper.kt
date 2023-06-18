@@ -1,23 +1,10 @@
-package com.kounalem.moviedatabase.data.mappers
+package com.kounalem.moviedatabase.data.remote.mapper.mappers
 
-import com.kounalem.moviedatabase.data.db.models.RoomMovieDescription
 import com.kounalem.moviedatabase.data.remote.models.MovieDescriptionDTO
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import javax.inject.Inject
 
-class MovieDescriptionDataMapper @Inject constructor() {
-    fun map(input: RoomMovieDescription): MovieDescription {
-        return MovieDescription(
-            id = input.id ?: -1,
-            originalTitle = input.originalTitle.orEmpty(),
-            overview = input.overview.orEmpty(),
-            posterPath = getPosterPath(input.posterPath),
-            title = input.title.orEmpty(),
-            voteAverage = input.voteAverage ?: 0.0,
-            isFavourite = input.isFavourite,
-        )
-    }
-
+class MovieDescriptionMapper @Inject constructor() {
     fun map(input: MovieDescriptionDTO): MovieDescription {
         return MovieDescription(
             id = input.id ?: -1,

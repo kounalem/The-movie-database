@@ -34,7 +34,11 @@ internal class DetailsViewModelTest {
     )
 
     private val viewModel by lazy {
-        DetailsViewModel(movieRepository, savedStateHandle)
+        DetailsViewModel(
+            movieRepository = movieRepository,
+            savedStateHandle = savedStateHandle,
+            ioDispatcher = coroutineTestRule.testDispatcher,
+        )
     }
 
     @Before
