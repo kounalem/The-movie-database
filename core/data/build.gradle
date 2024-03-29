@@ -1,0 +1,57 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+}
+
+android {
+    namespace 'com.kounalem.moviedatabase.core.data'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    implementation project(':network')
+    implementation(project(":database"))
+
+    implementation(project(":core:domain:models"))
+
+    //hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+    kapt libs.androidx.hilt.compiler
+
+    //test
+    testImplementation libs.junit
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.mockk
+    testImplementation libs.turbine
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}

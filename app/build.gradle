@@ -33,6 +33,11 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -41,18 +46,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = "17"
     }
+
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.3'
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     packagingOptions {
         resources {
@@ -69,57 +81,26 @@ android {
 allprojects {
     tasks.withType(KotlinCompile).configureEach {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11
+            jvmTarget = JavaVersion.VERSION_17
         }
     }
 }
 
 dependencies {
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain:models"))
+    implementation project(':core:domain')
+    implementation(project(":features:movies"))
+
     //androidx
-    implementation libs.androidx.ktx
-    implementation libs.androidx.lifecycle.runtime.ktx
-    implementation libs.androidx.activity.compose
-    implementation libs.androidx.lifecycle.runtime.compose
-    implementation platform(libs.androidx.compose.bom)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material)
-    implementation(libs.accompanist.swiperefresh)
 
     //Hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
     kapt libs.androidx.hilt.compiler
     implementation libs.androidx.hilt.navigation.compose
-
-    // Compose navigation
-    implementation(libs.androidx.navigation.compose)
-    debugImplementation(libs.androidx.ui.tooling)
-
-    // Retrofit
-    implementation libs.retrofit
-    implementation libs.converter.gson
-    implementation libs.okhttp
-    implementation libs.logging.interceptor
-
-    // Room
-    implementation libs.androidx.room.runtime
-    kapt libs.androidx.room.compiler
-    implementation libs.androidx.room.ktx
-
-    //other
-    implementation libs.landscapist.glide
-    implementation libs.flow.combinetuple.kt
-
-    //tests
-    testImplementation libs.junit
-    androidTestImplementation libs.androidx.junit
-    androidTestImplementation platform(libs.androidx.compose.bom)
-    testImplementation libs.mockk
-    testImplementation libs.kotlinx.coroutines.test
-    testImplementation libs.turbine
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
 // Allow references to generated code

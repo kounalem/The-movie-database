@@ -1,0 +1,72 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    id 'kotlin-kapt'
+    alias(libs.plugins.paparazzi)
+}
+
+android {
+    namespace 'com.kounalem.moviedatabase.core.ui'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+    }
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
+    kapt {
+        arguments {
+            arg("skipPrivatePreviews", "true")
+        }
+    }
+}
+
+dependencies {
+
+    implementation(libs.androidx.ktx)
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material)
+
+    implementation libs.landscapist.glide
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    debugImplementation(libs.showkase)
+    implementation(libs.showkase.annotation)
+    kaptDebug libs.showkase.processor
+
+    testImplementation(project(":core:test"))
+}
