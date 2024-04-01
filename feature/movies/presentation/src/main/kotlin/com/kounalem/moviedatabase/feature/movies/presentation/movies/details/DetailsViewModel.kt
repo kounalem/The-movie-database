@@ -3,7 +3,7 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kounalem.moviedatabase.core.data.Resource
+import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.core.data.movie.MovieRepository
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,12 +43,12 @@ internal class DetailsViewModel @Inject constructor(
             } else {
                 movieRepository.getMovieByIdObs(id).flatMapLatest {
                     when (it) {
-                        is Resource.Error -> {
+                        is Outcome.Error -> {
                             error.value = it.message
                             emptyFlow()
                         }
 
-                        is Resource.Success<MovieDescription> -> {
+                        is Outcome.Success<MovieDescription> -> {
                             it.data?.let { description ->
                                 flowOf(
                                     DetailsContract.State.Info(

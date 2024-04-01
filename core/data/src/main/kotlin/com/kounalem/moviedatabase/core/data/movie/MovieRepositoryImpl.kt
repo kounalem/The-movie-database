@@ -1,6 +1,6 @@
 package com.kounalem.moviedatabase.core.data.movie
 
-import com.kounalem.moviedatabase.core.data.Resource
+import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.database.movie.LocalDataSource
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
@@ -25,12 +25,12 @@ internal class MovieRepositoryImpl @Inject constructor(
     private val errors: MutableStateFlow<String?> = MutableStateFlow(null)
     private val _movies =
         local.getAllMovies().onStart { getServerMovies(pageNo = 1) }
-    override val movies: Flow<Resource<List<Movie>>>
+    override val movies: Flow<Outcome<List<Movie>>>
         get() = combine(_movies, errors) { result, e ->
             if (result.isEmpty() && !e.isNullOrEmpty()) {
-                Resource.Error(e)
+                Outcome.Error(e)
             } else {
-                Resource.Success(result)
+                Outcome.Success(result)
             }
         }
 
@@ -48,18 +48,18 @@ internal class MovieRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getMovieByIdObs(id: Int): Flow<Resource<MovieDescription>> =
+    override fun getMovieByIdObs(id: Int): Flow<Outcome<MovieDescription>> =
         local.getMovieDescriptionById(id).flatMapLatest { description ->
             if (description != null) {
-                flowOf(Resource.Success(description))
+                flowOf(Outcome.Success(description))
             } else {
                 server.getMovieById(id).map {
                     local.saveMovieDescription(it)
-                    Resource.Success(it)
+                    Outcome.Success(it)
                 }
             }
         }.catch {
-            Resource.Error<MovieDescription>("Movie info not available")
+            Outcome.Error<MovieDescription>("Movie info not available")
         }
 
     override suspend fun updateMovieFavStatus(id: Int) = local.updateMovieFavStatus(id)

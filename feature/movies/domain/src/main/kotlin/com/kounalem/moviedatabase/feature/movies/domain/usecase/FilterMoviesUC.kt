@@ -5,12 +5,13 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
+import com.kounalem.moviedatabase.domain.models.Movie
 
 class FilterMoviesUC @Inject constructor(
     private val repo: MovieRepository,
 ) {
     @OptIn(FlowPreview::class)
-    fun invoke(query: String): Flow<List<com.kounalem.moviedatabase.domain.models.Movie>> =
+    fun invoke(query: String): Flow<List<Movie>> =
         repo.search(query).debounce(DEBOUNCE)
 
     private companion object {

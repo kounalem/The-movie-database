@@ -2,7 +2,7 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kounalem.moviedatabase.core.data.Resource
+import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.core.data.movie.MovieRepository
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
@@ -60,12 +60,12 @@ internal class PopularMoviesViewModel @Inject constructor(
         }
             .flatMapLatest {
                 when (it) {
-                    is Resource.Error -> {
+                    is Outcome.Error -> {
                         error.value = it.message
                         emptyFlow()
                     }
 
-                    is Resource.Success -> {
+                    is Outcome.Success -> {
                         this.endReached = it.data?.isEmpty() ?: true
                         it.data?.let { data ->
                             currentList.value += data.map { movie ->

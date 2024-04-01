@@ -2,7 +2,7 @@ package com.kounalem.moviedatabase.core.data.movie
 
 import android.accounts.NetworkErrorException
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.Resource
+import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.database.movie.LocalDataSource
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
@@ -76,7 +76,7 @@ internal class MovieRepositoryImplTest {
 
         repository.movies.test {
             onLatestItem {
-                assertTrue(it is Resource.Success)
+                assertTrue(it is Outcome.Success)
                 assertEquals(it.data, given)
             }
         }
@@ -147,7 +147,7 @@ internal class MovieRepositoryImplTest {
             coEvery { server.getMovieById(1) } throws Throwable("epic fail")
 
             repository.getMovieByIdObs(1).collect {
-                assertEquals(Resource.Error("Movie info not available"), it)
+                assertEquals(Outcome.Error("Movie info not available"), it)
             }
         }
 }

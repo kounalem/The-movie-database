@@ -1,7 +1,7 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.popular
 
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.Resource
+import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.core.data.movie.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
@@ -58,7 +58,7 @@ internal class PopularMoviesViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
 
-        coEvery { movieRepository.movies } returns flowOf(Resource.Success(emptyList()))
+        coEvery { movieRepository.movies } returns flowOf(Outcome.Success(emptyList()))
     }
 
     @Test
@@ -80,7 +80,7 @@ internal class PopularMoviesViewModelTest {
             date = 123
         )
         coEvery { movieRepository.movies } returns flowOf(
-            Resource.Success(
+            Outcome.Success(
                 listOf(
                     firstMovie,
                     secondMovie
@@ -145,7 +145,7 @@ internal class PopularMoviesViewModelTest {
             val given = listOf(firstMovie, secondMovie)
             coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
             coEvery { movieRepository.movies } returns flowOf(
-                Resource.Success(
+                Outcome.Success(
                     listOf(
                         firstMovie,
                         secondMovie,
@@ -186,7 +186,7 @@ internal class PopularMoviesViewModelTest {
     @Test
     fun `WHEN loadNextItems THEN state gets updated`() = runTest {
         coEvery { movieRepository.movies } returns flowOf(
-            Resource.Success(
+            Outcome.Success(
                 listOf(
                     Movie(
                         id = 1,
@@ -236,7 +236,7 @@ internal class PopularMoviesViewModelTest {
 
         val given = listOf(movie)
         coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
-        coEvery { movieRepository.movies } returns flowOf(Resource.Success(listOf(movie)))
+        coEvery { movieRepository.movies } returns flowOf(Outcome.Success(listOf(movie)))
 
         viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.Refresh)
 

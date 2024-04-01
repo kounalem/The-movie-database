@@ -2,7 +2,7 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.de
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.Resource
+import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.core.data.movie.MovieRepository
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.CoroutineTestRule
@@ -44,7 +44,7 @@ internal class DetailsViewModelTest {
 
     @Test
     fun `GIVEN repo returns error WHEN  init THEN update the state`() = runTest {
-        coEvery { repository.getMovieByIdObs(1) } returns flowOf(Resource.Error("epic fail"))
+        coEvery { repository.getMovieByIdObs(1) } returns flowOf(Outcome.Error("epic fail"))
 
         viewModel.state.test {
             assertEquals(
@@ -56,7 +56,7 @@ internal class DetailsViewModelTest {
     @Test
     fun `GIVEN repo returns info WHEN  init THEN update the state`() = runTest {
         coEvery { repository.getMovieByIdObs(1) } returns flowOf(
-            Resource.Success(
+            Outcome.Success(
                 MovieDescription(
                     id = 1,
                     originalTitle = "original_title",
