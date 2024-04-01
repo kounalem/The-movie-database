@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,7 @@ import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.kounalem.moviedatabase.core.ui.R
 import com.kounalem.moviedatanase.core.ui.HorizontalSpace
 import com.kounalem.moviedatanase.core.ui.PreviewBox
+import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
 import com.kounalem.moviedatanase.core.ui.model.ListItemModel
 import com.kounalem.moviedatanase.core.ui.small
 import com.kounalem.moviedatanase.core.ui.xsmall
@@ -32,10 +34,10 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun <ID, IMAGE_PATH> ListItem(
-    model: ListItemModel<ID, IMAGE_PATH>,
+fun ListItem(
+    model: ListItemModel,
     modifier: Modifier = Modifier,
-    selected: (ID) -> Unit,
+    selected: (Int) -> Unit,
 ) {
     Card(modifier = Modifier
         .padding(vertical = small, horizontal = xsmall)
@@ -53,7 +55,8 @@ fun <ID, IMAGE_PATH> ListItem(
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
-                )
+                ),
+                previewPlaceholder = R.drawable.the_room,
             )
             HorizontalSpace(xsmall)
             Column(
@@ -89,13 +92,13 @@ private fun ListItemLocalPreview() {
 }
 
 @Composable
-@ShowkaseComposable(name = "ListItem", group = "Rows")
+@ShowkaseComposable(name = "ListItem", group = ShowkaseComposableGroup.ROWS)
 fun ListItemPreview() {
     PreviewBox {
         ListItem(
             ListItemModel(
                 id = 0,
-                imagePath = R.drawable.the_room,
+                imagePath = "",
                 title = "The room",
                 description = "Oh hi, Mark. Everybody Betray Me! I Fed Up With This World! You Are Tearing Me Apart, Lisa!"
             ), selected = {}

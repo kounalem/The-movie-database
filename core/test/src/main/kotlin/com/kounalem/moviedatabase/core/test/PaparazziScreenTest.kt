@@ -1,6 +1,12 @@
 package com.kounalem.moviedatabase.core.test
 
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import com.android.ide.common.rendering.api.SessionParams
@@ -8,6 +14,7 @@ import com.android.resources.NightMode
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import androidx.compose.foundation.layout.Box
 
 /**
  * Class with common [Paparazzi] settings for screenshot tests.
@@ -68,8 +75,21 @@ abstract class PaparazziScreenTest(config: TestConfig) {
      * @param content composable content of screen preview
      */
     fun screenshotTest(content: @Composable () -> Unit) {
-        paparazzi.snapshot {
-            content.invoke()
+        paparazzi.snapshot(content.toString().substringAfter('_')) {
+            val lifecycleOwner = LocalLifecycleOwner.current
+            CompositionLocalProvider(
+                LocalInspectionMode provides true,
+                // Needed so that UI that uses it don't crash during screenshot tests
+                LocalOnBackPressedDispatcherOwner provides object : OnBackPressedDispatcherOwner {
+                    override val lifecycle = lifecycleOwner.lifecycle
+
+                    override val onBackPressedDispatcher = OnBackPressedDispatcher()
+                },
+            ) {
+                Box {
+                    content.invoke()
+                }
+            }
         }
     }
 }

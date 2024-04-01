@@ -34,7 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kounalem.moviedatabase.core.ui.R
 import com.kounalem.moviedatanase.core.ui.HorizontalSpace
+import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.large
 import com.kounalem.moviedatanase.core.ui.small
 import com.kounalem.moviedatanase.core.ui.xsmall
@@ -98,17 +100,16 @@ internal fun DetailsView(
                     ),
                 )
                 Box {
-                    state.poster?.let {
-                        GlideImage(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            imageModel = { state.poster },
-                            imageOptions = ImageOptions(
-                                contentScale = ContentScale.Crop,
-                                alignment = Alignment.Center
-                            )
-                        )
-                    }
+                    GlideImage(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        imageModel = { state.poster.orEmpty() },
+                        imageOptions = ImageOptions(
+                            contentScale = ContentScale.Crop,
+                            alignment = Alignment.Center
+                        ),
+                        previewPlaceholder = R.drawable.the_room,
+                    )
 
                     Column(
                         Modifier
@@ -179,17 +180,19 @@ private fun CircleButtonWithHeart(
 @Preview(backgroundColor = 0xffffffff, showBackground = true)
 @Composable
 fun PopularMoviesScreenPreview() {
-    DetailsView(
-        state = DetailsContract.State.Info(
-            title = "title",
-            overview = "overview",
-            rate = "rate'",
-            poster = null,
-            isFavourite = true,
-        ),
-        event = {},
-        popBackStack = {},
-    )
+    PreviewBox {
+        DetailsView(
+            state = DetailsContract.State.Info(
+                title = "title",
+                overview = "overview",
+                rate = "rate'",
+                poster = null,
+                isFavourite = true,
+            ),
+            event = {},
+            popBackStack = {},
+        )
+    }
 }
 
 @Preview(backgroundColor = 0xffffffff, showBackground = true)
