@@ -13,6 +13,6 @@ behaviour of the app to be super clean and unit testable.
 ### Libraries used:
 Retrofit, Hilt, Glide, Room
 
-For testing: mockk showkase, Paparazzi
+For testing: mockk, showkase, Paparazzi
 
 [Code Structure](docs/architecture.md)
