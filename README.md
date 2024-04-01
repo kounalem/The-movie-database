@@ -7,6 +7,7 @@ Despite being simple in features, I wanted the project to showcase the use of th
 
 ### Libraries used:
 Retrofit, Hilt, Glide, Room
+
 For testing: mockk showkase, Paparazzi
 
 [Code Structure](docs/architecture.md)
