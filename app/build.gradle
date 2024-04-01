@@ -88,10 +88,7 @@ allprojects {
 
 dependencies {
     implementation(project(":core:ui"))
-    implementation(project(":core:data"))
-    implementation(project(":core:domain:models"))
-    implementation project(':core:domain')
-    implementation(project(":features:movies"))
+    implementation(project(":feature:movies:presentation"))
 
     //androidx
     implementation(libs.androidx.compose.material)
