@@ -13,7 +13,7 @@ interface Navigation {
 internal interface PopularMoviesContract {
 
     sealed interface State {
-        data class Loading(val currentInfo: List<Info.Movie>) : State
+        data object Loading : State
 
         @JvmInline
         value class Error(val message: String) : State

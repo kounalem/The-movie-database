@@ -15,16 +15,7 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
                 navigateToDetails = {},
                 event = {},
                 loadNextItems = {},
-                state = PopularMoviesContract.State.Loading(
-                    listOf(
-                        PopularMoviesContract.State.Info.Movie(
-                            id = 1,
-                            posterPath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcREEsN-qCwFIPE7-FglJVTrE0ijr7-VwggC6CXNtMLYtMnHWthZ",
-                            title = "title",
-                            overview = "overview",
-                        )
-                    )
-                ),
+                state = PopularMoviesContract.State.Loading,
             )
         }
     }
@@ -61,6 +52,31 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
                     searchQuery = null,
                     endReached = false,
                     fetchingNewMovies = false
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun popularMoviesWhileLoadingSuccessTest() {
+        screenshotTest {
+            PopularMoviesView(
+                navigateToDetails = {},
+                event = {},
+                loadNextItems = {},
+                state = PopularMoviesContract.State.Info(
+                    movies = listOf(
+                        PopularMoviesContract.State.Info.Movie(
+                            id = 1,
+                            posterPath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcREEsN-qCwFIPE7-FglJVTrE0ijr7-VwggC6CXNtMLYtMnHWthZ",
+                            title = "title",
+                            overview = "overview",
+                        )
+                    ),
+                    isRefreshing = true,
+                    searchQuery = null,
+                    endReached = false,
+                    fetchingNewMovies = true
                 ),
             )
         }

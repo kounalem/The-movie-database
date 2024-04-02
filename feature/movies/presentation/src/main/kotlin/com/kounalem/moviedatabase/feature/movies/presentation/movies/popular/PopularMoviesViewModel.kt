@@ -64,7 +64,6 @@ internal class PopularMoviesViewModel @Inject constructor(
                         error.value = it.message
                         emptyFlow()
                     }
-
                     is Outcome.Success -> {
                         this.endReached = it.data?.isEmpty() ?: true
                         it.data?.let { data ->
@@ -105,9 +104,16 @@ internal class PopularMoviesViewModel @Inject constructor(
                 if (error != null)
                     PopularMoviesContract.State.Error(error)
                 else if (isLoading)
-                    PopularMoviesContract.State.Loading(movies.toList())
-                else if (movies.isEmpty())
-                    PopularMoviesContract.State.Loading(movies.toList())
+                    if (movies.toList().isEmpty())
+                        PopularMoviesContract.State.Loading
+                    else
+                        PopularMoviesContract.State.Info(
+                            movies = movies.toList(),
+                            isRefreshing = isRefreshing,
+                            searchQuery = searchQuery,
+                            endReached = endReached,
+                            fetchingNewMovies = true
+                        )
                 else if (filteredMovies.isNotEmpty() && searchQuery?.isNotEmpty() == true) {
                     PopularMoviesContract.State.Info(
                         movies = filteredMovies,
@@ -128,7 +134,7 @@ internal class PopularMoviesViewModel @Inject constructor(
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
-                PopularMoviesContract.State.Loading(emptyList())
+                PopularMoviesContract.State.Loading
             )
 
     fun loadNextItems() {
