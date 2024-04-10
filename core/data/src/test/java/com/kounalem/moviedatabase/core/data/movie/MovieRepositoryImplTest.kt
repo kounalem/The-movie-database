@@ -9,6 +9,8 @@ import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.PopularMovies
 import com.kounalem.moviedatabase.network.movies.ServerDataSource
 import com.kounalem.moviedatabase.core.data.utils.onLatestItem
+import com.kounalem.moviedatabase.core.test.CoroutineTestRule
+import com.kounalem.moviedatabase.network.NetworkResponse
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,11 +20,16 @@ import io.mockk.mockk
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 internal class MovieRepositoryImplTest {
+    @get:Rule
+    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @MockK
     private lateinit var server: ServerDataSource
@@ -32,7 +39,7 @@ internal class MovieRepositoryImplTest {
 
     private val repository by lazy {
         MovieRepositoryImpl(
-            server = server, local = local
+            server = server, local = local, coroutineScope = coroutineTestRule.createTestScope()
         )
     }
 
@@ -44,9 +51,15 @@ internal class MovieRepositoryImplTest {
     @Test
     fun `GIVEN server info available THEN get latest info`() = runTest {
         val given = listOf(mockk<Movie>())
-        coEvery { server.nowPlaying(1) } returns mockk<PopularMovies> {
-            every { this@mockk.movies } returns given
-        }
+        val popularMovies = NetworkResponse.Success<PopularMovies>(
+            body = PopularMovies(
+                movies = given,
+                page = 1,
+                totalPages = 1,
+                totalResults = 1
+            )
+        )
+        coEvery { server.nowPlaying(1) } returns flowOf(popularMovies)
         coEvery { local.getAllMovies() } returns flowOf(given)
 
         repository.movies.test {
@@ -57,10 +70,17 @@ internal class MovieRepositoryImplTest {
     @Test
     fun `GIVEN server info available THEN get save the latest info`() = runTest {
         val given = listOf(mockk<Movie>())
+        val popularMovies = NetworkResponse.Success<PopularMovies>(
+            body = PopularMovies(
+                movies = given,
+                page = 1,
+                totalPages = 1,
+                totalResults = 1
+            )
+        )
+
         coEvery { local.getAllMovies() } returns flowOf(given)
-        coEvery { server.nowPlaying(1) } returns mockk<PopularMovies> {
-            every { this@mockk.movies } returns given
-        }
+        coEvery { server.nowPlaying(1) } returns flowOf(popularMovies)
 
         repository.movies.test {
             awaitItem()
@@ -131,7 +151,9 @@ internal class MovieRepositoryImplTest {
                 isFavourite = false
             )
             coEvery { local.getMovieDescriptionById(1) } returns flowOf(null)
-            coEvery { server.getMovieById(1) } returns flowOf(given)
+            coEvery { server.getMovieById(1) } returns flowOf(NetworkResponse.Success<MovieDescription>(
+                body = given
+            ))
 
             repository.getMovieByIdObs(1).collect {
                 assertEquals(given, it.data)

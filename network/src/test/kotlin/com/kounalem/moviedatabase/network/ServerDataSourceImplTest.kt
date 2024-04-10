@@ -11,12 +11,14 @@ import com.kounalem.moviedatabase.network.movies.MoviesApiService
 import com.kounalem.moviedatabase.network.movies.ServerDataSourceImpl
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-
+import retrofit2.Response
 
 internal class ServerDataSourceImplTest {
 
@@ -34,6 +36,11 @@ internal class ServerDataSourceImplTest {
         MockKAnnotations.init(this, relaxed = true)
     }
 
+    private fun <T> T.dtoToResponse() = mockk<Response<T>> {
+        every { isSuccessful } returns true
+        every { body() } returns this@dtoToResponse
+    }
+
     @Test
     fun `WHEN get movie by id THEN return DAO`() = runTest {
         coEvery { service.getMovieById(1) } returns MovieDescriptionDTO(
@@ -46,15 +53,17 @@ internal class ServerDataSourceImplTest {
             tagline = "tagline",
             title = "title",
             voteAverage = 0.0,
-        )
-        val expected = MovieDescription(
-            id = 1,
-            originalTitle = "original_title",
-            overview = "overview",
-            posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-            title = "title",
-            voteAverage = 0.0,
-            isFavourite = false
+        ).dtoToResponse()
+        val expected = NetworkResponse.Success(
+            MovieDescription(
+                id = 1,
+                originalTitle = "original_title",
+                overview = "overview",
+                posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+                title = "title",
+                voteAverage = 0.0,
+                isFavourite = false
+            )
         )
 
         datasource.getMovieById(1).test {
@@ -80,25 +89,29 @@ internal class ServerDataSourceImplTest {
             ),
             totalPages = 1111111,
             totalResults = 5
-        )
-        val expected = PopularMovies(
-            page = 1,
-            movies = listOf(
-                Movie(
-                    id = 123,
-                    posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-                    title = "title",
-                    voteAverage = 1.0,
-                    overview = "overview",
-                    date = 1711497600000L,
-                )
-            ),
-            totalPages = 1111111,
-            totalResults = 5
+        ).dtoToResponse()
+        val expected = NetworkResponse.Success(
+            PopularMovies(
+                page = 1,
+                movies = listOf(
+                    Movie(
+                        id = 123,
+                        posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+                        title = "title",
+                        voteAverage = 1.0,
+                        overview = "overview",
+                        date = 1711497600000L,
+                    )
+                ),
+                totalPages = 1111111,
+                totalResults = 5
+            )
         )
 
-        val details = datasource.nowPlaying(1)
-        assertEquals(details, expected)
+        datasource.nowPlaying(1).test {
+            assertEquals(expected, awaitItem())
+            awaitComplete()
+        }
     }
 
 }

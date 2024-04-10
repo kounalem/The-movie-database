@@ -14,12 +14,14 @@
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/domain" />
             <option value="$PROJECT_DIR$/core/domain/models" />
-            <option value="$PROJECT_DIR$/core/mylibrary" />
+            <option value="$PROJECT_DIR$/core/domain/usecase" />
             <option value="$PROJECT_DIR$/core/test" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/database" />
-            <option value="$PROJECT_DIR$/features" />
-            <option value="$PROJECT_DIR$/features/movies" />
+            <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/movies" />
+            <option value="$PROJECT_DIR$/feature/movies/domain" />
+            <option value="$PROJECT_DIR$/feature/movies/presentation" />
             <option value="$PROJECT_DIR$/network" />
           </set>
         </option>

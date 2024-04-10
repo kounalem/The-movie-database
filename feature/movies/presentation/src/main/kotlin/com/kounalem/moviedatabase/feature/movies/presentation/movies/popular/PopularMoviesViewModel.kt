@@ -60,10 +60,12 @@ internal class PopularMoviesViewModel @Inject constructor(
         }
             .flatMapLatest {
                 when (it) {
+                    is Outcome.Exception,
                     is Outcome.Error -> {
                         error.value = it.message
                         emptyFlow()
                     }
+
                     is Outcome.Success -> {
                         this.endReached = it.data?.isEmpty() ?: true
                         it.data?.let { data ->
@@ -172,6 +174,3 @@ internal class PopularMoviesViewModel @Inject constructor(
         }
     }
 }
-
-// check the tests
-// do the workaround for the details

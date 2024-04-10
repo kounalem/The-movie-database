@@ -43,6 +43,8 @@ internal class DetailsViewModel @Inject constructor(
             } else {
                 movieRepository.getMovieByIdObs(id).flatMapLatest {
                     when (it) {
+
+                        is Outcome.Exception,
                         is Outcome.Error -> {
                             error.value = it.message
                             emptyFlow()
@@ -62,7 +64,6 @@ internal class DetailsViewModel @Inject constructor(
                             } ?: run {
                                 emptyFlow()
                             }
-
                         }
                     }
                 }
