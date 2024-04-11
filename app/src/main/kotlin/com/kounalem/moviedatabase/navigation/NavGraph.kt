@@ -10,6 +10,8 @@ import androidx.navigation.navArgument
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.Navigation as PopularMoviesDetailsNavigation
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.MovieDetails
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.Navigation.Details.DETAILS_ID
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.navigateToDetailsScreen
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.navigateToHomeScreen
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.Navigation as PopularMoviesListNavigation
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesScreen
 
@@ -19,48 +21,8 @@ internal fun NavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = PopularMoviesListNavigation.Home.path.value
     ) {
-        addHomeScreen(navController, this)
-        addDetailsScreen(navController, this)
-    }
-}
-
-private fun addHomeScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
-    navGraphBuilder.composable(route = PopularMoviesListNavigation.Home.path.value) {
-        PopularMoviesScreen(
-            navigateToDetails = { id ->
-                navController.navigate(
-                    PopularMoviesDetailsNavigation.Details.withArgs(
-                        id.toString()
-                    )
-                )
-            }
-        )
-    }
-}
-
-private fun addDetailsScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
-    navGraphBuilder.composable(
-        route = PopularMoviesDetailsNavigation.Details.withArgsFormat(
-            DETAILS_ID
-        ),
-        arguments = listOf(
-            navArgument(DETAILS_ID) {
-                type = NavType.IntType
-                nullable = false
-            }
-        )
-    ) { navBackStackEntry ->
-        val args = navBackStackEntry.arguments
-        MovieDetails(
-            id = args?.getInt(DETAILS_ID)!!,
-            popBackStack = { navController.popBackStack() },
-        )
+        navigateToHomeScreen(navController, this)
+        navigateToDetailsScreen(navController, this)
     }
 }
 

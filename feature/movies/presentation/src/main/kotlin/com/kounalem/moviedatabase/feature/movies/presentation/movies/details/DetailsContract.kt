@@ -12,7 +12,6 @@ interface Navigation {
 
 sealed interface DetailsContract {
 
-
     sealed interface State {
         data object Loading : State
 
