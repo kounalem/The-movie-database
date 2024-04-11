@@ -2,6 +2,7 @@ package com.kounalem.moviedatabase
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -55,9 +56,15 @@ fun MovieApp(appState: MovieAppState) {
                 )
             }
         },
-        content = { padding ->
-            Column(Modifier.fillMaxSize()) {
+        content = {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()) {
                 MovieDatabaseNavHost(
+                    modifier =  Modifier
+                        .fillMaxSize()
+                        .weight(1f),
                     appState = appState,
                     onShowSnackbar = { message, action ->
                         snackbarHostState.showSnackbar(
@@ -87,6 +94,7 @@ private fun MoviesNavigationBar(
         destinations.forEach { destination ->
             val hasUnread = Random.nextBoolean() // randomly show a dot
             val selected = currentDestination.isTopLevelDestinationInHierarchy(destination)
+
             MovieNavigationBarItem(
                 selected = selected,
                 onClick = { onNavigateToDestination(destination) },
@@ -98,7 +106,11 @@ private fun MoviesNavigationBar(
                 },
                 selectedIcon = {
                     Icon(
-                        imageVector = destination.selectedIcon,
+                        imageVector = if (selected) {
+                            destination.selectedIcon
+                        } else {
+                            destination.unselectedIcon
+                        },
                         contentDescription = null,
                     )
                 },

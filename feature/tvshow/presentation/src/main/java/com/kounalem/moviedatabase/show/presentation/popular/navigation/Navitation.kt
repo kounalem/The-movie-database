@@ -12,7 +12,7 @@ import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
 interface Navigation {
     data object PopularShows : NavRoute {
         override val path: NavRoute.Path
-            get() = NavRoute.Path("popular_shows")
+            get() = NavRoute.Path("shows")
     }
 
 }

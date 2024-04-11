@@ -2,10 +2,7 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.na
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.MovieDetails
 import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.Navigation.PopularMovies as PopularMoviesNavigation
 
 interface Navigation {
     data object Details : NavRoute {
@@ -40,9 +38,13 @@ fun navigateToDetailsScreen(
             }
         ),
         enterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
-            )
+            if (initialState.destination.route !=PopularMoviesNavigation.path.value) {
+                EnterTransition.None
+            } else {
+                return@composable slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+                )
+            }
         },
         popExitTransition = {
             return@composable slideOutOfContainer(

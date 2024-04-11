@@ -1,24 +1,19 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
-import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.GetMostPopularMoviesUC
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
+import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
 import com.kounalem.moviedatanase.core.ui.emitAsync
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -41,48 +36,38 @@ internal class PopularMoviesViewModel @Inject constructor(
     private val isRefreshing = MutableStateFlow(false)
     private val filterSavedMovies = MutableStateFlow(
         PopularMoviesContract.State.Info.SavedMoviesFilter(
-            filterText = "All movies",
-            isFiltering = false
+            filterText = "All movies", isFiltering = false
         )
     )
     private val searchQuery: MutableStateFlow<String?> = MutableStateFlow(null)
     private val fetchingNewMovies: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val filteredMovies: MutableStateFlow<List<PopularMoviesContract.State.Info.Movie>> =
         MutableStateFlow(emptyList())
-    private val paginator: Paginator<Int> =
-        Paginator(
-            initialKey = 1,
-            onRequest = { nextPage ->
-                fetchingNewMovies.value = true
-                repo.getMoviesForPage(nextPage)
-            },
-            getNextKey = { currentKey ->
-                currentKey + 1
-            }
-        )
+    private val paginator: Paginator<Int> = Paginator(initialKey = 1, onRequest = { nextPage ->
+        fetchingNewMovies.value = true
+        repo.getMoviesForPage(nextPage)
+    }, getNextKey = { currentKey ->
+        currentKey + 1
+    })
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val results: StateFlow<List<PopularMoviesContract.State.Info.Movie>> =
         popularMoviesUC.movies.onEach {
             isRefreshing.value = true
             isLoading.value = true
-        }
-            .flatMapLatest { movie ->
-                flowOf(
-                    movie.map {
-                        PopularMoviesContract.State.Info.Movie(
-                            id = it.value.id,
-                            title = it.value.title,
-                            posterPath = it.value.posterPath,
-                            overview = it.value.overview,
-                            isFavourite = it.value.isFavourite,
-                        )
-                    }
-                )
+        }.flatMapLatest { movie ->
+                flowOf(movie.map {
+                    PopularMoviesContract.State.Info.Movie(
+                        id = it.value.id,
+                        title = it.value.title,
+                        posterPath = it.value.posterPath,
+                        overview = it.value.overview,
+                        isFavourite = it.value.isFavourite,
+                    )
+                })
             }.catch {
                 error.value = it.message
-            }
-            .onEach {
+            }.onEach {
                 isLoading.value = false
                 error.value = null
                 isRefreshing.value = false
@@ -102,21 +87,19 @@ internal class PopularMoviesViewModel @Inject constructor(
             filterSavedMovies,
         )
             .map { (movies, isLoading, error, searchQuery, isRefreshing, filteredMovies, fetchingNewMovies, filterSavedMovies) ->
-                if (error != null)
-                    PopularMoviesContract.State.Error(error)
-                else if (isLoading)
-                    if (movies.toList().isEmpty())
-                        PopularMoviesContract.State.Loading
-                    else
-                        PopularMoviesContract.State.Info(
-                            movies = if (filterSavedMovies.isFiltering) movies.toList()
-                                .filter { it.isFavourite } else movies.toList(),
-                            isRefreshing = isRefreshing,
-                            searchQuery = searchQuery,
-                            endReached = endReached,
-                            fetchingNewMovies = true,
-                            savedMoviesFilter = filterSavedMovies,
-                        )
+                if (error != null) PopularMoviesContract.State.Error(error)
+                else if (isLoading) if (movies.toList()
+                        .isEmpty()
+                ) PopularMoviesContract.State.Loading
+                else PopularMoviesContract.State.Info(
+                    movies = if (filterSavedMovies.isFiltering) movies.toList()
+                        .filter { it.isFavourite } else movies.toList(),
+                    isRefreshing = isRefreshing,
+                    searchQuery = searchQuery,
+                    endReached = endReached,
+                    fetchingNewMovies = true,
+                    savedMoviesFilter = filterSavedMovies,
+                )
                 else if (filteredMovies.isNotEmpty() && searchQuery?.isNotEmpty() == true) {
                     PopularMoviesContract.State.Info(
                         movies = filteredMovies,
@@ -126,18 +109,16 @@ internal class PopularMoviesViewModel @Inject constructor(
                         fetchingNewMovies = false,
                         savedMoviesFilter = filterSavedMovies,
                     )
-                } else
-                    PopularMoviesContract.State.Info(
-                        movies = if (filterSavedMovies.isFiltering) movies.toList()
-                            .filter { it.isFavourite } else movies.toList(),
-                        isRefreshing = isRefreshing,
-                        searchQuery = searchQuery,
-                        endReached = endReached,
-                        fetchingNewMovies = fetchingNewMovies,
-                        savedMoviesFilter = filterSavedMovies,
-                    )
-            }
-            .stateIn(
+                } else PopularMoviesContract.State.Info(
+                    movies = if (filterSavedMovies.isFiltering) movies.toList()
+                        .filter { it.isFavourite } else movies.toList(),
+                    isRefreshing = isRefreshing,
+                    searchQuery = searchQuery,
+                    endReached = endReached,
+                    fetchingNewMovies = fetchingNewMovies,
+                    savedMoviesFilter = filterSavedMovies,
+                )
+            }.stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
                 PopularMoviesContract.State.Loading
@@ -176,13 +157,11 @@ internal class PopularMoviesViewModel @Inject constructor(
     fun onSavedMoviesClicked() {
         filterSavedMovies.value = if (filterSavedMovies.value.isFiltering) {
             PopularMoviesContract.State.Info.SavedMoviesFilter(
-                filterText = "All movies",
-                isFiltering = false
+                filterText = "All movies", isFiltering = false
             )
         } else {
             PopularMoviesContract.State.Info.SavedMoviesFilter(
-                filterText = "Just saved movies",
-                isFiltering = true
+                filterText = "Just saved movies", isFiltering = true
             )
         }
     }
@@ -192,10 +171,9 @@ internal class PopularMoviesViewModel @Inject constructor(
     }
 
     fun updateElementInfo(id: Int?, state: Boolean?) {
-        if(id == null || state == null) return
+        if (id == null || state == null) return
         popularMoviesUC.updateElement(
-            id = id,
-            status = state
+            id = id, status = state
         )
     }
 }

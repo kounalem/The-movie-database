@@ -20,10 +20,10 @@ enum class TopLevelDestination(
         unselectedIcon = Icons.Outlined.Home,
         titleText = "Movies",
     ),
-    SERIES(
+    SHOWS(
         selectedIcon = Icons.Filled.Email,
         unselectedIcon = Icons.Outlined.Email,
-        titleText = "Series",
+        titleText = "Shows",
     ),
     SAVED(
         selectedIcon = Icons.Filled.Favorite,

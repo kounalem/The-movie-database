@@ -17,6 +17,7 @@
 package com.kounalem.moviedatabase.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.kounalem.moviedatabase.MovieAppState
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.navigateToDetailsScreen
@@ -33,11 +34,13 @@ import com.kounalem.moviedatabase.show.presentation.popular.navigation.navigateT
  */
 @Composable
 fun MovieDatabaseNavHost(
+    modifier: Modifier,
     appState: MovieAppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val navController = appState.navController
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = Navigation.PopularMovies.path.value
     ) {

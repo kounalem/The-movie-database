@@ -23,12 +23,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val appState = rememberMovieAppState(
-                windowSizeClass = calculateWindowSizeClass(this),
-                networkMonitor = networkMonitor,
-            )
-
             MovieDatabaseTheme {
+                val appState = rememberMovieAppState(
+                    windowSizeClass = calculateWindowSizeClass(this),
+                    networkMonitor = networkMonitor,
+                )
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

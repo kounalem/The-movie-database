@@ -1,6 +1,7 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,9 +36,13 @@ fun navigateToHomeScreen(
             return@composable fadeOut(tween(700))
         },
         popEnterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.End, tween(700)
-            )
+            if (initialState.destination.route != MovieDetailsNavigation.Details.path.value) {
+                EnterTransition.None
+            } else {
+                return@composable slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+                )
+            }
         }
     ) {
 

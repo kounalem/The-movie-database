@@ -95,7 +95,7 @@ class MovieAppState(
 
             when (topLevelDestination) {
                 TopLevelDestination.MOVIES -> navController.navigateToMoviesScreen(topLevelNavOptions)
-                TopLevelDestination.SERIES -> navController.navigateToShowsScreen(topLevelNavOptions)
+                TopLevelDestination.SHOWS -> navController.navigateToShowsScreen(topLevelNavOptions)
                 TopLevelDestination.SAVED -> TODO("")
             }
         }
