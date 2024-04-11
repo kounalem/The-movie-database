@@ -6,21 +6,36 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+
+def getProp(String propName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propName]
+    } else {
+        throw IllegalStateException("Cannot find $propName in local.properties")
+    }
+}
+
 android {
     namespace 'com.kounalem.moviedatabase.network'
     compileSdk 34
+
+    buildFeatures {
+        buildConfig true
+    }
 
     defaultConfig {
         minSdk 24
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        buildConfigField "String", "DATABASE_API_KEY", getProp("DATABASE_API_KEY")//"\"0154126bcc52cfe539c99204454466a9\""
     }
-
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -30,7 +45,10 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
 }
+
+
 
 dependencies {
     implementation(project(":core:domain:models"))

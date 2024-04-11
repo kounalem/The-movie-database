@@ -1,5 +1,6 @@
 package com.kounalem.moviedatabase.network.di
 
+import com.kounalem.moviedatabase.network.BuildConfig
 import com.kounalem.moviedatabase.network.movies.MoviesApiService
 import com.kounalem.moviedatabase.network.movies.ServerDataSource
 import com.kounalem.moviedatabase.network.movies.ServerDataSourceImpl
@@ -41,7 +42,7 @@ object NetworkModule {
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url
             val url = originalUrl.newBuilder()
-                .addQueryParameter("api_key", "0154126bcc52cfe539c99204454466a9").build()
+                .addQueryParameter("api_key", BuildConfig.DATABASE_API_KEY).build()
 
             val requestBuilder = originalRequest.newBuilder().url(url)
             val request = requestBuilder.build()

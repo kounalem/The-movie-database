@@ -62,6 +62,7 @@ android {
 
     buildFeatures {
         compose true
+
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
@@ -92,6 +93,7 @@ dependencies {
 
     //androidx
     implementation(libs.androidx.compose.material)
+    implementation libs.androidx.appcompat
 
     //Hilt
     implementation libs.hilt.android
