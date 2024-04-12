@@ -31,13 +31,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        buildConfigField "String", "DATABASE_API_KEY", getProp("DATABASE_API_KEY")// feel free to use this as API KEY - "\"0154126bcc52cfe539c99204454466a9\""
+        buildConfigField "String", "DATABASE_API_KEY", getProp("DATABASE_API_KEY")
+// feel free to use this as API KEY - "\"0154126bcc52cfe539c99204454466a9\""
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-        }
-    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -45,10 +42,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
-
 }
-
-
 
 dependencies {
     implementation(project(":core:domain:models"))

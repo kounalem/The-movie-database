@@ -5,7 +5,7 @@ import com.kounalem.moviedatabase.domain.models.PopularMovies
 import com.kounalem.moviedatabase.network.NetworkResponse
 import kotlinx.coroutines.flow.Flow
 
-interface ServerDataSource {
+interface MoviesDataSource {
     fun getMovieById(id: Int): Flow<NetworkResponse<MovieDescription>>
     fun nowPlaying(pageNo: Int): Flow<NetworkResponse<PopularMovies>>
 }

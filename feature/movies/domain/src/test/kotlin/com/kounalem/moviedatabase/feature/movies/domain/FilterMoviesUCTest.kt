@@ -1,7 +1,7 @@
 package com.kounalem.moviedatabase.feature.movies.domain
 
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.movie.MovieRepository
+import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

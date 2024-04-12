@@ -90,11 +90,16 @@ allprojects {
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:movies:presentation"))
+    implementation(project(":feature:tvshow:presentation"))
+    implementation(project(":core:data"))
 
     //androidx
     implementation(libs.androidx.compose.material)
     implementation libs.androidx.appcompat
+    implementation(libs.androidx.compose.material3.windowSizeClass)
 
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation "androidx.tracing:tracing:1.2.0"
     //Hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler

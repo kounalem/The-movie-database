@@ -1,7 +1,6 @@
 package com.kounalem.moviedatanase.core.ui.components
 
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +32,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun ListItem(
+fun MovieListItem(
     model: ListItemModel,
     modifier: Modifier = Modifier,
     selected: (Int) -> Unit,
@@ -95,7 +93,7 @@ private fun ListItemLocalPreview() {
 @ShowkaseComposable(name = "ListItem", group = ShowkaseComposableGroup.ROWS)
 fun ListItemPreview() {
     PreviewBox {
-        ListItem(
+        MovieListItem(
             ListItemModel(
                 id = 0,
                 imagePath = "",

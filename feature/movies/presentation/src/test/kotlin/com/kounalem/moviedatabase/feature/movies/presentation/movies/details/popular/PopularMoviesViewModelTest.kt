@@ -1,11 +1,11 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.popular
 
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.Outcome
-import com.kounalem.moviedatabase.core.data.movie.MovieRepository
+import com.kounalem.moviedatabase.core.test.CoroutineTestRule
+import com.kounalem.moviedatabase.repository.Outcome
+import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.CoroutineTestRule
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesContract
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesViewModel
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
@@ -154,7 +154,7 @@ internal class PopularMoviesViewModelTest {
                 )
             )
 
-            viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange("hi"))
+            viewModel.onEvent(PopularMoviesContract.Event.OnSearchQueryChange("hi"))
             advanceTimeBy(600L)
 
             viewModel.state.test {
@@ -238,7 +238,7 @@ internal class PopularMoviesViewModelTest {
         coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
         coEvery { movieRepository.movies } returns flowOf(Outcome.Success(listOf(movie)))
 
-        viewModel.onEvent(PopularMoviesContract.MovieListingsEvent.Refresh)
+        viewModel.onEvent(PopularMoviesContract.Event.Refresh)
 
         verify { paginator.reset() }
         coVerify { paginator.loadNextItems() }

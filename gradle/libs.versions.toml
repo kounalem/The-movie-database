@@ -7,7 +7,7 @@ gradlePlugin = "8.1.4"
 gson = "2.10.1"
 junitVersion = "1.1.5"
 kotlin = "1.9.23"
-kotlinxCoroutinesTest = "1.8.0"
+kotlinxCoroutines = "1.8.0"
 ktx = "1.12.0"
 ksp = "1.9.23-1.0.19"
 composeBom = "2024.03.00"
@@ -41,6 +41,8 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 [libraries]
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -63,7 +65,7 @@ accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiper
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 flow-combinetuple-kt = { module = "com.github.Zhuinden:flow-combinetuple-kt", version.ref = "flowCombinetupleKt" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 landscapist-glide = { module = "com.github.skydoves:landscapist-glide", version.ref = "glide" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
@@ -85,4 +87,7 @@ hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hil
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androixhilt" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "androixhilt" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
+
+
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }

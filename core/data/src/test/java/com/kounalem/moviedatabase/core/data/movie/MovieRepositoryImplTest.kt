@@ -2,13 +2,13 @@ package com.kounalem.moviedatabase.core.data.movie
 
 import android.accounts.NetworkErrorException
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.Outcome
+import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.core.data.utils.CoroutineTestRule
 import com.kounalem.moviedatabase.database.movie.LocalDataSource
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.PopularMovies
-import com.kounalem.moviedatabase.network.movies.ServerDataSource
+import com.kounalem.moviedatabase.network.movies.MoviesDataSource
 import com.kounalem.moviedatabase.core.data.utils.onLatestItem
 import com.kounalem.moviedatabase.network.NetworkResponse
 import io.mockk.MockKAnnotations
@@ -29,7 +29,7 @@ internal class MovieRepositoryImplTest {
     val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @MockK
-    private lateinit var server: ServerDataSource
+    private lateinit var server: MoviesDataSource
 
     @MockK
     private lateinit var local: LocalDataSource

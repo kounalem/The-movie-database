@@ -2,8 +2,8 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kounalem.moviedatabase.core.data.Outcome
-import com.kounalem.moviedatabase.core.data.movie.MovieRepository
+import com.kounalem.moviedatabase.repository.Outcome
+import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
 import com.kounalem.moviedatanase.core.ui.paginator.PaginatorFactory
@@ -151,9 +151,9 @@ internal class PopularMoviesViewModel @Inject constructor(
         loadNextItems()
     }
 
-    fun onEvent(event: PopularMoviesContract.MovieListingsEvent) {
+    fun onEvent(event: PopularMoviesContract.Event) {
         when (event) {
-            is PopularMoviesContract.MovieListingsEvent.OnSearchQueryChange -> {
+            is PopularMoviesContract.Event.OnSearchQueryChange -> {
                 searchQuery.value = event.query
                 viewModelScope.launch {
                     filterMoviesUC.invoke(event.query).collect { movieList ->
@@ -170,7 +170,7 @@ internal class PopularMoviesViewModel @Inject constructor(
                 }
             }
 
-            PopularMoviesContract.MovieListingsEvent.Refresh -> refreshElements()
+            PopularMoviesContract.Event.Refresh -> refreshElements()
         }
     }
 }

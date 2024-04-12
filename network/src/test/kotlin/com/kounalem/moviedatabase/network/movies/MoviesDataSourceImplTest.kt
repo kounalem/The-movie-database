@@ -1,44 +1,34 @@
-package com.kounalem.moviedatabase.network
+package com.kounalem.moviedatabase.network.movies
 
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.PopularMovies
+import com.kounalem.moviedatabase.network.NetworkResponse
+import com.kounalem.moviedatabase.network.dtoToResponse
 import com.kounalem.moviedatabase.network.movies.models.MovieDTO
 import com.kounalem.moviedatabase.network.movies.models.MovieDescriptionDTO
 import com.kounalem.moviedatabase.network.movies.models.PopularMoviesDTO
-import com.kounalem.moviedatabase.network.movies.MoviesApiService
-import com.kounalem.moviedatabase.network.movies.ServerDataSourceImpl
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Response
 
-internal class ServerDataSourceImplTest {
+internal class MoviesDataSourceImplTest {
 
     @MockK
     private lateinit var service: MoviesApiService
 
     private val datasource by lazy {
-        ServerDataSourceImpl(
-            service = service,
-        )
+        ServerDataSourceImpl(service = service)
     }
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
-    }
-
-    private fun <T> T.dtoToResponse() = mockk<Response<T>> {
-        every { isSuccessful } returns true
-        every { body() } returns this@dtoToResponse
     }
 
     @Test

@@ -2,8 +2,11 @@ package com.kounalem.moviedatabase.network.di
 
 import com.kounalem.moviedatabase.network.BuildConfig
 import com.kounalem.moviedatabase.network.movies.MoviesApiService
-import com.kounalem.moviedatabase.network.movies.ServerDataSource
+import com.kounalem.moviedatabase.network.movies.MoviesDataSource
 import com.kounalem.moviedatabase.network.movies.ServerDataSourceImpl
+import com.kounalem.moviedatabase.network.series.SeriesApiService
+import com.kounalem.moviedatabase.network.series.SeriesDataSource
+import com.kounalem.moviedatabase.network.series.SeriesDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,9 +36,27 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideServerDataSource(
+    internal fun provideSeriesApi(): SeriesApiService {
+        return Retrofit.Builder().baseUrl("http://api.themoviedb.org/3/")
+            .addConverterFactory(GsonConverterFactory.create()).client(
+                OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BASIC
+                }).addInterceptor(RequestInterceptor()).build()
+            ).build().create()
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideServerMoviesDataSource(
         service: MoviesApiService,
-    ): ServerDataSource = ServerDataSourceImpl(service = service)
+    ): MoviesDataSource = ServerDataSourceImpl(service = service)
+
+
+    @Provides
+    @Singleton
+    internal fun provideServerSeriesDataSource(
+        service: SeriesApiService,
+    ): SeriesDataSource = SeriesDataSourceImpl(service = service)
 
     private class RequestInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {

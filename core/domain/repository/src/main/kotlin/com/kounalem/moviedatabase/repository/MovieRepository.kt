@@ -1,6 +1,5 @@
-package com.kounalem.moviedatabase.core.data.movie
+package com.kounalem.moviedatabase.repository
 
-import com.kounalem.moviedatabase.core.data.Outcome
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.MovieDescription
 import kotlinx.coroutines.flow.Flow

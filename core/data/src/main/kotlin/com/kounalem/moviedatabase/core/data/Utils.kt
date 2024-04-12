@@ -1,12 +1,16 @@
 package com.kounalem.moviedatabase.core.data
 
 import com.kounalem.moviedatabase.network.NetworkResponse
+import com.kounalem.moviedatabase.repository.Outcome
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
-private fun <T, R> mapNetworkResponseToOutcome(response: NetworkResponse<T>, mapper: (T) -> R): Outcome<R> {
+private fun <T, R> mapNetworkResponseToOutcome(
+    response: NetworkResponse<T>,
+    mapper: (T) -> R
+): Outcome<R> {
     return when (response) {
         is NetworkResponse.Success -> Outcome.Success(mapper(response.body))
         is NetworkResponse.Error -> Outcome.Error(response.message)
@@ -21,3 +25,4 @@ internal fun <T, R> Flow<NetworkResponse<T>>.mapToOutcome(mapper: (T) -> R): Flo
         emit(Outcome.Exception(e))
     }
 }
+

@@ -1,14 +1,5 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
-import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
-
-interface Navigation {
-    data object Home : NavRoute {
-        override val path: NavRoute.Path
-            get() = NavRoute.Path("home")
-    }
-
-}
 
 internal interface PopularMoviesContract {
 
@@ -34,9 +25,9 @@ internal interface PopularMoviesContract {
     }
 
 
-    sealed class MovieListingsEvent {
-        data class OnSearchQueryChange(val query: String) : MovieListingsEvent()
-        object Refresh : MovieListingsEvent()
+    sealed class Event {
+        data class OnSearchQueryChange(val query: String) : Event()
+        object Refresh : Event()
     }
 
 }

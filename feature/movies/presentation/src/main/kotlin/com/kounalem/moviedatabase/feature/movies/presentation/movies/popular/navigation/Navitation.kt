@@ -1,23 +1,33 @@
-package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation
+package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.MovieDetails
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.Navigation
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesScreen
+import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation as MovieDetailsNavigation
+
+interface Navigation {
+    data object PopularMovies : NavRoute {
+        override val path: NavRoute.Path
+            get() = NavRoute.Path("movies")
+    }
+}
+
+fun NavController.navigateToMoviesScreen(navOptions: NavOptions) =
+    navigate(Navigation.PopularMovies.path.value, navOptions)
 
 fun navigateToHomeScreen(
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
-    navGraphBuilder.composable(route = com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.Navigation.Home.path.value) {
+    navGraphBuilder.composable(route = Navigation.PopularMovies.path.value) {
         PopularMoviesScreen(
             navigateToDetails = { id ->
                 navController.navigate(
-                    Navigation.Details.withArgs(
+                    MovieDetailsNavigation.Details.withArgs(
                         id.toString()
                     )
                 )

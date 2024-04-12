@@ -35,8 +35,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kounalem.moviedatabase.core.ui.R
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsContract
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsViewModel
 import com.kounalem.moviedatanase.core.ui.HorizontalSpace
 import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.large
@@ -60,7 +58,7 @@ fun MovieDetails(
 internal fun DetailsView(
     popBackStack: () -> Unit,
     state: DetailsContract.State,
-    event: (DetailsContract.MovieDetailsEvent) -> Unit,
+    event: (DetailsContract.Event) -> Unit,
 ) {
     Box {
         (state as? DetailsContract.State.Error)?.let {
@@ -126,7 +124,7 @@ internal fun DetailsView(
                                 modifier = Modifier.align(Alignment.TopEnd),
                                 buttonColor = if (state.isFavourite) Color.Red.copy(alpha = 0.6f) else Color.Red,
                                 iconTint = if (state.isFavourite) Color.White.copy(alpha = 0.6f) else Color.White,
-                                onClick = { event(DetailsContract.MovieDetailsEvent.FavouriteAction) }
+                                onClick = { event(DetailsContract.Event.FavouriteAction) }
                             )
                         }
 

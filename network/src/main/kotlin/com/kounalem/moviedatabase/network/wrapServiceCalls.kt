@@ -4,17 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-sealed interface NetworkResponse<T> {
-    data class Success<R>(
-        val body: R,
-    ) : NetworkResponse<R>
-
-    data class Error<T>(val code: Int, val message: String) : NetworkResponse<T>
-
-    @JvmInline
-    value class Exception<T>(val exception: Throwable) : NetworkResponse<T>
-}
-
 private fun <T : Any, R> Response<T>.toNetworkResponse(mapper: (T) -> R): NetworkResponse<R> {
     return try {
         if (isSuccessful) {

@@ -2,13 +2,13 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.de
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.core.data.Outcome
-import com.kounalem.moviedatabase.core.data.movie.MovieRepository
+import com.kounalem.moviedatabase.core.test.CoroutineTestRule
+import com.kounalem.moviedatabase.repository.Outcome
+import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.domain.models.MovieDescription
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.CoroutineTestRule
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsContract
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsViewModel
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.Navigation
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -86,7 +86,7 @@ internal class DetailsViewModelTest {
     @Test
     fun `WHEN favouriteAction event trigger repo call`() =
         runTest {
-            viewModel.onEvent(DetailsContract.MovieDetailsEvent.FavouriteAction)
+            viewModel.onEvent(DetailsContract.Event.FavouriteAction)
 
             coVerify { repository.updateMovieFavStatus(1) }
         }

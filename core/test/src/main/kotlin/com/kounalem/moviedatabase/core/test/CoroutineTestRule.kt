@@ -1,4 +1,4 @@
-package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
+package com.kounalem.moviedatabase.core.test
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +14,9 @@ import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineTestRule(
-    val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(TestCoroutineScheduler()),
+    val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(
+        TestCoroutineScheduler()
+    ),
 ) : TestWatcher() {
 
     override fun starting(description: Description) {

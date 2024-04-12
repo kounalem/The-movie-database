@@ -1,11 +1,11 @@
 package com.kounalem.moviedatabase.feature.movies.domain.usecase
 
-import com.kounalem.moviedatabase.core.data.movie.MovieRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import com.kounalem.moviedatabase.domain.models.Movie
+import com.kounalem.moviedatabase.repository.MovieRepository
 
 class FilterMoviesUC @Inject constructor(
     private val repo: MovieRepository,

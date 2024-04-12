@@ -11,6 +11,10 @@ the layers above implemented (e.g. `:feature:movies:presentation`, `:feature:mov
 
 There is a core module for each layer that defines general use functions.
 
+### App module
+
+The module responsible for navigating to the different screens, for connecting things. 
+
 ### Presentation Layer
 
 The presentation layer contains all the logic for showing a user a screen. The presentation layer
@@ -99,3 +103,6 @@ error states as an individual item.
 
 The DAO is a class that implements database operations for a specific feature.
 
+In order to run the paparazzi screens `./gradlew recordPaparazziDebug`  
+In order to run all the unit tests do
+`./gradlew :feature:tvshow:presentation:testDebugUnitTest :feature:movies:presentation:testDebugUnitTest --tests='*.*Test*' --tests='!*.PaparazziScreenTest'`

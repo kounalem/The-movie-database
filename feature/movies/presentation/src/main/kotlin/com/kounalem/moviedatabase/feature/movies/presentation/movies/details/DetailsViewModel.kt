@@ -3,9 +3,10 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kounalem.moviedatabase.core.data.Outcome
-import com.kounalem.moviedatabase.core.data.movie.MovieRepository
+import com.kounalem.moviedatabase.repository.Outcome
+import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.domain.models.MovieDescription
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,9 +88,9 @@ internal class DetailsViewModel @Inject constructor(
             DetailsContract.State.Loading
         )
 
-    fun onEvent(event: DetailsContract.MovieDetailsEvent) {
+    fun onEvent(event: DetailsContract.Event) {
         when (event) {
-            DetailsContract.MovieDetailsEvent.FavouriteAction -> {
+            DetailsContract.Event.FavouriteAction -> {
                 viewModelScope.launch {
                     savedStateHandle.get<Int?>(Navigation.Details.DETAILS_ID)?.let { id ->
                         movieRepository.updateMovieFavStatus(id)

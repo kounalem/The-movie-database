@@ -1,14 +1,5 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
 
-import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
-
-interface Navigation {
-    data object Details : NavRoute {
-        const val DETAILS_ID = "id"
-        override val path: NavRoute.Path
-            get() = NavRoute.Path("details")
-    }
-}
 
 sealed interface DetailsContract {
 
@@ -26,8 +17,8 @@ sealed interface DetailsContract {
         ) : State
     }
 
-    sealed class MovieDetailsEvent {
-        object FavouriteAction : MovieDetailsEvent()
+    sealed class Event {
+        object FavouriteAction : Event()
     }
 
 }

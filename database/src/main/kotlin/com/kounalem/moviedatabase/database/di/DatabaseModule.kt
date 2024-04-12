@@ -6,6 +6,7 @@ import com.kounalem.moviedatabase.database.movie.AppDatabase
 import com.kounalem.moviedatabase.database.movie.LocalDataSource
 import com.kounalem.moviedatabase.database.movie.LocalDataSourceImpl
 import com.kounalem.moviedatabase.database.movie.MovieDao
+import com.kounalem.moviedatabase.database.movie.TvShowsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,11 +31,18 @@ object DatabaseModule {
         return localDatabase.movieDao
     }
 
+    @Provides
+    @Singleton
+    internal fun provideTvShowDao(localDatabase: AppDatabase): TvShowsDao {
+        return localDatabase.tvShowDao
+    }
 
     @Provides
     @Singleton
     internal fun provideLocalDataSource(
-        localDataSource: MovieDao,
-    ): LocalDataSource = LocalDataSourceImpl(dao = localDataSource)
+        movieDataSource: MovieDao,
+        tvShowsDataSource: TvShowsDao,
+    ): LocalDataSource =
+        LocalDataSourceImpl(daoMovies = movieDataSource, daoTvShows = tvShowsDataSource)
 
 }
