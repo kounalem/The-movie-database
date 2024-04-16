@@ -12,6 +12,9 @@ import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
 interface Navigation {
     data object Details : NavRoute {
         const val DETAILS_ID = "id"
+        const val RESULT_KEY_FAVOURITE = "favoriteStatusKey"
+        const val RESULT_KEY_FAVOURITE_ID = "favoriteStatusID"
+
         override val path: NavRoute.Path
             get() = NavRoute.Path("details")
     }
@@ -35,7 +38,18 @@ fun navigateToDetailsScreen(
         val args = navBackStackEntry.arguments
         MovieDetails(
             id = args?.getInt(Navigation.Details.DETAILS_ID)!!,
-            popBackStack = { navController.popBackStack() },
+            popBackStack = { isFavourite ->
+                // Update the SavedStateHandle with the data you want to pass
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    Navigation.Details.RESULT_KEY_FAVOURITE,
+                    isFavourite
+                )
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    Navigation.Details.RESULT_KEY_FAVOURITE_ID,
+                    args.getInt(Navigation.Details.DETAILS_ID)
+                )
+                navController.popBackStack()
+            },
         )
     }
 }

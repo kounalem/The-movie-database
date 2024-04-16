@@ -3,9 +3,9 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.de
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
+import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.MovieRepository
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsContract
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsViewModel
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
@@ -44,7 +44,7 @@ internal class DetailsViewModelTest {
 
     @Test
     fun `GIVEN repo returns error WHEN  init THEN update the state`() = runTest {
-        coEvery { repository.getMovieByIdObs(1) } returns flowOf(Outcome.Error("epic fail"))
+        coEvery { repository.getMovieById(1) } returns flowOf(Outcome.Error("epic fail"))
 
         viewModel.state.test {
             assertEquals(
@@ -55,19 +55,21 @@ internal class DetailsViewModelTest {
 
     @Test
     fun `GIVEN repo returns info WHEN  init THEN update the state`() = runTest {
-        coEvery { repository.getMovieByIdObs(1) } returns flowOf(
-            Outcome.Success(
-                MovieDescription(
-                    id = 1,
-                    originalTitle = "original_title",
-                    overview = "overview",
-                    posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-                    title = "title",
-                    voteAverage = 0.0,
-                    isFavourite = false
-                )
-            )
-        )
+        coEvery { repository.getMovieById(1) } returns
+                flowOf( Outcome.Success(
+                    Movie(
+                        id = 1,
+                        originalTitle = "original_title",
+                        overview = "overview",
+                        posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+                        title = "title",
+                        voteAverage = 0.0,
+                        isFavourite = false,
+                        date = 123,
+                        page = 1,
+                    )
+                ))
+
 
         viewModel.state.test {
             assertEquals(
@@ -77,7 +79,7 @@ internal class DetailsViewModelTest {
                     overview = "overview",
                     rate = "Movie rating: 0.0",
                     poster = "https://image.tmdb.org/t/p/w342poster_path",
-                    isFavourite = false
+                    isFavourite = false,
                 )
             )
         }

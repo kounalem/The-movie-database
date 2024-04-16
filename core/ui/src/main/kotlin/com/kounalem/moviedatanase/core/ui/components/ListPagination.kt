@@ -42,9 +42,13 @@ fun PaginationList(
     ) {
         LazyColumn(state = listState) {
             itemsIndexed(items) { index, item ->
-                if (index >= items.size - 4 && !endReached && searchQuery.isNullOrEmpty()) {
+                val isLastItem = index == (items.size - 1)
+                val shouldLoadNextItems =
+                    isLastItem && !endReached && searchQuery.isNullOrEmpty() && !isFetchingNewMovies
+                if (shouldLoadNextItems) {
                     loadNextItems()
                 }
+
                 MovieListItem(
                     model = item,
                     selected = { id: Int ->

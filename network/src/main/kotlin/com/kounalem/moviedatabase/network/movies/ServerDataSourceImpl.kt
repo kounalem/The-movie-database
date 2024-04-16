@@ -7,14 +7,8 @@ import javax.inject.Inject
 internal class ServerDataSourceImpl @Inject constructor(
     private val service: MoviesApiService,
 ) : MoviesDataSource {
-    override fun getMovieById(id: Int) =
-        wrapServiceCall(
-            call = { service.getMovieById(id) },
-            mapper = { it.map() }
-        )
-
     override fun nowPlaying(pageNo: Int) = wrapServiceCall(
         call = { service.nowPlaying(pageNo) },
-        mapper = { it.map() }
+        mapper = { it.map(pageNo) }
     )
 }

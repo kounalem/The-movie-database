@@ -1,20 +1,17 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.popular
 
+import androidx.compose.ui.text.font.FontSynthesis.Companion.All
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
-import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
+import com.kounalem.moviedatabase.feature.movies.domain.usecase.GetMostPopularMoviesUC
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesContract
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesViewModel
-import com.kounalem.moviedatanase.core.ui.paginator.Paginator
-import com.kounalem.moviedatanase.core.ui.paginator.PaginatorFactory
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
@@ -37,20 +34,13 @@ internal class PopularMoviesViewModelTest {
     private lateinit var filterMoviesUC: FilterMoviesUC
 
     @MockK
-    private lateinit var paginator: Paginator<Int>
-    private var paginatorFactory: PaginatorFactory<Int> = object : PaginatorFactory<Int> {
-        override fun create(
-            initialKey: Int,
-            onRequest: suspend (nextKey: Int) -> Unit,
-            getNextKey: suspend (currentKey: Int) -> Int
-        ): Paginator<Int> = paginator
-    }
+    private lateinit var popularMoviesUC: GetMostPopularMoviesUC
 
     private val viewModel by lazy {
         PopularMoviesViewModel(
             repo = movieRepository,
-            paginatorFactory = paginatorFactory,
             filterMoviesUC = filterMoviesUC,
+            popularMoviesUC = popularMoviesUC,
         )
     }
 
@@ -58,7 +48,7 @@ internal class PopularMoviesViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
 
-        coEvery { movieRepository.movies } returns flowOf(Outcome.Success(emptyList()))
+        coEvery { popularMoviesUC.movies } returns flowOf(LinkedHashMap())
     }
 
     @Test
@@ -69,7 +59,10 @@ internal class PopularMoviesViewModelTest {
             title = "title1",
             voteAverage = 2.0,
             overview = "overview1",
-            date = 123
+            date = 123,
+            isFavourite = false,
+            originalTitle = "",
+            page = 1
         )
         val secondMovie = Movie(
             id = 2,
@@ -77,15 +70,19 @@ internal class PopularMoviesViewModelTest {
             title = "title2",
             voteAverage = 2.0,
             overview = "overview2",
-            date = 123
+            date = 123,
+            isFavourite = false,
+            originalTitle = "",
+            page = 1
         )
-        coEvery { movieRepository.movies } returns flowOf(
-            Outcome.Success(
-                listOf(
-                    firstMovie,
-                    secondMovie
-                )
-            )
+        val popularMovies = listOf(
+            firstMovie,
+            secondMovie
+        )
+        coEvery { popularMoviesUC.movies } returns flowOf(
+            LinkedHashMap<Int, Movie>().apply {
+                popularMovies.forEach { put(it.id, it) }
+            }
         )
 
         viewModel.state.test {
@@ -109,6 +106,9 @@ internal class PopularMoviesViewModelTest {
                     searchQuery = null,
                     endReached = false,
                     fetchingNewMovies = false,
+                    savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter(
+                        filterText = "All movies", isFiltering = false
+                    )
                 )
             )
         }
@@ -123,7 +123,10 @@ internal class PopularMoviesViewModelTest {
                 title = "title1",
                 voteAverage = 2.0,
                 overview = "overview1",
-                date = 123
+                date = 123,
+                isFavourite = false,
+                originalTitle = "",
+                page = 1
             )
             val secondMovie = Movie(
                 id = 2,
@@ -131,7 +134,10 @@ internal class PopularMoviesViewModelTest {
                 title = "title2",
                 voteAverage = 2.0,
                 overview = "overview2",
-                date = 123
+                date = 123,
+                isFavourite = false,
+                originalTitle = "",
+                page = 1
             )
             val thirdMovie = Movie(
                 id = 3,
@@ -139,19 +145,23 @@ internal class PopularMoviesViewModelTest {
                 title = "title3",
                 voteAverage = 2.0,
                 overview = "overview3",
-                date = 123
+                date = 123,
+                isFavourite = false,
+                originalTitle = "",
+                page = 1
             )
 
             val given = listOf(firstMovie, secondMovie)
+            val popularMovies = listOf(
+                firstMovie,
+                secondMovie,
+                thirdMovie
+            )
             coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
-            coEvery { movieRepository.movies } returns flowOf(
-                Outcome.Success(
-                    listOf(
-                        firstMovie,
-                        secondMovie,
-                        thirdMovie
-                    )
-                )
+            coEvery { popularMoviesUC.movies } returns flowOf(
+                LinkedHashMap<Int, Movie>().apply {
+                    popularMovies.forEach { put(it.id, it) }
+                }
             )
 
             viewModel.onEvent(PopularMoviesContract.Event.OnSearchQueryChange("hi"))
@@ -178,6 +188,9 @@ internal class PopularMoviesViewModelTest {
                         searchQuery = "hi",
                         endReached = false,
                         fetchingNewMovies = false,
+                        savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter(
+                            filterText = "All movies", isFiltering = false
+                        )
                     )
                 )
             }
@@ -185,19 +198,19 @@ internal class PopularMoviesViewModelTest {
 
     @Test
     fun `WHEN loadNextItems THEN state gets updated`() = runTest {
-        coEvery { movieRepository.movies } returns flowOf(
-            Outcome.Success(
-                listOf(
-                    Movie(
-                        id = 1,
-                        posterPath = "",
-                        title = "title",
-                        voteAverage = 2.0,
-                        overview = "overview",
-                        date = 123
-                    )
-                )
-            )
+        val movie = Movie(
+            id = 1,
+            posterPath = "",
+            title = "title",
+            voteAverage = 2.0,
+            overview = "overview",
+            date = 123,
+            isFavourite = false,
+            originalTitle = "",
+            page = 1
+        )
+        coEvery { popularMoviesUC.movies } returns flowOf(
+            linkedMapOf(movie.id to movie)
         )
 
         viewModel.loadNextItems()
@@ -218,29 +231,12 @@ internal class PopularMoviesViewModelTest {
                     searchQuery = null,
                     endReached = false,
                     fetchingNewMovies = false,
+                    savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter(
+                        filterText = "All movies", isFiltering = false
+                    )
                 )
             )
         }
     }
 
-    @Test
-    fun `GIVEN refresh THEN reset and  paginate`() = runTest {
-        val movie = Movie(
-            id = 1,
-            posterPath = "",
-            title = "title",
-            voteAverage = 2.0,
-            overview = "overview",
-            date = 123
-        )
-
-        val given = listOf(movie)
-        coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
-        coEvery { movieRepository.movies } returns flowOf(Outcome.Success(listOf(movie)))
-
-        viewModel.onEvent(PopularMoviesContract.Event.Refresh)
-
-        verify { paginator.reset() }
-        coVerify { paginator.loadNextItems() }
-    }
 }

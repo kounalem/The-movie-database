@@ -1,8 +1,6 @@
 package com.kounalem.moviedatabase.network.series.mappers
 
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.TvShow
-import com.kounalem.moviedatabase.network.movies.models.MovieDescriptionDTO
 import com.kounalem.moviedatabase.network.series.models.TvShowDTO
 
 internal fun TvShowDTO.map(): TvShow {

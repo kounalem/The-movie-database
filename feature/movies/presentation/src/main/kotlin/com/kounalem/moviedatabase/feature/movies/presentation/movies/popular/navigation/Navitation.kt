@@ -24,7 +24,18 @@ fun navigateToHomeScreen(
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(route = Navigation.PopularMovies.path.value) {
+        val favoriteStatus = navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<Boolean>(MovieDetailsNavigation.Details.RESULT_KEY_FAVOURITE)
+        val favouriteId = navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<Int>(MovieDetailsNavigation.Details.RESULT_KEY_FAVOURITE_ID)
+
         PopularMoviesScreen(
+            updatedElement = if (favoriteStatus != null && favouriteId != null) Pair(
+                favouriteId,
+                favoriteStatus
+            ) else null,
             navigateToDetails = { id ->
                 navController.navigate(
                     MovieDetailsNavigation.Details.withArgs(

@@ -6,7 +6,6 @@ import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.core.data.utils.CoroutineTestRule
 import com.kounalem.moviedatabase.database.movie.LocalDataSource
 import com.kounalem.moviedatabase.domain.models.Movie
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.PopularMovies
 import com.kounalem.moviedatabase.network.movies.MoviesDataSource
 import com.kounalem.moviedatabase.core.data.utils.onLatestItem
@@ -57,7 +56,7 @@ internal class MovieRepositoryImplTest {
             )
         )
         coEvery { server.nowPlaying(1) } returns flowOf(popularMovies)
-        coEvery { local.getAllMovies() } returns flowOf(given)
+        coEvery { local.getMovies(1) } returns flowOf(given)
 
         repository.movies.test {
             assertEquals(given, awaitItem().data)
@@ -76,7 +75,7 @@ internal class MovieRepositoryImplTest {
             )
         )
 
-        coEvery { local.getAllMovies() } returns flowOf(given)
+        coEvery { local.getMovies(1) } returns flowOf(given)
         coEvery { server.nowPlaying(1) } returns flowOf(popularMovies)
 
         repository.movies.test {
@@ -89,7 +88,7 @@ internal class MovieRepositoryImplTest {
     fun `GIVEN network error THEN requests then get local movies`() = runTest {
         val given = listOf(mockk<Movie>())
         coEvery { server.nowPlaying(1) } throws NetworkErrorException("")
-        coEvery { local.getAllMovies() } returns flowOf(given)
+        coEvery { local.getMovies(1) } returns flowOf(given)
 
         repository.movies.test {
             onLatestItem {
@@ -119,54 +118,20 @@ internal class MovieRepositoryImplTest {
 
     @Test
     fun `GIVEN local info WHEN get movie by id THEN then return value`() = runTest {
-        val given = MovieDescription(
+        val given = Movie(
             id = 1,
             originalTitle = "original_title",
             overview = "overview",
             posterPath = "https://image.tmdb.org/t/p/w342poster_path",
             title = "title",
             voteAverage = 0.0,
-            isFavourite = false
+            isFavourite = false,
+            date = 123,
+            page = 1,
         )
-        coEvery { local.getMovieDescriptionById(1) } returns flowOf(given)
+        coEvery { local.getMovieByIdObs(1) } returns given
 
-        repository.getMovieByIdObs(1).collect {
-            assertEquals(given, it.data)
-        }
+        val result = repository.getMovieById(1)
+        assertEquals(given, result.data)
     }
-
-    @Test
-    fun `GIVEN local info do not exist WHEN get movie by id THEN then return server value`() =
-        runTest {
-            val given = MovieDescription(
-                id = 1,
-                originalTitle = "original_title",
-                overview = "overview",
-                posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-                title = "title",
-                voteAverage = 0.0,
-                isFavourite = false
-            )
-            coEvery { local.getMovieDescriptionById(1) } returns flowOf(null)
-            coEvery { server.getMovieById(1) } returns flowOf(NetworkResponse.Success<MovieDescription>(
-                body = given
-            ))
-
-            repository.getMovieByIdObs(1).collect {
-                assertEquals(given, it.data)
-            }
-
-            coVerify { local.saveMovieDescription(given) }
-        }
-
-    @Test
-    fun `GIVEN local info do not exist and no network WHEN get movie by id THEN then fail`() =
-        runTest {
-            coEvery { local.getMovieDescriptionById(1) } returns flowOf(null)
-            coEvery { server.getMovieById(1) } throws Throwable("epic fail")
-
-            repository.getMovieByIdObs(1).collect {
-                assertEquals(Outcome.Error("Movie info not available"), it)
-            }
-        }
 }

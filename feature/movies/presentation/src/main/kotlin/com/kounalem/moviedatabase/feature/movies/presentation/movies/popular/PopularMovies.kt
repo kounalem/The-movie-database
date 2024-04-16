@@ -1,6 +1,7 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,15 +23,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kounalem.moviedatanase.core.ui.components.MovieOutlinedTextField
 import com.kounalem.moviedatanase.core.ui.components.PaginationList
+import com.kounalem.moviedatanase.core.ui.components.Pill
 import com.kounalem.moviedatanase.core.ui.model.ListItemModel
 import com.kounalem.moviedatanase.core.ui.small
 import com.kounalem.moviedatanase.core.ui.xsmall
 
 @Composable
 fun PopularMoviesScreen(
+    updatedElement: Pair<Int,Boolean>?,
     navigateToDetails: (Int) -> Unit,
 ) {
     val viewModel = hiltViewModel<PopularMoviesViewModel>()
+    updatedElement?.let {
+        viewModel.updateElement(updatedElement.first, updatedElement.second)
+    }
     val state = viewModel.state.collectAsStateWithLifecycle().value
     PopularMoviesView(
         state = state,
@@ -106,25 +113,32 @@ private fun MovieList(
         }
     )
 
-    PaginationList(
-        modifier = Modifier,
-        refreshState = swipeRefreshState,
-        listState = listState,
-        isFetchingNewMovies = state.fetchingNewMovies,
-        items = state.movies.map { item ->
-            ListItemModel(
-                id = item.id,
-                imagePath = item.posterPath,
-                description = item.overview,
-                title = item.title,
-            )
-        },
-        searchQuery = state.searchQuery,
-        endReached = state.endReached,
-        refreshEvent = { event(PopularMoviesContract.Event.Refresh) },
-        loadNextItems = { loadNextItems() },
-        selected = { id -> navigateToDetails(id) }
-    )
+    Box {
+        PaginationList(
+            modifier = Modifier.fillMaxSize(),
+            refreshState = swipeRefreshState,
+            listState = listState,
+            isFetchingNewMovies = state.fetchingNewMovies,
+            items = state.movies.map { item ->
+                ListItemModel(
+                    id = item.id,
+                    imagePath = item.posterPath,
+                    description = item.overview,
+                    title = item.title,
+                )
+            },
+            searchQuery = state.searchQuery,
+            endReached = state.endReached,
+            refreshEvent = { event(PopularMoviesContract.Event.Refresh) },
+            loadNextItems = { loadNextItems() },
+            selected = { id -> navigateToDetails(id) }
+        )
+        Pill(
+            modifier = Modifier.align(Alignment.TopEnd),
+            text = state.savedMoviesFilter.filterText,
+            onClick = { event(PopularMoviesContract.Event.SavedMovies(state.savedMoviesFilter.isFiltering)) }
+        )
+    }
 }
 
 @Preview(backgroundColor = 0xffffffff, showBackground = false)
@@ -192,6 +206,9 @@ fun PopularMoviesScreenPreview() {
             isRefreshing = false,
             endReached = false,
             fetchingNewMovies = false,
+            savedMoviesFilter = (PopularMoviesContract.State.Info.SavedMoviesFilter(
+                "filter movies", false
+            ))
         ),
         navigateToDetails = {},
         event = {},

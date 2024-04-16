@@ -1,20 +1,26 @@
 package com.kounalem.moviedatanase.core.ui.paginator
 
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class Paginator<Key> @AssistedInject constructor(
-    @Assisted private val initialKey: Key,
-    @Assisted private val onRequest: suspend (nextKey: Key) -> Unit,
-    @Assisted private val getNextKey: suspend (currentKey: Key) -> Key,
+class Paginator<Key> @Inject constructor(
+    private val initialKey: Key,
+    private val onRequest: suspend (nextKey: Key) -> Unit,
+    private val getNextKey: suspend (currentKey: Key) -> Key,
 ) {
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var currentKey = initialKey
     private var isMakingRequest = false
+
+    init {
+        scope.launch {
+            onRequest(currentKey)
+            currentKey = getNextKey(currentKey)
+        }
+    }
 
     suspend fun loadNextItems() {
         if (isMakingRequest) {

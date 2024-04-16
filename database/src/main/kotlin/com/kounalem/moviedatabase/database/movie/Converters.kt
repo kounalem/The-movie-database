@@ -3,24 +3,11 @@ package com.kounalem.moviedatabase.database.movie
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.kounalem.moviedatabase.database.movie.models.MovieDescriptionEntity
 import com.kounalem.moviedatabase.database.movie.models.MovieEntity
 import com.kounalem.moviedatabase.database.movie.models.SeasonEntity
 
-internal class MovieDescriptionConverters {
-    @TypeConverter
-    fun fromString(value: String): ArrayList<MovieDescriptionEntity> {
-        val listType = object : TypeToken<ArrayList<String>>() {}.type
-        return Gson().fromJson(value, listType)
-    }
 
-    @TypeConverter
-    fun fromArrayList(list: ArrayList<MovieDescriptionEntity>): String {
-        return Gson().toJson(list)
-    }
-}
-
-internal class MovieConverters {
+internal object MovieConverters {
     @TypeConverter
     fun fromString(value: String): ArrayList<MovieEntity> {
         val listType = object : TypeToken<ArrayList<MovieEntity>>() {}.type
@@ -34,7 +21,7 @@ internal class MovieConverters {
     }
 }
 
-internal class IntConverters {
+internal object IntConverters {
     @TypeConverter
     fun fromString(value: String): ArrayList<Int> {
         val listType = object : TypeToken<ArrayList<Int>>() {}.type
@@ -48,7 +35,7 @@ internal class IntConverters {
 }
 
 
-class ListStringConverter {
+internal object ListStringConverter {
 
     @TypeConverter
     fun fromListString(value: List<String>?): String? {
@@ -61,7 +48,7 @@ class ListStringConverter {
     }
 }
 
-class SeasonListConverter {
+internal object SeasonListConverter {
 
     private val gson = Gson()
 

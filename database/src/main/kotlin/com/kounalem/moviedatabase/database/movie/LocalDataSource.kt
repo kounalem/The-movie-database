@@ -1,23 +1,16 @@
 package com.kounalem.moviedatabase.database.movie
 
 import com.kounalem.moviedatabase.domain.models.Movie
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.TvShow
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
     fun getFilteredMovies(query: String): Flow<List<Movie>>
-
     fun getAllMovies(): Flow<List<Movie>>
-
+    fun getMovies(pageNo: Int): Flow<List<Movie>>
     suspend fun saveMovieList(movies: List<Movie>): List<Unit>
-
-    fun getMovieDescriptionById(movieId: Int): Flow<MovieDescription?>
-
     suspend fun updateMovieFavStatus(movieId: Int)
-
-    suspend fun saveMovieDescription(movieDescription: MovieDescription)
-
+    fun getMovieByIdObs(movieId: Int): Flow<Movie>
     fun getFilteredShows(query: String): Flow<List<TvShow>>
     fun getAllShows(): Flow<List<TvShow>>
     suspend fun saveShowList(movies: List<TvShow>): List<Unit>

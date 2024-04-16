@@ -1,11 +1,9 @@
 package com.kounalem.moviedatabase.database.movie
 
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.database.movie.models.MovieDescriptionEntity
 import com.kounalem.moviedatabase.database.movie.models.MovieEntity
 import com.kounalem.moviedatabase.database.movie.models.TvShowEntity
 import com.kounalem.moviedatabase.domain.models.Movie
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.TvShow
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -33,7 +31,7 @@ internal class LocalDataSourceImplTest {
         TvShow(
             id = 1,
             overview = "overview",
-            posterPath = null,
+            posterPath = "",
             name = "title",
             voteAverage = null,
             adult = false,
@@ -72,28 +70,6 @@ internal class LocalDataSourceImplTest {
             isFavourite = false
         )
     }
-    private val dummyMovieDescriptionEntity by lazy {
-        MovieDescriptionEntity(
-            id = 1,
-            originalTitle = "original_title",
-            overview = "overview",
-            posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-            title = "title",
-            voteAverage = 0.0,
-            isFavourite = false
-        )
-    }
-    private val dummyMovieDescription by lazy {
-        MovieDescription(
-            id = 1,
-            originalTitle = "original_title",
-            overview = "overview",
-            posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-            title = "title",
-            voteAverage = 0.0,
-            isFavourite = false
-        )
-    }
 
     private val dummyMovie by lazy {
         Movie(
@@ -102,7 +78,10 @@ internal class LocalDataSourceImplTest {
             title = "",
             voteAverage = 0.0,
             overview = "",
-            date = 123
+            date = 123,
+            isFavourite = false,
+            originalTitle = "",
+            page = 1,
         )
     }
     private val dummyMovieEntity by lazy {
@@ -113,6 +92,9 @@ internal class LocalDataSourceImplTest {
             title = "",
             voteAverage = 0.0,
             date = 123,
+            isFavourite = false,
+            originalTitle = "",
+            page = 1,
         )
     }
 
@@ -140,9 +122,9 @@ internal class LocalDataSourceImplTest {
     @Test
     fun `WHEN get all movies THEN return mapped domain model`() = runTest {
 
-        every { movieDao.getAllMovies() } returns flowOf(listOf(dummyMovieEntity))
+        every { movieDao.getMoviesForPage(1) } returns flowOf(listOf(dummyMovieEntity))
 
-        dataSource.getAllMovies().test {
+        dataSource.getMovies(1).test {
             assertEquals(listOf(dummyMovie), awaitItem())
             awaitComplete()
         }
@@ -153,15 +135,6 @@ internal class LocalDataSourceImplTest {
         dataSource.saveMovieList(listOf(dummyMovie))
 
         coVerify { movieDao.saveMovie(dummyMovieEntity) }
-    }
-
-    @Test
-    fun `WHEN saveMovieDescription THEN call dao`() = runTest {
-        dataSource.saveMovieDescription(
-            dummyMovieDescription
-        )
-
-        coVerify { movieDao.saveMovieDescription(dummyMovieDescriptionEntity) }
     }
 
     @Test

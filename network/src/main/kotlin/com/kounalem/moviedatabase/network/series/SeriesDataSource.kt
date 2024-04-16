@@ -1,7 +1,5 @@
 package com.kounalem.moviedatabase.network.series
 
-import com.kounalem.moviedatabase.domain.models.MovieDescription
-import com.kounalem.moviedatabase.domain.models.PopularMovies
 import com.kounalem.moviedatabase.domain.models.TvShow
 import com.kounalem.moviedatabase.network.NetworkResponse
 import kotlinx.coroutines.flow.Flow

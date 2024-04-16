@@ -3,9 +3,9 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.MovieRepository
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +42,7 @@ internal class DetailsViewModel @Inject constructor(
                 error.value = "Not correct ID path"
                 emptyFlow()
             } else {
-                movieRepository.getMovieByIdObs(id).flatMapLatest {
+                movieRepository.getMovieById(id).flatMapLatest {
                     when (it) {
 
                         is Outcome.Exception,
@@ -51,7 +51,7 @@ internal class DetailsViewModel @Inject constructor(
                             emptyFlow()
                         }
 
-                        is Outcome.Success<MovieDescription> -> {
+                        is Outcome.Success<Movie> -> {
                             it.data?.let { description ->
                                 flowOf(
                                     DetailsContract.State.Info(
@@ -67,6 +67,7 @@ internal class DetailsViewModel @Inject constructor(
                             }
                         }
                     }
+
                 }
             }
         }

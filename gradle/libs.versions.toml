@@ -32,7 +32,6 @@ appcompat = "1.6.1"
 composeCompiler = "1.5.11"
 appcompatVersion = "1.6.1"
 material = "1.11.0"
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
@@ -60,7 +59,6 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
-
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 flow-combinetuple-kt = { module = "com.github.Zhuinden:flow-combinetuple-kt", version.ref = "flowCombinetupleKt" }

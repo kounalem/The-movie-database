@@ -3,7 +3,6 @@ package com.kounalem.moviedatabase.database.movie
 import com.kounalem.moviedatabase.database.movie.mapper.mapToDomain
 import com.kounalem.moviedatabase.database.movie.mapper.mapToEntity
 import com.kounalem.moviedatabase.domain.models.Movie
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.TvShow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -26,20 +25,20 @@ internal class LocalDataSourceImpl(
             entity.map { it.mapToDomain() }
         }
     }
+    override fun getMovies(pageNo: Int): Flow<List<Movie>> {
+        return daoMovies.getMoviesForPage(pageNo).map { entity ->
+            entity.map { it.mapToDomain() }
+        }
+    }
 
     override suspend fun saveMovieList(movies: List<Movie>): List<Unit> =
         movies.map { movie -> daoMovies.saveMovie(movie.mapToEntity()) }
 
-    override fun getMovieDescriptionById(movieId: Int): Flow<MovieDescription?> =
-        daoMovies.getMovieDescriptionById(movieId).map {
-            it?.mapToDomain()
-        }
+    override fun getMovieByIdObs(movieId: Int): Flow<Movie> =
+        daoMovies.getMovieByIdObs(movieId).map {it.mapToDomain()  }
 
     override suspend fun updateMovieFavStatus(movieId: Int) =
         daoMovies.updateMovieFavStatus(movieId)
-
-    override suspend fun saveMovieDescription(movieDescription: MovieDescription) =
-        daoMovies.saveMovieDescription(movieDescription.mapToEntity())
 
     //shows
     override fun getFilteredShows(query: String): Flow<List<TvShow>> {

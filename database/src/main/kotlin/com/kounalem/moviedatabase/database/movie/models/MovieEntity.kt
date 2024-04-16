@@ -12,4 +12,7 @@ internal data class MovieEntity(
     val title: String?,
     val voteAverage: Double?,
     val date: Long,
+    val page: Int,
+    val originalTitle: String?,
+    val isFavourite: Boolean,
 )

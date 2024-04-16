@@ -2,7 +2,6 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
 
 internal interface PopularMoviesContract {
-
     sealed interface State {
         data object Loading : State
 
@@ -14,20 +13,28 @@ internal interface PopularMoviesContract {
             val searchQuery: String?,
             val endReached: Boolean,
             val fetchingNewMovies: Boolean,
+            val savedMoviesFilter: SavedMoviesFilter
         ) : State {
+            data class SavedMoviesFilter(
+                val filterText: String,
+                val isFiltering: Boolean
+            )
+
             data class Movie(
                 val id: Int,
                 val posterPath: String,
                 val title: String,
                 val overview: String,
+                val isFavourite: Boolean = false,
             )
         }
     }
 
 
-    sealed class Event {
-        data class OnSearchQueryChange(val query: String) : Event()
-        object Refresh : Event()
+    sealed interface Event {
+        data class OnSearchQueryChange(val query: String) : Event
+        object Refresh : Event
+        data class SavedMovies(val filter: Boolean) : Event
     }
 
 }

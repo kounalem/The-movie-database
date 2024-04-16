@@ -11,6 +11,9 @@ internal fun MovieEntity.mapToDomain(): Movie {
         voteAverage = this.voteAverage ?: 0.0,
         overview = this.overview.orEmpty(),
         date = this.date,
+        page = this.page,
+        isFavourite = this.isFavourite,
+        originalTitle = this.originalTitle.orEmpty(),
     )
 }
 
@@ -22,5 +25,8 @@ internal fun Movie.mapToEntity(): MovieEntity {
         voteAverage = this.voteAverage,
         overview = this.overview,
         date = this.date,
+        page = this.page,
+        isFavourite = this.isFavourite,
+        originalTitle = this.originalTitle,
     )
 }

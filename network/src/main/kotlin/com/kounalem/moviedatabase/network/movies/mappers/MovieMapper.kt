@@ -5,14 +5,17 @@ import com.kounalem.moviedatabase.network.movies.models.MovieDTO
 import java.time.LocalDate
 import java.time.ZoneOffset
 
-internal fun MovieDTO.map(): Movie {
+internal fun MovieDTO.map(pageNo: Int): Movie {
     return Movie(
         id = this.id ?: -1,
         posterPath = getPosterPath(this.posterPath),
         title = this.title.orEmpty(),
         voteAverage = this.voteAverage ?: 0.0,
         overview = this.overview.orEmpty(),
-        date = getTimeStamp(this.date)
+        date = getTimeStamp(this.date),
+        isFavourite = false,
+        originalTitle = this.originalTitle.orEmpty(),
+        page = pageNo
     )
 }
 

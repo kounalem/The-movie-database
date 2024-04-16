@@ -1,5 +1,7 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,18 +47,22 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun MovieDetails(
-    popBackStack: () -> Unit,
+    popBackStack: (favourite: Boolean) -> Unit,
     id: Int,
 ) {
+
     val viewModel = hiltViewModel<DetailsViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    val favourite = (state as? DetailsContract.State.Info)?.isFavourite ?: false
+    BackHandler(onBack = { popBackStack(favourite) })
     DetailsView(popBackStack, state, event = viewModel::onEvent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DetailsView(
-    popBackStack: () -> Unit,
+    popBackStack: (favourite: Boolean) -> Unit,
     state: DetailsContract.State,
     event: (DetailsContract.Event) -> Unit,
 ) {
@@ -88,7 +94,7 @@ internal fun DetailsView(
                 TopAppBar(
                     title = { Text(text = state.title) },
                     navigationIcon = {
-                        IconButton(onClick = popBackStack) {
+                        IconButton(onClick = { popBackStack(state.isFavourite) }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                         }
                     },

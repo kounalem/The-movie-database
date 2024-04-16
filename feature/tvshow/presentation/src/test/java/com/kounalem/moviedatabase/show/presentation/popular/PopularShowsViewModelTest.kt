@@ -6,13 +6,9 @@ import com.kounalem.moviedatabase.domain.models.TvShow
 import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.TvShowRepository
 import com.kounalem.moviedatabase.tvshow.domain.FilterShowsUC
-import com.kounalem.moviedatanase.core.ui.paginator.Paginator
-import com.kounalem.moviedatanase.core.ui.paginator.PaginatorFactory
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
@@ -21,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class PopularShowsViewModelTest {
@@ -35,20 +30,9 @@ internal class PopularShowsViewModelTest {
     @MockK
     private lateinit var filterShowsUc: FilterShowsUC
 
-    @MockK
-    private lateinit var paginator: Paginator<Int>
-    private var paginatorFactory: PaginatorFactory<Int> = object : PaginatorFactory<Int> {
-        override fun create(
-            initialKey: Int,
-            onRequest: suspend (nextKey: Int) -> Unit,
-            getNextKey: suspend (currentKey: Int) -> Int
-        ): Paginator<Int> = paginator
-    }
-
     private val viewModel by lazy {
         PopularShowsViewModel(
             repo = repo,
-            paginatorFactory = paginatorFactory,
             filterShowUc = filterShowsUc,
         )
     }
@@ -167,18 +151,6 @@ internal class PopularShowsViewModelTest {
                 )
             )
         }
-    }
-
-    @Test
-    fun `GIVEN refresh THEN reset and  paginate`() = runTest {
-        val given = listOf(dummyTvShow1)
-        coEvery { filterShowsUc.invoke("hi") } returns flowOf(given)
-        coEvery { repo.tvShows } returns flowOf(Outcome.Success(listOf(dummyTvShow1)))
-
-        viewModel.onEvent(PopularShowsContract.Event.Refresh)
-
-        verify { paginator.reset() }
-        coVerify { paginator.loadNextItems() }
     }
 
     private val dummyTvShow1 = TvShow(

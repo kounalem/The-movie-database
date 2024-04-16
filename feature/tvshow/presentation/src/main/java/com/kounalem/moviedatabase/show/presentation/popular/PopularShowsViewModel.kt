@@ -6,7 +6,6 @@ import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.TvShowRepository
 import com.kounalem.moviedatabase.tvshow.domain.FilterShowsUC
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
-import com.kounalem.moviedatanase.core.ui.paginator.PaginatorFactory
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +23,6 @@ import javax.inject.Inject
 @HiltViewModel
 internal class PopularShowsViewModel @Inject constructor(
     private val repo: TvShowRepository,
-    paginatorFactory: PaginatorFactory<Int>,
     private val filterShowUc: FilterShowsUC,
 ) : ViewModel() {
 
@@ -40,7 +38,7 @@ internal class PopularShowsViewModel @Inject constructor(
     private val filteredMovies: MutableStateFlow<List<PopularShowsContract.State.Info.Show>> =
         MutableStateFlow(emptyList())
     private val paginator: Paginator<Int> by lazy {
-        paginatorFactory.create(
+        Paginator(
             initialKey = 2,
             onRequest = { nextPage ->
                 fetchingNewMovies.value = true

@@ -3,10 +3,10 @@ package com.kounalem.moviedatabase.network.movies.mappers
 import com.kounalem.moviedatabase.domain.models.PopularMovies
 import com.kounalem.moviedatabase.network.movies.models.PopularMoviesDTO
 
-internal fun PopularMoviesDTO.map(): PopularMovies {
+internal fun PopularMoviesDTO.map(pageNo: Int): PopularMovies {
     val movieList = this.movies?.let {
         it.map { item ->
-            item.map()
+            item.map(pageNo)
         }.sortedBy { it.date }
     } ?: emptyList()
 
