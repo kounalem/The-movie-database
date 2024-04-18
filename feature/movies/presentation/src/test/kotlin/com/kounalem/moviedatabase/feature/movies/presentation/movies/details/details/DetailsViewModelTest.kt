@@ -46,7 +46,7 @@ internal class DetailsViewModelTest {
     fun `GIVEN repo returns error WHEN  init THEN update the state`() = runTest {
         coEvery { repository.getMovieById(1) } returns flowOf(Outcome.Error("epic fail"))
 
-        viewModel.state.test {
+        viewModel.uiModels.test {
             assertEquals(
                 actual = awaitItem(), expected = DetailsContract.State.Error("epic fail")
             )
@@ -71,7 +71,7 @@ internal class DetailsViewModelTest {
                 ))
 
 
-        viewModel.state.test {
+        viewModel.uiModels.test {
             assertEquals(
                 actual = awaitItem(),
                 expected = DetailsContract.State.Info(
@@ -88,7 +88,7 @@ internal class DetailsViewModelTest {
     @Test
     fun `WHEN favouriteAction event trigger repo call`() =
         runTest {
-            viewModel.onEvent(DetailsContract.Event.FavouriteAction)
+            viewModel.onFavouriteClicked()
 
             coVerify { repository.updateMovieFavStatus(1) }
         }

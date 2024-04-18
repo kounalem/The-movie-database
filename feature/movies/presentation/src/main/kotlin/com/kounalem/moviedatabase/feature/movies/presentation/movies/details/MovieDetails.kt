@@ -1,6 +1,5 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,17 +45,12 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun MovieDetails(
-    popBackStack: (favourite: Boolean) -> Unit,
-    id: Int,
-) {
-
+fun MovieDetails(popBackStack: (favourite: Boolean) -> Unit) {
     val viewModel = hiltViewModel<DetailsViewModel>()
-    val state = viewModel.state.collectAsStateWithLifecycle().value
-
+    val state = viewModel.uiState.collectAsStateWithLifecycle().value
     val favourite = (state as? DetailsContract.State.Info)?.isFavourite ?: false
     BackHandler(onBack = { popBackStack(favourite) })
-    DetailsView(popBackStack, state, event = viewModel::onEvent)
+    DetailsView(popBackStack, state, onFavouriteClicked = viewModel::onFavouriteClicked)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +58,7 @@ fun MovieDetails(
 internal fun DetailsView(
     popBackStack: (favourite: Boolean) -> Unit,
     state: DetailsContract.State,
-    event: (DetailsContract.Event) -> Unit,
+    onFavouriteClicked: () -> Unit,
 ) {
     Box {
         (state as? DetailsContract.State.Error)?.let {
@@ -130,7 +124,7 @@ internal fun DetailsView(
                                 modifier = Modifier.align(Alignment.TopEnd),
                                 buttonColor = if (state.isFavourite) Color.Red.copy(alpha = 0.6f) else Color.Red,
                                 iconTint = if (state.isFavourite) Color.White.copy(alpha = 0.6f) else Color.White,
-                                onClick = { event(DetailsContract.Event.FavouriteAction) }
+                                onClick = onFavouriteClicked
                             )
                         }
 
@@ -195,7 +189,7 @@ fun PopularMoviesScreenPreview() {
                 poster = null,
                 isFavourite = true,
             ),
-            event = {},
+            onFavouriteClicked = {},
             popBackStack = {},
         )
     }
@@ -206,7 +200,7 @@ fun PopularMoviesScreenPreview() {
 fun PopularMoviesScreenLoadingPreview() {
     DetailsView(
         state = DetailsContract.State.Loading,
-        event = {},
+        onFavouriteClicked = {},
         popBackStack = {},
     )
 }
@@ -217,6 +211,6 @@ fun PopularMoviesScreenErrorPreview() {
     DetailsView(
         popBackStack = {},
         state = DetailsContract.State.Error("error"),
-        event = {},
+        onFavouriteClicked = {},
     )
 }

@@ -93,8 +93,6 @@ class MovieAppState(
                 restoreState = true
             }
 
-//            navigateToHomeScreen(navController, this)
-//            navigateToDetailsScreen(navController, this)
             when (topLevelDestination) {
                 TopLevelDestination.MOVIES -> navController.navigateToMoviesScreen(topLevelNavOptions)
                 TopLevelDestination.SERIES -> navController.navigateToShowsScreen(topLevelNavOptions)

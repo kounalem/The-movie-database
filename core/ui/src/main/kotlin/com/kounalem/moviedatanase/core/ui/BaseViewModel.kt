@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.AbstractFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -55,15 +55,16 @@ fun <Event> EventFlow<Event>.queueAsync(event: Event) {
  */
 context(ViewModel)
 fun <Event> EventFlow<Event>.emitAsync(event: Event) {
-    viewModelScope.launch { emit(event) }
+    viewModelScope.launch {
+        this@emitAsync.emit(event)
+    }
 }
 
 abstract class BaseViewModelImpl<UiModel, Event> : ViewModel(), BaseViewModel<UiModel, Event> {
     override val uiModels: Flow<UiModel>
-        get() = uiState.mapNotNull { it }
-    val uiState = MutableStateFlow<UiModel?>(null)
-
+        get() = uiState. mapNotNull { it }
     override val events = EventFlow<Event>()
+    abstract val uiState: StateFlow<UiModel?>
 
     protected fun <T> MutableSharedFlow<T>.emitAsync(item: T) {
         viewModelScope.launch {

@@ -1,18 +1,24 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.GetMostPopularMoviesUC
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
 import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
+import com.kounalem.moviedatanase.core.ui.emitAsync
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -83,7 +89,8 @@ internal class PopularMoviesViewModel @Inject constructor(
                 fetchingNewMovies.value = false
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val state: StateFlow<PopularMoviesContract.State>
+
+    override val uiState: StateFlow<PopularMoviesContract.State>
         get() = combineTuple(
             results,
             isLoading,
@@ -142,51 +149,53 @@ internal class PopularMoviesViewModel @Inject constructor(
         }
     }
 
-    private fun refreshElements() {
+    fun refreshElements() {
         isRefreshing.value = true
         paginator.reset()
         loadNextItems()
     }
 
-    fun onEvent(event: PopularMoviesContract.Event) {
-        when (event) {
-            is PopularMoviesContract.Event.OnSearchQueryChange -> {
-                searchQuery.value = event.query
-                viewModelScope.launch {
-                    filterMoviesUC.invoke(event.query).collect { movieList ->
-                        val query = movieList.map { movie ->
-                            PopularMoviesContract.State.Info.Movie(
-                                id = movie.id,
-                                title = movie.title,
-                                posterPath = movie.posterPath,
-                                overview = movie.overview,
-                                isFavourite = movie.isFavourite,
-                            )
-                        }
-                        filteredMovies.value = query
-                    }
-                }
-            }
-
-            PopularMoviesContract.Event.Refresh -> refreshElements()
-
-            is PopularMoviesContract.Event.SavedMovies -> {
-                filterSavedMovies.value = if (event.filter) {
-                    PopularMoviesContract.State.Info.SavedMoviesFilter(
-                        filterText = "All movies",
-                        isFiltering = false
-                    )
-                } else {
-                    PopularMoviesContract.State.Info.SavedMoviesFilter(
-                        filterText = "Just saved movies",
-                        isFiltering = true
+    fun onSearchQueryChange(query: String) {
+        searchQuery.value = query
+        viewModelScope.launch {
+            filterMoviesUC.invoke(query).collect { movieList ->
+                val query = movieList.map { movie ->
+                    PopularMoviesContract.State.Info.Movie(
+                        id = movie.id,
+                        title = movie.title,
+                        posterPath = movie.posterPath,
+                        overview = movie.overview,
+                        isFavourite = movie.isFavourite,
                     )
                 }
+                filteredMovies.value = query
             }
         }
     }
 
-    fun updateElement(id: Int, status: Boolean) {
-        popularMoviesUC.updateElement(id, status)
+    fun onSavedMoviesClicked() {
+        filterSavedMovies.value = if (filterSavedMovies.value.isFiltering) {
+            PopularMoviesContract.State.Info.SavedMoviesFilter(
+                filterText = "All movies",
+                isFiltering = false
+            )
+        } else {
+            PopularMoviesContract.State.Info.SavedMoviesFilter(
+                filterText = "Just saved movies",
+                isFiltering = true
+            )
+        }
+    }
+
+    fun navigateToDetails(id: Int) {
+        events.emitAsync(PopularMoviesContract.Event.NavigateToDetails(id))
+    }
+
+    fun updateElementInfo(id: Int?, state: Boolean?) {
+        if(id == null || state == null) return
+        popularMoviesUC.updateElement(
+            id = id,
+            status = state
+        )
     }
 }

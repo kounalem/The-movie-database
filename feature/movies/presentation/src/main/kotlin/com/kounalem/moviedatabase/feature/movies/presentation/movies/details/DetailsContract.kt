@@ -17,8 +17,4 @@ sealed interface DetailsContract {
         ) : State
     }
 
-    sealed class Event {
-        object FavouriteAction : Event()
-    }
-
 }

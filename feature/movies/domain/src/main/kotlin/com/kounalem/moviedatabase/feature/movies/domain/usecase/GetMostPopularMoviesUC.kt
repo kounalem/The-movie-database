@@ -39,7 +39,8 @@ class GetMostPopularMoviesUC @Inject constructor(repo: MovieRepository) {
         refresh.tryEmit(Unit)
     }
 
-    fun updateElement(id: Int, status: Boolean) {
+    fun updateElement(id: Int?, status: Boolean?) {
+        if(id == null || status == null) return
         val currentMap = currentList.value
         currentMap[id]?.let { movie ->
             val updatedMovie = movie.copy(isFavourite = status)

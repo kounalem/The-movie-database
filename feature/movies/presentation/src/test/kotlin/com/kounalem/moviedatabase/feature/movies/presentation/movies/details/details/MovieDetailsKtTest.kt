@@ -13,7 +13,7 @@ internal class MovieDetailsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             DetailsView(
                 popBackStack = {},
-                event = {},
+                onFavouriteClicked = {},
                 state = DetailsContract.State.Loading,
             )
         }
@@ -24,7 +24,7 @@ internal class MovieDetailsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             DetailsView(
                 popBackStack = {},
-                event = {},
+                onFavouriteClicked = {},
                 state = DetailsContract.State.Error("Epic failed"),
             )
         }
@@ -35,7 +35,7 @@ internal class MovieDetailsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             DetailsView(
                 popBackStack = {},
-                event = {},
+                onFavouriteClicked = {},
                 state = DetailsContract.State.Info(
                     title = "title",
                     overview = "overview",

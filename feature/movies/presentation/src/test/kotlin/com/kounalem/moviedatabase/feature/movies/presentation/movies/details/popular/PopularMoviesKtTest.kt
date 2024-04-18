@@ -13,7 +13,9 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
         screenshotTest {
             PopularMoviesView(
                 navigateToDetails = {},
-                event = {},
+                onSavedMoviesClicked = {},
+                onRefresh = {},
+                onSearchQueryChange = {},
                 loadNextItems = {},
                 state = PopularMoviesContract.State.Loading,
             )
@@ -25,7 +27,9 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
         screenshotTest {
             PopularMoviesView(
                 navigateToDetails = {},
-                event = {},
+                onSavedMoviesClicked = {},
+                onRefresh = {},
+                onSearchQueryChange = {},
                 loadNextItems = {},
                 state = PopularMoviesContract.State.Error("Epic failed"),
             )
@@ -37,7 +41,9 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
         screenshotTest {
             PopularMoviesView(
                 navigateToDetails = {},
-                event = {},
+                onSavedMoviesClicked = {},
+                onRefresh = {},
+                onSearchQueryChange = {},
                 loadNextItems = {},
                 state = PopularMoviesContract.State.Info(
                     movies = listOf(
@@ -63,7 +69,9 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
         screenshotTest {
             PopularMoviesView(
                 navigateToDetails = {},
-                event = {},
+                onSavedMoviesClicked = {},
+                onRefresh = {},
+                onSearchQueryChange = {},
                 loadNextItems = {},
                 state = PopularMoviesContract.State.Info(
                     movies = listOf(

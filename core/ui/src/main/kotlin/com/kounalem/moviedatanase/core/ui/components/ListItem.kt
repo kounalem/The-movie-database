@@ -27,6 +27,7 @@ import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
 import com.kounalem.moviedatanase.core.ui.model.ListItemModel
 import com.kounalem.moviedatanase.core.ui.small
+import com.kounalem.moviedatanase.core.ui.throttlingListener
 import com.kounalem.moviedatanase.core.ui.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -37,12 +38,12 @@ fun MovieListItem(
     modifier: Modifier = Modifier,
     selected: (Int) -> Unit,
 ) {
-    Card(modifier = Modifier
-        .padding(vertical = small, horizontal = xsmall)
-        .clip(RoundedCornerShape(16.dp))
-        .clickable {
-            selected(model.id)
-        }) {
+    Card(
+        modifier = Modifier
+            .padding(vertical = small, horizontal = xsmall)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = throttlingListener(onClick = { selected(model.id) }))
+    ) {
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically

@@ -12,6 +12,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -30,18 +31,27 @@ import com.kounalem.moviedatanase.core.ui.xsmall
 
 @Composable
 fun PopularMoviesScreen(
-    updatedElement: Pair<Int,Boolean>?,
+    favouriteId: Int?,
+    favouriteStatus: Boolean?,
     navigateToDetails: (Int) -> Unit,
 ) {
     val viewModel = hiltViewModel<PopularMoviesViewModel>()
-    updatedElement?.let {
-        viewModel.updateElement(updatedElement.first, updatedElement.second)
+    viewModel.updateElementInfo(favouriteId, favouriteStatus)
+
+    val state = viewModel.uiState.collectAsStateWithLifecycle().value
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when(event) {
+                is PopularMoviesContract.Event.NavigateToDetails -> navigateToDetails(event.id)
+            }
+        }
     }
-    val state = viewModel.state.collectAsStateWithLifecycle().value
     PopularMoviesView(
         state = state,
-        navigateToDetails = navigateToDetails,
-        event = viewModel::onEvent,
+        navigateToDetails = viewModel::navigateToDetails,
+        onSavedMoviesClicked = viewModel::onSavedMoviesClicked,
+        onRefresh = viewModel::refreshElements,
+        onSearchQueryChange = viewModel::onSearchQueryChange,
         loadNextItems = viewModel::loadNextItems,
     )
 }
@@ -50,7 +60,9 @@ fun PopularMoviesScreen(
 internal fun PopularMoviesView(
     state: PopularMoviesContract.State,
     navigateToDetails: (Int) -> Unit,
-    event: (PopularMoviesContract.Event) -> Unit,
+    onSavedMoviesClicked: () -> Unit,
+    onRefresh: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
     loadNextItems: () -> Unit,
 ) {
     Column(
@@ -84,7 +96,9 @@ internal fun PopularMoviesView(
                 MovieList(
                     state = state,
                     navigateToDetails = navigateToDetails,
-                    event = event,
+                    onSavedMoviesClicked = onSavedMoviesClicked,
+                    onRefresh = onRefresh,
+                    onSearchQueryChange = onSearchQueryChange,
                     loadNextItems = loadNextItems
                 )
             }
@@ -96,7 +110,9 @@ internal fun PopularMoviesView(
 private fun MovieList(
     state: PopularMoviesContract.State.Info,
     navigateToDetails: (Int) -> Unit,
-    event: (PopularMoviesContract.Event) -> Unit,
+    onSavedMoviesClicked: () -> Unit,
+    onRefresh: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
     loadNextItems: () -> Unit,
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
@@ -109,7 +125,7 @@ private fun MovieList(
             .fillMaxWidth(),
         searchQuery = state.searchQuery,
         event = {
-            event(PopularMoviesContract.Event.OnSearchQueryChange(it))
+            onSearchQueryChange(it)
         }
     )
 
@@ -129,14 +145,14 @@ private fun MovieList(
             },
             searchQuery = state.searchQuery,
             endReached = state.endReached,
-            refreshEvent = { event(PopularMoviesContract.Event.Refresh) },
+            refreshEvent = onRefresh,
             loadNextItems = { loadNextItems() },
             selected = { id -> navigateToDetails(id) }
         )
         Pill(
             modifier = Modifier.align(Alignment.TopEnd),
             text = state.savedMoviesFilter.filterText,
-            onClick = { event(PopularMoviesContract.Event.SavedMovies(state.savedMoviesFilter.isFiltering)) }
+            onClick = onSavedMoviesClicked
         )
     }
 }
@@ -211,7 +227,9 @@ fun PopularMoviesScreenPreview() {
             ))
         ),
         navigateToDetails = {},
-        event = {},
+        onSavedMoviesClicked = {},
+        onRefresh = {},
+        onSearchQueryChange = {},
         loadNextItems = {},
     )
 }

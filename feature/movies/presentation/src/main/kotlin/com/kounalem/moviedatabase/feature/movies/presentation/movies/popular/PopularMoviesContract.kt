@@ -2,6 +2,10 @@ package com.kounalem.moviedatabase.feature.movies.presentation.movies.popular
 
 
 internal interface PopularMoviesContract {
+
+    sealed interface Event {
+        data class NavigateToDetails(val id: Int): Event
+    }
     sealed interface State {
         data object Loading : State
 
@@ -28,13 +32,6 @@ internal interface PopularMoviesContract {
                 val isFavourite: Boolean = false,
             )
         }
-    }
-
-
-    sealed interface Event {
-        data class OnSearchQueryChange(val query: String) : Event
-        object Refresh : Event
-        data class SavedMovies(val filter: Boolean) : Event
     }
 
 }

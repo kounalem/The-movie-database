@@ -1,12 +1,17 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.MovieDetails
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesScreen
 import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
 
 interface Navigation {
@@ -33,11 +38,20 @@ fun navigateToDetailsScreen(
                 type = NavType.IntType
                 nullable = false
             }
-        )
+        ),
+        enterTransition = {
+            return@composable slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+            )
+        },
+        popExitTransition = {
+            return@composable slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+            )
+        },
     ) { navBackStackEntry ->
         val args = navBackStackEntry.arguments
         MovieDetails(
-            id = args?.getInt(Navigation.Details.DETAILS_ID)!!,
             popBackStack = { isFavourite ->
                 // Update the SavedStateHandle with the data you want to pass
                 navController.previousBackStackEntry?.savedStateHandle?.set(
@@ -46,24 +60,10 @@ fun navigateToDetailsScreen(
                 )
                 navController.previousBackStackEntry?.savedStateHandle?.set(
                     Navigation.Details.RESULT_KEY_FAVOURITE_ID,
-                    args.getInt(Navigation.Details.DETAILS_ID)
+                    args?.getInt(Navigation.Details.DETAILS_ID)
                 )
                 navController.popBackStack()
             },
-        )
-    }
-}
-
-fun NavGraphBuilder.detailsScreen(navController: NavHostController) {
-    composable(
-        route = Navigation.Details.withArgsFormat(
-            Navigation.Details.DETAILS_ID
-        )
-    ) { navBackStackEntry ->
-        val args = navBackStackEntry.arguments
-        MovieDetails(
-            id = args?.getInt(Navigation.Details.DETAILS_ID)!!,
-            popBackStack = { navController.popBackStack() },
         )
     }
 }

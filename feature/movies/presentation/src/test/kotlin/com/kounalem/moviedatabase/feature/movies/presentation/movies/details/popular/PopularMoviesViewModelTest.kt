@@ -1,12 +1,14 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.popular
 
 import androidx.compose.ui.text.font.FontSynthesis.Companion.All
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
 import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.GetMostPopularMoviesUC
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesContract
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesViewModel
 import io.mockk.MockKAnnotations
@@ -85,7 +87,7 @@ internal class PopularMoviesViewModelTest {
             }
         )
 
-        viewModel.state.test {
+        viewModel.uiModels.test {
             assertEquals(
                 actual = awaitItem(),
                 expected = PopularMoviesContract.State.Info(
@@ -164,10 +166,10 @@ internal class PopularMoviesViewModelTest {
                 }
             )
 
-            viewModel.onEvent(PopularMoviesContract.Event.OnSearchQueryChange("hi"))
+            viewModel.onSearchQueryChange("hi")
             advanceTimeBy(600L)
 
-            viewModel.state.test {
+            viewModel.uiModels.test {
                 assertEquals(
                     actual = awaitItem(),
                     expected = PopularMoviesContract.State.Info(
@@ -215,7 +217,7 @@ internal class PopularMoviesViewModelTest {
 
         viewModel.loadNextItems()
 
-        viewModel.state.test {
+        viewModel.uiModels.test {
             assertEquals(
                 actual = awaitItem(),
                 expected = PopularMoviesContract.State.Info(
