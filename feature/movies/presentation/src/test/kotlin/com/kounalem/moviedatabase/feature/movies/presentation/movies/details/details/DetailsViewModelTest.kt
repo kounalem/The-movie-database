@@ -43,7 +43,7 @@ internal class DetailsViewModelTest {
     }
 
     @Test
-    fun `GIVEN repo returns error WHEN  init THEN update the state`() = runTest {
+    fun `GIVEN repo returns error WHEN init THEN update the state`() = runTest {
         coEvery { repository.getMovieById(1) } returns flowOf(Outcome.Error("epic fail"))
 
         viewModel.uiModels.test {
@@ -54,7 +54,7 @@ internal class DetailsViewModelTest {
     }
 
     @Test
-    fun `GIVEN repo returns info WHEN  init THEN update the state`() = runTest {
+    fun `GIVEN repo returns info WHEN init THEN update the state`() = runTest {
         coEvery { repository.getMovieById(1) } returns
                 flowOf( Outcome.Success(
                     Movie(

@@ -27,8 +27,6 @@ import com.kounalem.moviedatanase.core.ui.xsmall
 
 @Composable
 fun PopularShowScreen(
-    favouriteStatus: Boolean?,
-    favouriteId: Int?,
     navigateToTvShow: (Int) -> Unit,
 ) {
     val viewModel = hiltViewModel<PopularShowsViewModel>()

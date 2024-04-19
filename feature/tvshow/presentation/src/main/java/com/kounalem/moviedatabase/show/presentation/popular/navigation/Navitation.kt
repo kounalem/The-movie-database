@@ -51,14 +51,8 @@ fun navigateToShowsScreen(
                 )
             }
         }
-        ) {
+    ) {
         PopularShowScreen(
-            favouriteId = navController.currentBackStackEntry
-                ?.savedStateHandle
-                ?.get<Int>(DetailsNavigation.RESULT_KEY_FAVOURITE_ID),
-            favouriteStatus = navController.currentBackStackEntry
-                ?.savedStateHandle
-                ?.get<Boolean>(DetailsNavigation.RESULT_KEY_FAVOURITE),
             navigateToTvShow = { id ->
                 navController.navigate(
                     DetailsNavigation.withArgs(

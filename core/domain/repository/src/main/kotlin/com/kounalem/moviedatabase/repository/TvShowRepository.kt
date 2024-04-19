@@ -9,4 +9,5 @@ interface TvShowRepository {
     fun search(query: String): Flow<List<TvShow>>
     fun getTvShowByIdObs(id: Int = -1): Flow<Outcome<TvShow>>
     suspend fun updateTvShowFavStatus(id: Int)
+    fun getAllLocalSavedShows(): Flow<List<TvShow>>
 }

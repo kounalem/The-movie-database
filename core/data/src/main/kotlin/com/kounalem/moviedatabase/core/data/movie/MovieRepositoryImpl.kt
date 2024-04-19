@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -81,4 +82,5 @@ internal class MovieRepositoryImpl @Inject constructor(
     override suspend fun updateMovieFavStatus(id: Int) {
         local.updateMovieFavStatus(id)
     }
+    override fun getAllLocalSavedMovies(): Flow<List<Movie>> = local.getAllMovies()
 }

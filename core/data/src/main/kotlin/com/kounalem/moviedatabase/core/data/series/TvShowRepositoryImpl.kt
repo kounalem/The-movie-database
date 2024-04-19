@@ -1,11 +1,11 @@
 package com.kounalem.moviedatabase.core.data.series
 
-import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.core.data.mapToOutcome
 import com.kounalem.moviedatabase.database.movie.LocalDataSource
 import com.kounalem.moviedatabase.domain.models.TvShow
 import com.kounalem.moviedatabase.network.NetworkResponse
 import com.kounalem.moviedatabase.network.series.SeriesDataSource
+import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.TvShowRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -73,4 +73,6 @@ internal class TvShowRepositoryImpl @Inject constructor(
         }
 
     override suspend fun updateTvShowFavStatus(id: Int) = local.updateShowFavStatus(id)
+
+    override fun getAllLocalSavedShows(): Flow<List<TvShow>> = local.getAllShows()
 }

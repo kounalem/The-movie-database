@@ -16,9 +16,6 @@ import  com.kounalem.moviedatabase.show.presentation.popular.navigation.Navigati
 interface Navigation {
     data object Details : NavRoute {
         const val DETAILS_ID = "id"
-        const val RESULT_KEY_FAVOURITE = "favoriteStatusKey"
-        const val RESULT_KEY_FAVOURITE_ID = "favoriteStatusID"
-
         override val path: NavRoute.Path
             get() = NavRoute.Path("showDetails")
     }
@@ -57,18 +54,8 @@ fun navigateToShowDetailsScreen(
             }
         },
     ) { navBackStackEntry ->
-        val args = navBackStackEntry.arguments
         ShowDetails(
-            popBackStack = { isFavourite ->
-                // Update the SavedStateHandle with the data you want to pass
-                navController.previousBackStackEntry?.savedStateHandle?.set(
-                    Navigation.Details.RESULT_KEY_FAVOURITE,
-                    isFavourite
-                )
-                navController.previousBackStackEntry?.savedStateHandle?.set(
-                    Navigation.Details.RESULT_KEY_FAVOURITE_ID,
-                    args?.getInt(Navigation.Details.DETAILS_ID)
-                )
+            popBackStack = {
                 navController.popBackStack()
             },
         )

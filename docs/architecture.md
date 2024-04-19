@@ -13,7 +13,7 @@ There is a core module for each layer that defines general use functions.
 
 ### App module
 
-The module responsible for navigating to the different screens, for connecting things. 
+The module responsible for navigating to the different screens, for connecting things.
 
 ### Presentation Layer
 
@@ -105,4 +105,4 @@ The DAO is a class that implements database operations for a specific feature.
 
 In order to run the paparazzi screens `./gradlew recordPaparazziDebug`  
 In order to run all the unit tests do
-`./gradlew :feature:tvshow:presentation:testDebugUnitTest :feature:movies:presentation:testDebugUnitTest --tests='*.*Test*' --tests='!*.PaparazziScreenTest'`
+`./gradlew :core:domain:usecase:testDebugUnitTest :database:testDebugUnitTest :network:testDebugUnitTest :feature:saved:presentation:testDebugUnitTest :feature:saved:domain:testDebugUnitTest :feature:movies:domain:testDebugUnitTest :feature:tvshow:domain:testDebugUnitTest :feature:tvshow:presentation:testDebugUnitTest :feature:movies:presentation:testDebugUnitTest --tests='*.*Test*' --tests='!*.PaparazziScreenTest'`

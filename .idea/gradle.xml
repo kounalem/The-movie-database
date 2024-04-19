@@ -23,6 +23,9 @@
             <option value="$PROJECT_DIR$/feature/movies" />
             <option value="$PROJECT_DIR$/feature/movies/domain" />
             <option value="$PROJECT_DIR$/feature/movies/presentation" />
+            <option value="$PROJECT_DIR$/feature/saved" />
+            <option value="$PROJECT_DIR$/feature/saved/domain" />
+            <option value="$PROJECT_DIR$/feature/saved/presentation" />
             <option value="$PROJECT_DIR$/feature/tvshow" />
             <option value="$PROJECT_DIR$/feature/tvshow/domain" />
             <option value="$PROJECT_DIR$/feature/tvshow/presentation" />

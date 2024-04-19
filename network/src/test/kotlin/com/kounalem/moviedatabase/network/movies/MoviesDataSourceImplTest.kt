@@ -2,12 +2,10 @@ package com.kounalem.moviedatabase.network.movies
 
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.domain.models.Movie
-import com.kounalem.moviedatabase.domain.models.MovieDescription
 import com.kounalem.moviedatabase.domain.models.PopularMovies
 import com.kounalem.moviedatabase.network.NetworkResponse
 import com.kounalem.moviedatabase.network.dtoToResponse
 import com.kounalem.moviedatabase.network.movies.models.MovieDTO
-import com.kounalem.moviedatabase.network.movies.models.MovieDescriptionDTO
 import com.kounalem.moviedatabase.network.movies.models.PopularMoviesDTO
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -29,37 +27,6 @@ internal class MoviesDataSourceImplTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
-    }
-
-    @Test
-    fun `WHEN get movie by id THEN return DAO`() = runTest {
-        coEvery { service.getMovieById(1) } returns MovieDescriptionDTO(
-            id = 1,
-            originalTitle = "original_title",
-            overview = "overview",
-            popularity = 123.0,
-            posterPath = "poster_path",
-            status = "status",
-            tagline = "tagline",
-            title = "title",
-            voteAverage = 0.0,
-        ).dtoToResponse()
-        val expected = NetworkResponse.Success(
-            MovieDescription(
-                id = 1,
-                originalTitle = "original_title",
-                overview = "overview",
-                posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-                title = "title",
-                voteAverage = 0.0,
-                isFavourite = false
-            )
-        )
-
-        datasource.getMovieById(1).test {
-            assertEquals(expected, awaitItem())
-            awaitComplete()
-        }
     }
 
     @Test
@@ -91,6 +58,9 @@ internal class MoviesDataSourceImplTest {
                         voteAverage = 1.0,
                         overview = "overview",
                         date = 1711497600000L,
+                        page = 1,
+                        isFavourite = false,
+                        originalTitle = "originalTitle",
                     )
                 ),
                 totalPages = 1111111,

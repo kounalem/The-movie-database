@@ -56,18 +56,17 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun ShowDetails(popBackStack: (favourite: Boolean) -> Unit) {
+fun ShowDetails(popBackStack: () -> Unit) {
     val viewModel = hiltViewModel<DetailsViewModel>()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
-    val favourite = (state as? DetailsContract.State.Info)?.isFavourite ?: false
-    BackHandler(onBack = { popBackStack(favourite) })
+    BackHandler(onBack = popBackStack)
     DetailsView(popBackStack, state, onFavouriteClicked = viewModel::onFavouriteClicked)
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun DetailsView(
-    popBackStack: (favourite: Boolean) -> Unit,
+    popBackStack: () -> Unit,
     state: DetailsContract.State,
     onFavouriteClicked: () -> Unit,
 ) {
@@ -100,7 +99,7 @@ internal fun DetailsView(
                 TopAppBar(
                     title = { Text(text = state.title) },
                     navigationIcon = {
-                        IconButton(onClick = { popBackStack(state.isFavourite) }) {
+                        IconButton(onClick = { popBackStack() }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                         }
                     },
