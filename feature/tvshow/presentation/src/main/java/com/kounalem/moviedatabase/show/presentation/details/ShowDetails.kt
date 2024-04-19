@@ -1,14 +1,19 @@
-package com.kounalem.moviedatabase.feature.movies.presentation.movies.details
+package com.kounalem.moviedatabase.show.presentation.details
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -16,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,20 +40,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kounalem.moviedatabase.core.ui.R
 import com.kounalem.moviedatanase.core.ui.HorizontalSpace
 import com.kounalem.moviedatanase.core.ui.PreviewBox
+import com.kounalem.moviedatanase.core.ui.components.Pill
 import com.kounalem.moviedatanase.core.ui.large
 import com.kounalem.moviedatanase.core.ui.small
+import com.kounalem.moviedatanase.core.ui.xlarge
 import com.kounalem.moviedatanase.core.ui.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun MovieDetails(popBackStack: (favourite: Boolean) -> Unit) {
+fun ShowDetails(popBackStack: (favourite: Boolean) -> Unit) {
     val viewModel = hiltViewModel<DetailsViewModel>()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     val favourite = (state as? DetailsContract.State.Info)?.isFavourite ?: false
@@ -55,7 +64,7 @@ fun MovieDetails(popBackStack: (favourite: Boolean) -> Unit) {
     DetailsView(popBackStack, state, onFavouriteClicked = viewModel::onFavouriteClicked)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun DetailsView(
     popBackStack: (favourite: Boolean) -> Unit,
@@ -124,6 +133,19 @@ internal fun DetailsView(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
+                            state.firstAirDate?.let { firstAirDate ->
+                                Text(
+                                    modifier = Modifier
+                                        .padding(start = large, top = xlarge)
+                                        .align(Alignment.TopStart),
+                                    text = "${firstAirDate} - ${state.lastAirDate}",
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 16.sp,
+                                    color = Color.White,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1,
+                                )
+                            }
                             CircleButtonWithHeart(
                                 modifier = Modifier.align(Alignment.TopEnd),
                                 buttonColor = if (state.isFavourite) Color.Red.copy(alpha = 0.6f) else Color.Red,
@@ -132,15 +154,18 @@ internal fun DetailsView(
                             )
                         }
 
-                        Text(
-                            modifier = Modifier.padding(start = large),
-                            text = state.rate,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
-                            color = Color.White,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                        )
+
+                        state.type?.let { type ->
+                            Text(
+                                modifier = Modifier.padding(start = large),
+                                text = type,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                            )
+                        }
 
                         HorizontalSpace(xsmall)
                         Text(
@@ -152,6 +177,46 @@ internal fun DetailsView(
                             fontWeight = FontWeight.Light,
                             color = Color.White
                         )
+                        FlowRow(modifier = Modifier.padding(small)) {
+                            state.languages?.forEach {
+                                Pill(text = it)
+                            }
+                        }
+                        state.seasons?.filter { it.posterPath?.isNotEmpty() ?: false }
+                            ?.let { season ->
+                                LazyRow {
+                                    itemsIndexed(season) { _, item ->
+                                        Card(
+                                            modifier = Modifier
+                                                .width(150.dp)
+                                                .padding(horizontal = xsmall)
+                                        ) {
+                                            Box {
+                                                GlideImage(
+                                                    imageModel = { item.posterPath.orEmpty() },
+                                                    imageOptions = ImageOptions(
+                                                        contentScale = ContentScale.Crop,
+                                                        alignment = Alignment.Center
+                                                    ),
+                                                    previewPlaceholder = R.drawable.the_room,
+                                                )
+
+                                                Text(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(large)
+                                                        .align(Alignment.BottomCenter),
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    text = state.overview,
+                                                    maxLines = 3,
+                                                    fontWeight = FontWeight.Light,
+                                                    color = Color.White
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                     }
                 }
             }
@@ -175,7 +240,7 @@ private fun CircleButtonWithHeart(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = "favourite movie",
+            contentDescription = "favourite show",
             tint = iconTint
         )
     }
@@ -183,15 +248,60 @@ private fun CircleButtonWithHeart(
 
 @Preview(backgroundColor = 0xffffffff, showBackground = true)
 @Composable
-fun MovieDetailsScreenPreview() {
+fun showDetailsScreenPreview() {
     PreviewBox {
         DetailsView(
             state = DetailsContract.State.Info(
                 title = "title",
-                overview = "overview",
-                rate = "rate'",
+                overview = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
                 poster = null,
                 isFavourite = true,
+                seasons = listOf(
+                    DetailsContract.State.Info.Season(
+                        airDate = "aeque",
+                        episodeCount = 5438,
+                        id = 1121,
+                        name = "Marcy Rivera",
+                        overview = "definitiones",
+                        posterPath = null,
+                        seasonNumber = 6885,
+                        voteAverage = 1912
+                    ),
+                    DetailsContract.State.Info.Season(
+                        airDate = "vehicula",
+                        episodeCount = 7174,
+                        id = 6749,
+                        name = "Earnestine Campos",
+                        overview = "ornatus",
+                        posterPath = null,
+                        seasonNumber = 6168,
+                        voteAverage = 1389
+                    ),
+                    DetailsContract.State.Info.Season(
+                        airDate = "saepe",
+                        episodeCount = 6421,
+                        id = 9141,
+                        name = "Marci Craig",
+                        overview = "legimus",
+                        posterPath = null,
+                        seasonNumber = 7029,
+                        voteAverage = 8033
+                    ),
+                    DetailsContract.State.Info.Season(
+                        airDate = "mauris",
+                        episodeCount = 2761,
+                        id = 8413,
+                        name = "Terry Olsen",
+                        overview = "decore",
+                        posterPath = null,
+                        seasonNumber = 2025,
+                        voteAverage = 3260
+                    )
+                ),
+                languages = listOf("English", "Greek"),
+                lastAirDate = "ON GOING",
+                type = null,
+                firstAirDate = "21-2-22",
             ),
             onFavouriteClicked = {},
             popBackStack = {},
@@ -201,7 +311,7 @@ fun MovieDetailsScreenPreview() {
 
 @Preview(backgroundColor = 0xffffffff, showBackground = true)
 @Composable
-fun MovieDetailsScreenLoadingPreview() {
+fun ShowDetailsScreenLoadingPreview() {
     DetailsView(
         state = DetailsContract.State.Loading,
         onFavouriteClicked = {},
@@ -211,7 +321,7 @@ fun MovieDetailsScreenLoadingPreview() {
 
 @Preview(backgroundColor = 0xffffffff, showBackground = true)
 @Composable
-fun MovieDetailsScreenErrorPreview() {
+fun ShowDetailsScreenErrorPreview() {
     DetailsView(
         popBackStack = {},
         state = DetailsContract.State.Error("error"),

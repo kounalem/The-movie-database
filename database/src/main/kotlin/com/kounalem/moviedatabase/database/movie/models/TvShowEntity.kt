@@ -10,14 +10,9 @@ internal data class TvShowEntity(
     val overview: String?,
     val posterPath: String?,
     val title: String?,
-    val voteAverage: Double?,
     val adult: Boolean,
-    val originCountry: List<String>,
-    val originalLanguage: String,
     val originalName: String,
-    val popularity: Double,
     val firstAirDate: String,
-    val voteCount: Int,
     val languages: List<String>?,
     val lastAirDate: String?,
     val seasons: List<SeasonEntity>?,
@@ -35,5 +30,5 @@ data class SeasonEntity(
     val overview: String,
     val posterPath: String?,
     val seasonNumber: Int,
-    val voteAverage: Int
+    val voteAverage: Double
 )

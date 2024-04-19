@@ -58,7 +58,7 @@ internal class TvShowRepositoryImpl @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getTvShowByIdObs(id: Int): Flow<Outcome<TvShow>> =
         local.getShowById(id).flatMapLatest { description ->
-            if (description != null) {
+            if (description != null && description.seasons?.isNotEmpty() == true) {
                 flowOf(Outcome.Success(description))
             } else {
                 server.getSeriesById(id).mapToOutcome { description ->

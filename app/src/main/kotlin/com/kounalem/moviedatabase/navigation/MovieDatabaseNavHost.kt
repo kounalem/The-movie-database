@@ -20,9 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.kounalem.moviedatabase.MovieAppState
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.navigateToDetailsScreen
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.navigateToMovieDetailsScreen
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.Navigation
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.navigateToHomeScreen
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.navigateToMoviesScreen
+import com.kounalem.moviedatabase.show.presentation.details.navigation.navigateToShowDetailsScreen
 import com.kounalem.moviedatabase.show.presentation.popular.navigation.navigateToShowsScreen
 
 /**
@@ -44,9 +45,10 @@ fun MovieDatabaseNavHost(
         navController = navController,
         startDestination = Navigation.PopularMovies.path.value
     ) {
-        navigateToHomeScreen(navController, this)
-        navigateToDetailsScreen(navController, this)
-        navigateToShowsScreen(navController , this)
+        navigateToMoviesScreen(navController, this)
+        navigateToMovieDetailsScreen(navController, this)
+        navigateToShowsScreen(navController, this)
+        navigateToShowDetailsScreen(navController, this)
     }
 
 }

@@ -1,4 +1,4 @@
-package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation
+package com.kounalem.moviedatabase.show.presentation.details.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -9,9 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.MovieDetails
+import com.kounalem.moviedatabase.show.presentation.details.ShowDetails
 import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.Navigation.PopularMovies as PopularMoviesNavigation
+import  com.kounalem.moviedatabase.show.presentation.popular.navigation.Navigation.PopularShows as PopularMoviesNavigation
 
 interface Navigation {
     data object Details : NavRoute {
@@ -20,11 +20,11 @@ interface Navigation {
         const val RESULT_KEY_FAVOURITE_ID = "favoriteStatusID"
 
         override val path: NavRoute.Path
-            get() = NavRoute.Path("movieDetails")
+            get() = NavRoute.Path("showDetails")
     }
 }
 
-fun navigateToMovieDetailsScreen(
+fun navigateToShowDetailsScreen(
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
@@ -58,7 +58,7 @@ fun navigateToMovieDetailsScreen(
         },
     ) { navBackStackEntry ->
         val args = navBackStackEntry.arguments
-        MovieDetails(
+        ShowDetails(
             popBackStack = { isFavourite ->
                 // Update the SavedStateHandle with the data you want to pass
                 navController.previousBackStackEntry?.savedStateHandle?.set(

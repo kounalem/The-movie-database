@@ -12,7 +12,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesScreen
 import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation as MovieDetailsNavigation
+import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation.Details as MovieDetailsNavigation
 
 interface Navigation {
     data object PopularMovies : NavRoute {
@@ -24,19 +24,23 @@ interface Navigation {
 fun NavController.navigateToMoviesScreen(navOptions: NavOptions) =
     navigate(Navigation.PopularMovies.path.value, navOptions)
 
-fun navigateToHomeScreen(
+fun navigateToMoviesScreen(
     navController: NavHostController, navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(
         route = Navigation.PopularMovies.path.value,
         enterTransition = {
-            return@composable fadeIn(tween(1000))
+            if (initialState.destination.route != MovieDetailsNavigation.path.value) {
+                EnterTransition.None
+            } else {
+                return@composable fadeIn(tween(1000))
+            }
         },
         exitTransition = {
             return@composable fadeOut(tween(700))
         },
         popEnterTransition = {
-            if (initialState.destination.route != MovieDetailsNavigation.Details.path.value) {
+            if (initialState.destination.route != MovieDetailsNavigation.path.value) {
                 EnterTransition.None
             } else {
                 return@composable slideIntoContainer(
@@ -49,13 +53,13 @@ fun navigateToHomeScreen(
         PopularMoviesScreen(
             favouriteId = navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.get<Int>(MovieDetailsNavigation.Details.RESULT_KEY_FAVOURITE_ID),
+                ?.get<Int>(MovieDetailsNavigation.RESULT_KEY_FAVOURITE_ID),
             favouriteStatus = navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.get<Boolean>(MovieDetailsNavigation.Details.RESULT_KEY_FAVOURITE),
+                ?.get<Boolean>(MovieDetailsNavigation.RESULT_KEY_FAVOURITE),
             navigateToDetails = { id ->
                 navController.navigate(
-                    MovieDetailsNavigation.Details.withArgs(
+                    MovieDetailsNavigation.withArgs(
                         id.toString()
                     )
                 )
