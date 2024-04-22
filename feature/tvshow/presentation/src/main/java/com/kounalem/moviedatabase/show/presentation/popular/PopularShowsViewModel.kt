@@ -1,10 +1,11 @@
 package com.kounalem.moviedatabase.show.presentation.popular
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.TvShowRepository
 import com.kounalem.moviedatabase.tvshow.domain.FilterShowsUC
+import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
+import com.kounalem.moviedatanase.core.ui.emitAsync
 import com.kounalem.moviedatanase.core.ui.paginator.Paginator
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ import javax.inject.Inject
 internal class PopularShowsViewModel @Inject constructor(
     private val repo: TvShowRepository,
     private val filterShowUc: FilterShowsUC,
-) : ViewModel() {
+) : BaseViewModelImpl<PopularShowsContract.State, PopularShowsContract.Event>() {
 
     private val isLoading = MutableStateFlow(false)
     private val error: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -90,7 +91,7 @@ internal class PopularShowsViewModel @Inject constructor(
                 fetchingNewMovies.value = false
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LinkedHashSet())
 
-    val state: StateFlow<PopularShowsContract.State>
+    override val uiState: StateFlow<PopularShowsContract.State>
         get() = combineTuple(
             results,
             isLoading,
@@ -143,32 +144,29 @@ internal class PopularShowsViewModel @Inject constructor(
         }
     }
 
-    private fun refreshElements() {
+    fun refreshElements() {
         isRefreshing.value = true
         paginator.reset()
         loadNextItems()
     }
+    fun navigateToDetails(id: Int) {
+        events.emitAsync(PopularShowsContract.Event.NavigateToDetails(id))
+    }
 
-    fun onEvent(event: PopularShowsContract.Event) {
-        when (event) {
-            is PopularShowsContract.Event.OnSearchQueryChange -> {
-                searchQuery.value = event.query
-                viewModelScope.launch {
-                    filterShowUc.invoke(event.query).collect { movieList ->
-                        val query = movieList.map { movie ->
-                            PopularShowsContract.State.Info.Show(
-                                id = movie.id,
-                                title = movie.name,
-                                posterPath = movie.posterPath,
-                                overview = movie.overview,
-                            )
-                        }
-                        filteredMovies.value = query
-                    }
+    fun onSearchQueryChange(query: String) {
+        searchQuery.value = query
+        viewModelScope.launch {
+            filterShowUc.invoke(query).collect { movieList ->
+                val query = movieList.map { movie ->
+                    PopularShowsContract.State.Info.Show(
+                        id = movie.id,
+                        title = movie.name,
+                        posterPath = movie.posterPath,
+                        overview = movie.overview,
+                    )
                 }
+                filteredMovies.value = query
             }
-
-            PopularShowsContract.Event.Refresh -> refreshElements()
         }
     }
 }

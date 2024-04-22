@@ -26,8 +26,7 @@ internal interface PopularShowsContract {
 
 
     sealed interface Event {
-        data class OnSearchQueryChange(val query: String) : Event
-        object Refresh : Event
+        data class NavigateToDetails(val id: Int): Event
     }
 
 }

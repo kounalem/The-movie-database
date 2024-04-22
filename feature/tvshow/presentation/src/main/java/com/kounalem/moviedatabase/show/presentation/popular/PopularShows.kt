@@ -11,6 +11,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,12 +31,22 @@ fun PopularShowScreen(
     navigateToTvShow: (Int) -> Unit,
 ) {
     val viewModel = hiltViewModel<PopularShowsViewModel>()
-    val state = viewModel.state.collectAsStateWithLifecycle().value
+    val state = viewModel.uiState.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is PopularShowsContract.Event.NavigateToDetails -> navigateToTvShow(event.id)
+            }
+        }
+    }
+
     PopularShowsView(
         state = state,
-        navigateToTvShow = navigateToTvShow,
-        event = viewModel::onEvent,
+        navigateToTvShow = viewModel::navigateToDetails,
+        search = viewModel::onSearchQueryChange,
         loadNextItems = viewModel::loadNextItems,
+        refresh = viewModel::refreshElements
     )
 }
 
@@ -43,8 +54,9 @@ fun PopularShowScreen(
 internal fun PopularShowsView(
     state: PopularShowsContract.State,
     navigateToTvShow: (Int) -> Unit,
-    event: (PopularShowsContract.Event) -> Unit,
+    search: (query: String) -> Unit,
     loadNextItems: () -> Unit,
+    refresh: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -77,8 +89,9 @@ internal fun PopularShowsView(
                 ShowList(
                     state = state,
                     navigateToTvShow = navigateToTvShow,
-                    event = event,
-                    loadNextItems = loadNextItems
+                    search = search,
+                    loadNextItems = loadNextItems,
+                    refresh = refresh
                 )
             }
         }
@@ -89,7 +102,8 @@ internal fun PopularShowsView(
 private fun ShowList(
     state: PopularShowsContract.State.Info,
     navigateToTvShow: (Int) -> Unit,
-    event: (PopularShowsContract.Event) -> Unit,
+    search: (query: String) -> Unit,
+    refresh: () -> Unit,
     loadNextItems: () -> Unit,
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
@@ -100,9 +114,7 @@ private fun ShowList(
         modifier = Modifier
             .fillMaxWidth(),
         searchQuery = state.searchQuery,
-        event = {
-            event(PopularShowsContract.Event.OnSearchQueryChange(it))
-        }
+        event = search
     )
 
     PaginationList(
@@ -120,7 +132,7 @@ private fun ShowList(
         },
         searchQuery = state.searchQuery,
         endReached = state.endReached,
-        refreshEvent = { event(PopularShowsContract.Event.Refresh) },
+        refreshEvent = refresh,
         loadNextItems = { loadNextItems() },
         selected = { id -> navigateToTvShow(id) }
     )
@@ -193,7 +205,8 @@ fun PopularShowScreenPreview() {
             fetchingNewShows = false,
         ),
         navigateToTvShow = {},
-        event = {},
+        search = {},
+        refresh = {},
         loadNextItems = {},
     )
 }

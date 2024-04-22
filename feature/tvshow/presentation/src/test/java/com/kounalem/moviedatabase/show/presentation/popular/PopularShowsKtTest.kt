@@ -11,7 +11,8 @@ internal class PopularShowsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             PopularShowsView(
                 navigateToTvShow = {},
-                event = {},
+                refresh = {},
+                search = {},
                 loadNextItems = {},
                 state = PopularShowsContract.State.Loading,
             )
@@ -23,7 +24,8 @@ internal class PopularShowsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             PopularShowsView(
                 navigateToTvShow = {},
-                event = {},
+                refresh = {},
+                search = {},
                 loadNextItems = {},
                 state = PopularShowsContract.State.Error("Epic failed"),
             )
@@ -35,7 +37,8 @@ internal class PopularShowsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             PopularShowsView(
                 navigateToTvShow = {},
-                event = {},
+                refresh = {},
+                search = {},
                 loadNextItems = {},
                 state = PopularShowsContract.State.Info(
                     shows = listOf(
@@ -60,8 +63,9 @@ internal class PopularShowsKtTest(config: TestConfig) : PaparazziScreenTest(conf
         screenshotTest {
             PopularShowsView(
                 navigateToTvShow = {},
-                event = {},
                 loadNextItems = {},
+                refresh = {},
+                search = {},
                 state = PopularShowsContract.State.Info(
                     shows = listOf(
                         PopularShowsContract.State.Info.Show(

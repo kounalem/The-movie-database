@@ -55,7 +55,7 @@ internal class PopularShowsViewModelTest {
             )
         )
 
-        viewModel.state.test {
+        viewModel.uiModels.test {
             assertEquals(
                 actual = awaitItem(),
                 expected = PopularShowsContract.State.Info(
@@ -96,10 +96,10 @@ internal class PopularShowsViewModelTest {
                 )
             )
 
-            viewModel.onEvent(PopularShowsContract.Event.OnSearchQueryChange("hi"))
+            viewModel.onSearchQueryChange("hi")
             advanceTimeBy(600L)
 
-            viewModel.state.test {
+            viewModel.uiModels.test {
                 assertEquals(
                     actual = awaitItem(),
                     expected = PopularShowsContract.State.Info(
@@ -132,7 +132,7 @@ internal class PopularShowsViewModelTest {
 
         viewModel.loadNextItems()
 
-        viewModel.state.test {
+        viewModel.uiModels.test {
             assertEquals(
                 actual = awaitItem(),
                 expected = PopularShowsContract.State.Info(
