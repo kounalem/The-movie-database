@@ -10,6 +10,9 @@ Despite being simple in features, I wanted the project to showcase the use of th
 and the modularise by feature approach to improve the overall architecture of the app, allowing the
 behaviour of the app to be super clean and unit testable.
 
+Must do:
+You have to use an API key. Feel free to use mine by adding DATABASE_API_KEY="0154126bcc52cfe539c99204454466a9" in the local.properties file.
+
 ### Libraries used:
 Retrofit, Hilt, Glide, Room
 
