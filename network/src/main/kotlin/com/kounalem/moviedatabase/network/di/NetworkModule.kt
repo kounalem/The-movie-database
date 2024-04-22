@@ -23,34 +23,35 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
     @Provides
     @Singleton
-    internal fun provideMovieApi(): MoviesApiService {
+    @MovieClient
+    fun provideRetrofit(): Retrofit {
         return Retrofit.Builder().baseUrl("http://api.themoviedb.org/3/")
             .addConverterFactory(GsonConverterFactory.create()).client(
                 OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BASIC
                 }).addInterceptor(RequestInterceptor()).build()
-            ).build().create()
+            ).build()
     }
 
     @Provides
     @Singleton
-    internal fun provideSeriesApi(): SeriesApiService {
-        return Retrofit.Builder().baseUrl("http://api.themoviedb.org/3/")
-            .addConverterFactory(GsonConverterFactory.create()).client(
-                OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
-                }).addInterceptor(RequestInterceptor()).build()
-            ).build().create()
-    }
+    internal fun provideMovieApi(@MovieClient retrofit: Retrofit): MoviesApiService =
+        retrofit.create()
+
+    @Provides
+    @Singleton
+    internal fun provideSeriesApi(@MovieClient retrofit: Retrofit): SeriesApiService =
+        retrofit.create()
+
 
     @Provides
     @Singleton
     internal fun provideServerMoviesDataSource(
         service: MoviesApiService,
     ): MoviesDataSource = ServerDataSourceImpl(service = service)
-
 
     @Provides
     @Singleton
