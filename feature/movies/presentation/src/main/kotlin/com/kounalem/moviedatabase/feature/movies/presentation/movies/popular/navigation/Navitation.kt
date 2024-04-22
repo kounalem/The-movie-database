@@ -29,16 +29,6 @@ fun navigateToMoviesScreen(
 ) {
     navGraphBuilder.composable(
         route = Navigation.PopularMovies.path.value,
-        enterTransition = {
-            if (initialState.destination.route != MovieDetailsNavigation.path.value) {
-                EnterTransition.None
-            } else {
-                return@composable fadeIn(tween(1000))
-            }
-        },
-        exitTransition = {
-            return@composable fadeOut(tween(700))
-        },
         popEnterTransition = {
             if (initialState.destination.route?.contains(MovieDetailsNavigation.path.value) == false) {
                 EnterTransition.None

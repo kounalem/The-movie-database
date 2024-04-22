@@ -32,16 +32,6 @@ fun navigateToShowsScreen(
 ) {
     navGraphBuilder.composable(
         route = Navigation.PopularShows.path.value,
-        enterTransition = {
-            if (initialState.destination.route != DetailsNavigation.path.value) {
-                EnterTransition.None
-            } else {
-                return@composable fadeIn(tween(1000))
-            }
-        },
-        exitTransition = {
-            return@composable fadeOut(tween(700))
-        },
         popEnterTransition = {
             if (initialState.destination.route?.contains(DetailsNavigation.path.value) == false) {
                 EnterTransition.None
