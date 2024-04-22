@@ -98,10 +98,10 @@ class FilterSavedUCTest {
             assertEquals(
                 listOf(
                     FilterSavedUC.SavedElement.Movie(
-                        1336, "praesent"
+                        1336, "praesent", "Marianne Lowery", "mnesarchum"
                     ),
                     FilterSavedUC.SavedElement.Movie(
-                        3115, "oporteat"
+                        3115, "oporteat", "Rickey Abbott", "splendide"
                     )
                 ),
                 savedElements

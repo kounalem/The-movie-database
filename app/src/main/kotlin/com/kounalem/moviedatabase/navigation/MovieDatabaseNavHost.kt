@@ -23,6 +23,7 @@ import com.kounalem.moviedatabase.MovieAppState
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.navigateToMovieDetailsScreen
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.Navigation
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.navigateToMoviesScreen
+import com.kounalem.moviedatabase.saved.presentation.navigation.navigateToSavedElementsScreen
 import com.kounalem.moviedatabase.show.presentation.details.navigation.navigateToShowDetailsScreen
 import com.kounalem.moviedatabase.show.presentation.popular.navigation.navigateToShowsScreen
 
@@ -49,6 +50,7 @@ fun MovieDatabaseNavHost(
         navigateToMovieDetailsScreen(navController, this)
         navigateToShowsScreen(navController, this)
         navigateToShowDetailsScreen(navController, this)
+        navigateToSavedElementsScreen(this)
     }
 
 }

@@ -19,12 +19,12 @@ class FilterSavedUC @Inject constructor(
             val savedElements = mutableListOf<SavedElement>()
             savedElements.addAll(
                 movies.filter { it.isFavourite }.map { movie ->
-                    SavedElement.Movie(movie.id, movie.posterPath)
+                    SavedElement.Movie(movie.id, movie.posterPath, movie.title, movie.overview)
                 }
             )
             savedElements.addAll(
-                shows.filter { it.isFavourite }.map { movie ->
-                    SavedElement.TvShow(movie.id, movie.posterPath)
+                shows.filter { it.isFavourite }.map { show ->
+                    SavedElement.TvShow(show.id, show.posterPath, show.name, show.overview)
                 }
             )
             savedElements
@@ -33,9 +33,21 @@ class FilterSavedUC @Inject constructor(
     sealed interface SavedElement {
         val id: Int
         val image: String
+        val title: String
+        val overview: String
+        data class Movie(
+            override val id: Int,
+            override val image: String,
+            override val title: String,
+            override val overview: String
+        ) : SavedElement
 
-        data class Movie(override val id: Int, override val image: String) : SavedElement
-        data class TvShow(override val id: Int, override val image: String) : SavedElement
+        data class TvShow(
+            override val id: Int,
+            override val image: String,
+            override val title: String,
+            override val overview: String
+        ) : SavedElement
     }
 
 }

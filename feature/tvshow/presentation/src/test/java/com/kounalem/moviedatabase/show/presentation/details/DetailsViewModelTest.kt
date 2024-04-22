@@ -4,10 +4,8 @@ package com.kounalem.moviedatabase.show.presentation.details
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
-import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.TvShow
 import com.kounalem.moviedatabase.repository.Outcome
-import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.repository.TvShowRepository
 import com.kounalem.moviedatabase.show.presentation.details.navigation.Navigation
 import io.mockk.MockKAnnotations
@@ -57,22 +55,24 @@ internal class DetailsViewModelTest {
     @Test
     fun `GIVEN repo returns info WHEN init THEN update the state`() = runTest {
         coEvery { repository.getTvShowByIdObs(1) } returns
-                flowOf( Outcome.Success(
-                    TvShow(
-                        id = 1,
-                        overview = "overview",
-                        posterPath = "https://image.tmdb.org/t/p/w342poster_path",
-                        isFavourite = false,
-                        adult = false,
-                        originalName = "Jocelyn Mills",
-                        firstAirDate = "deseruisse",
-                        name = "Alva Martin",
-                        languages = listOf(),
-                        lastAirDate = null,
-                        seasons = listOf(),
-                        type = null,
+                flowOf(
+                    Outcome.Success(
+                        TvShow(
+                            id = 1,
+                            overview = "overview",
+                            posterPath = "https://image.tmdb.org/t/p/w342poster_path",
+                            isFavourite = false,
+                            adult = false,
+                            originalName = "Jocelyn Mills",
+                            firstAirDate = "deseruisse",
+                            name = "Alva Martin",
+                            languages = listOf(),
+                            lastAirDate = null,
+                            seasons = listOf(),
+                            type = null,
+                        )
                     )
-                ))
+                )
 
 
         viewModel.uiModels.test {

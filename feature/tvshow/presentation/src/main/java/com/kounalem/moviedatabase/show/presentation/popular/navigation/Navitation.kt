@@ -43,7 +43,7 @@ fun navigateToShowsScreen(
             return@composable fadeOut(tween(700))
         },
         popEnterTransition = {
-            if (initialState.destination.route != DetailsNavigation.path.value) {
+            if (initialState.destination.route?.contains(DetailsNavigation.path.value) == false) {
                 EnterTransition.None
             } else {
                 return@composable slideIntoContainer(

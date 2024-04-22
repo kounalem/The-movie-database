@@ -91,6 +91,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:movies:presentation"))
     implementation(project(":feature:tvshow:presentation"))
+    implementation(project(":feature:saved:presentation"))
     implementation(project(":core:data"))
 
     //androidx

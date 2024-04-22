@@ -16,6 +16,7 @@ import androidx.tracing.Trace
 import com.kounalem.moviedatabase.core.data.NetworkMonitor
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.navigation.navigateToMoviesScreen
 import com.kounalem.moviedatabase.navigation.TopLevelDestination
+import com.kounalem.moviedatabase.saved.presentation.navigation.navigateToSavedElementsScreen
 import com.kounalem.moviedatabase.show.presentation.popular.navigation.navigateToShowsScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -53,6 +54,7 @@ class MovieAppState(
     val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
+
     /**
      * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
      * route.
@@ -94,9 +96,14 @@ class MovieAppState(
             }
 
             when (topLevelDestination) {
-                TopLevelDestination.MOVIES -> navController.navigateToMoviesScreen(topLevelNavOptions)
+                TopLevelDestination.MOVIES -> navController.navigateToMoviesScreen(
+                    topLevelNavOptions
+                )
+
                 TopLevelDestination.SHOWS -> navController.navigateToShowsScreen(topLevelNavOptions)
-                TopLevelDestination.SAVED -> TODO("")
+                TopLevelDestination.SAVED -> navController.navigateToSavedElementsScreen(
+                    topLevelNavOptions
+                )
             }
         }
     }

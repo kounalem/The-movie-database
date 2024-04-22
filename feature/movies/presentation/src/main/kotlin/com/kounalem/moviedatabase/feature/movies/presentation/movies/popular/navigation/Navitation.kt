@@ -40,7 +40,7 @@ fun navigateToMoviesScreen(
             return@composable fadeOut(tween(700))
         },
         popEnterTransition = {
-            if (initialState.destination.route != MovieDetailsNavigation.path.value) {
+            if (initialState.destination.route?.contains(MovieDetailsNavigation.path.value) == false) {
                 EnterTransition.None
             } else {
                 return@composable slideIntoContainer(
