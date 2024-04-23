@@ -45,6 +45,15 @@ jobs:
           GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
           PULL_REQUEST_BRANCH: ${{ github.head_ref }}
 
+      - name: Process failed unit tests
+        if: failure()
+        id: failed-unit
+        run: "./.github/workflows/process_failed_unit_tests.sh"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
+          PULL_REQUEST_BRANCH: ${{ github.head_ref }}
+
       - name: Create an issue if screenshot tests failed
         uses: octokit/request-action@v2.1.9
         if: always() && steps.failed-screenshots.outputs.PULL_REQUEST_COMMENT
