@@ -25,6 +25,7 @@ import com.kounalem.moviedatabase.core.ui.R
 import com.kounalem.moviedatanase.core.ui.HorizontalSpace
 import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
+import com.kounalem.moviedatanase.core.ui.annotations.ScreenPreview
 import com.kounalem.moviedatanase.core.ui.model.ListItemModel
 import com.kounalem.moviedatanase.core.ui.small
 import com.kounalem.moviedatanase.core.ui.throttlingListener
@@ -84,8 +85,7 @@ fun MovieListItem(
 
 
 @Composable
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ScreenPreview
 private fun ListItemLocalPreview() {
     ListItemPreview()
 }

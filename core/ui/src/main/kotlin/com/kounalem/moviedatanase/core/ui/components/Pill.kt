@@ -1,6 +1,5 @@
 package com.kounalem.moviedatanase.core.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +15,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
+import com.kounalem.moviedatanase.core.ui.annotations.ScreenPreview
 import com.kounalem.moviedatanase.core.ui.large
 import com.kounalem.moviedatanase.core.ui.light_onBackground
 import com.kounalem.moviedatanase.core.ui.medium
@@ -66,8 +65,7 @@ fun Pill(
 
 
 @Composable
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ScreenPreview
 private fun PillLocalPreview() {
     Pill(
         text = "Hello",

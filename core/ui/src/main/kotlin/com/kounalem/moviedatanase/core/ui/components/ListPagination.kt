@@ -18,6 +18,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
+import com.kounalem.moviedatanase.core.ui.annotations.ScreenPreview
 import com.kounalem.moviedatanase.core.ui.model.ListItemModel
 import com.kounalem.moviedatanase.core.ui.small
 
@@ -74,8 +75,7 @@ fun PaginationList(
 
 
 @Composable
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ScreenPreview
 private fun PaginationListLocalPreview() {
     PaginationList(
         refreshState = rememberSwipeRefreshState(true),

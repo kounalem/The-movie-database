@@ -1,6 +1,5 @@
 package com.kounalem.moviedatanase.core.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -11,10 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.kounalem.moviedatanase.core.ui.PreviewBox
 import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
+import com.kounalem.moviedatanase.core.ui.annotations.ScreenPreview
 
 @Composable
 fun MovieOutlinedTextField(modifier: Modifier, searchQuery: String?, event: (String) -> Unit) {
@@ -45,8 +44,7 @@ fun MovieOutlinedTextField(modifier: Modifier, searchQuery: String?, event: (Str
 }
 
 @Composable
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ScreenPreview
 private fun MovieOutlinedTextFieldLocalPreview() {
     MovieOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -56,8 +54,7 @@ private fun MovieOutlinedTextFieldLocalPreview() {
 }
 
 @Composable
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ScreenPreview
 private fun MovieOutlinedTextWithQueryFieldLocalPreview() {
     MovieOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
