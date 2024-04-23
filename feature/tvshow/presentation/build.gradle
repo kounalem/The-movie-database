@@ -58,6 +58,7 @@ dependencies {
     //other
     implementation libs.landscapist.glide
     implementation libs.flow.combinetuple.kt
+    implementation(libs.showkase)
 
     //tests
     testImplementation libs.junit

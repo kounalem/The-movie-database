@@ -35,6 +35,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.paparazzi)
+    implementation(libs.showkase)
     implementation(libs.junit)
 
 

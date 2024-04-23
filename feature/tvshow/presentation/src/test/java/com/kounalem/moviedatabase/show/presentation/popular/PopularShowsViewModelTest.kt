@@ -62,13 +62,13 @@ internal class PopularShowsViewModelTest {
                     shows = listOf(
                         PopularShowsContract.State.Info.Show(
                             id = 22980,
-                            posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJwrMXWhq7UY7hGF2S1h.jpg",
+                            posterPath = "",
                             title = "Watch What Happens Live with Andy Cohen",
                             overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
                         ),
                         PopularShowsContract.State.Info.Show(
                             id = 22981,
-                            posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJh.jpg",
+                            posterPath = "",
                             title = "Watch What Happens Live withManolis Kounalakis",
                             overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
                         )
@@ -106,13 +106,13 @@ internal class PopularShowsViewModelTest {
                         shows = listOf(
                             PopularShowsContract.State.Info.Show(
                                 id = 22980,
-                                posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJwrMXWhq7UY7hGF2S1h.jpg",
+                                posterPath = "",
                                 title = "Watch What Happens Live with Andy Cohen",
                                 overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
                             ),
                             PopularShowsContract.State.Info.Show(
                                 id = 22981,
-                                posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJh.jpg",
+                                posterPath = "",
                                 title = "Watch What Happens Live withManolis Kounalakis",
                                 overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
                             )
@@ -139,7 +139,7 @@ internal class PopularShowsViewModelTest {
                     shows = listOf(
                         PopularShowsContract.State.Info.Show(
                             id = 22980,
-                            posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJwrMXWhq7UY7hGF2S1h.jpg",
+                            posterPath = "",
                             title = "Watch What Happens Live with Andy Cohen",
                             overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
                         ),
@@ -158,7 +158,7 @@ internal class PopularShowsViewModelTest {
         id = 22980,
         originalName = "Watch What Happens Live with Andy Cohen",
         overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
-        posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJwrMXWhq7UY7hGF2S1h.jpg",
+        posterPath = "",
         firstAirDate = "2009-07-16",
         name = "Watch What Happens Live with Andy Cohen",
         languages = null,
@@ -172,7 +172,7 @@ internal class PopularShowsViewModelTest {
         id = 22981,
         originalName = "Watch What Happens Live with Manolis Kounalakis",
         overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
-        posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJh.jpg",
+        posterPath = "",
         firstAirDate = "2009-07-17",
         name = "Watch What Happens Live withManolis Kounalakis",
         languages = null,

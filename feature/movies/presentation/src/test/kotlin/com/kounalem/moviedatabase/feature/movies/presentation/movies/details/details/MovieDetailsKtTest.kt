@@ -1,49 +1,26 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.details
 
+import com.airbnb.android.showkase.models.Showkase
 import com.kounalem.moviedatabase.core.test.PaparazziScreenTest
-import com.kounalem.moviedatabase.core.test.TestConfig
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsContract
-import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.DetailsView
-import org.junit.Test
+import com.kounalem.moviedatabase.core.test.TestPreview
+import com.kounalem.moviedatanase.core.ui.getMetadata
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
-internal class MovieDetailsKtTest(config: TestConfig) : PaparazziScreenTest(config) {
-
-    @Test
-    fun movieDetailsLoadingTest() {
-        screenshotTest {
-            DetailsView(
-                popBackStack = {},
-                onFavouriteClicked = {},
-                state = DetailsContract.State.Loading,
+@RunWith(Parameterized::class)
+internal class MovieDetailsKtTest(
+    componentTestPreview: TestPreview,
+    @Suppress("UNUSED_PARAMETER")
+    name: String, // Need this parameter to display test name nicely
+) : PaparazziScreenTest(componentTestPreview) {
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{1}")
+        fun provideValues(): Collection<Array<Any>> =
+            provideValues(
+                Showkase.getMetadata(),
+                "com.kounalem.moviedatabase.movies.details",
             )
-        }
     }
 
-    @Test
-    fun movieDetailsErrorTest() {
-        screenshotTest {
-            DetailsView(
-                popBackStack = {},
-                onFavouriteClicked = {},
-                state = DetailsContract.State.Error("Epic failed"),
-            )
-        }
-    }
-
-    @Test
-    fun movieDetailsSuccessTest() {
-        screenshotTest {
-            DetailsView(
-                popBackStack = {},
-                onFavouriteClicked = {},
-                state = DetailsContract.State.Info(
-                    title = "title",
-                    overview = "overview",
-                    rate = "my rate",
-                    poster = null,
-                    isFavourite = true
-                )
-            )
-        }
-    }
 }

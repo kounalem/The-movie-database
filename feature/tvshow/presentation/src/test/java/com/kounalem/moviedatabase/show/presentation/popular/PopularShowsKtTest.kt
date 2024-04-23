@@ -1,86 +1,27 @@
 package com.kounalem.moviedatabase.show.presentation.popular
 
+import com.airbnb.android.showkase.models.Showkase
 import com.kounalem.moviedatabase.core.test.PaparazziScreenTest
 import com.kounalem.moviedatabase.core.test.TestConfig
+import com.kounalem.moviedatabase.core.test.TestPreview
+import com.kounalem.moviedatanase.core.ui.getMetadata
 import org.junit.Test
-
-internal class PopularShowsKtTest(config: TestConfig) : PaparazziScreenTest(config) {
-
-    @Test
-    fun popularShowsLoadingTest() {
-        screenshotTest {
-            PopularShowsView(
-                navigateToTvShow = {},
-                refresh = {},
-                search = {},
-                loadNextItems = {},
-                state = PopularShowsContract.State.Loading,
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+@RunWith(Parameterized::class)
+internal class PopularShowsKtTest(
+    componentTestPreview: TestPreview,
+    @Suppress("UNUSED_PARAMETER")
+    name: String, // Need this parameter to display test name nicely
+) : PaparazziScreenTest(componentTestPreview) {
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{1}")
+        fun provideValues(): Collection<Array<Any>> =
+            provideValues(
+                Showkase.getMetadata(),
+                "com.kounalem.moviedatabase.shows.list",
             )
-        }
     }
 
-    @Test
-    fun popularMoviesErrorTest() {
-        screenshotTest {
-            PopularShowsView(
-                navigateToTvShow = {},
-                refresh = {},
-                search = {},
-                loadNextItems = {},
-                state = PopularShowsContract.State.Error("Epic failed"),
-            )
-        }
-    }
-
-    @Test
-    fun popularMoviesSuccessTest() {
-        screenshotTest {
-            PopularShowsView(
-                navigateToTvShow = {},
-                refresh = {},
-                search = {},
-                loadNextItems = {},
-                state = PopularShowsContract.State.Info(
-                    shows = listOf(
-                        PopularShowsContract.State.Info.Show(
-                            id = 1,
-                            posterPath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcREEsN-qCwFIPE7-FglJVTrE0ijr7-VwggC6CXNtMLYtMnHWthZ",
-                            title = "title",
-                            overview = "overview",
-                        )
-                    ),
-                    isRefreshing = true,
-                    searchQuery = null,
-                    endReached = false,
-                    fetchingNewShows = false
-                ),
-            )
-        }
-    }
-
-    @Test
-    fun popularMoviesWhileLoadingSuccessTest() {
-        screenshotTest {
-            PopularShowsView(
-                navigateToTvShow = {},
-                loadNextItems = {},
-                refresh = {},
-                search = {},
-                state = PopularShowsContract.State.Info(
-                    shows = listOf(
-                        PopularShowsContract.State.Info.Show(
-                            id = 1,
-                            posterPath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcREEsN-qCwFIPE7-FglJVTrE0ijr7-VwggC6CXNtMLYtMnHWthZ",
-                            title = "title",
-                            overview = "overview",
-                        )
-                    ),
-                    isRefreshing = true,
-                    searchQuery = null,
-                    endReached = false,
-                    fetchingNewShows = true
-                ),
-            )
-        }
-    }
 }
