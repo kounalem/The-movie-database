@@ -38,8 +38,8 @@ abstract class PaparazziShowkaseTest<T : ScreenshotPreview>(
         maxPercentDifference = 0.0,
         showSystemUi = false,
         deviceConfig = when (config.device) {
-            Device.PIXEL_6 -> DeviceConfig.PIXEL_6
-            Device.PIXEL_C -> DeviceConfig.PIXEL_C
+            Device.PIXEL_6 -> DeviceConfig.PIXEL_6.copy(softButtons = false, locale = "en-rGB")
+            Device.PIXEL_C -> DeviceConfig.PIXEL_C.copy(softButtons = false, locale = "en-rGB")
         }.copy(
             nightMode = config.nightMode,
             fontScale = config.fontScale,
