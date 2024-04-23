@@ -32,7 +32,18 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create()).client(
                 OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BASIC
-                }).addInterceptor(RequestInterceptor()).build()
+                }).addInterceptor(
+                    Interceptor { chain ->
+                        val originalRequest = chain.request()
+                        val originalUrl = originalRequest.url
+                        val url = originalUrl.newBuilder()
+                            .addQueryParameter("api_key", BuildConfig.DATABASE_API_KEY).build()
+
+                        val requestBuilder = originalRequest.newBuilder().url(url)
+                        val request = requestBuilder.build()
+                        chain.proceed(request)
+                    }
+                ).build()
             ).build()
     }
 
@@ -58,18 +69,5 @@ object NetworkModule {
     internal fun provideServerSeriesDataSource(
         service: SeriesApiService,
     ): SeriesDataSource = SeriesDataSourceImpl(service = service)
-
-    private class RequestInterceptor : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val originalRequest = chain.request()
-            val originalUrl = originalRequest.url
-            val url = originalUrl.newBuilder()
-                .addQueryParameter("api_key", BuildConfig.DATABASE_API_KEY).build()
-
-            val requestBuilder = originalRequest.newBuilder().url(url)
-            val request = requestBuilder.build()
-            return chain.proceed(request)
-        }
-    }
 
 }
