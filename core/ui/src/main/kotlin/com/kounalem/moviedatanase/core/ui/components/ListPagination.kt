@@ -116,7 +116,7 @@ private fun PaginationListLocalPreview() {
 }
 
 @Composable
-@ShowkaseComposable(name = "OutLinedTextField", group = ShowkaseComposableGroup.COMPONENTS)
+@ShowkaseComposable(name = "PaginationList", group = ShowkaseComposableGroup.COMPONENTS)
 fun PaginationListPreview() {
     PreviewBox {
         PaginationList(
