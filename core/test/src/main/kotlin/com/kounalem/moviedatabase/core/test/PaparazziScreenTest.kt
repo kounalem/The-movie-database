@@ -61,6 +61,7 @@ abstract class PaparazziScreenTest(
 
     @get:Rule
     val paparazzi = Paparazzi(
+        showSystemUi = false,
         maxPercentDifference = 0.0,
         deviceConfig =when (config.device) {
             Device.PIXEL_6 -> DeviceConfig.PIXEL_6.copy(softButtons = false, locale = "en-rGB")

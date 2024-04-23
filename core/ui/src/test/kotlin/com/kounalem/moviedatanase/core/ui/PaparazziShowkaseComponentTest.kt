@@ -1,40 +1,19 @@
 package com.kounalem.moviedatanase.core.ui
 
-import androidx.compose.runtime.Composable
 import com.airbnb.android.showkase.models.Showkase
-import com.airbnb.android.showkase.models.ShowkaseBrowserComponent
-import com.android.resources.NightMode
-import com.kounalem.moviedatabase.core.test.Device
+import com.kounalem.moviedatabase.core.test.PaparazziScreenTest
 import com.kounalem.moviedatabase.core.test.TestConfig
 import org.junit.runners.Parameterized
 
-/**
- * Preview wrapping [ShowkaseBrowserComponent], accessing its content and overriding toString() to
- * set proper naming for screenshot file.
- *
- * @property showkaseBrowserComponent component which was acquired and passed by showkase
- */
-class ComponentPreview(
-    private val showkaseBrowserComponent: ShowkaseBrowserComponent,
-) : ScreenshotPreview {
-    override val content: @Composable () -> Unit = showkaseBrowserComponent.component
-    override fun toString(): String = "component=${
-        listOfNotNull(
-            showkaseBrowserComponent.group,
-            showkaseBrowserComponent.componentName,
-            showkaseBrowserComponent.styleName,
-        ).joinToString(":")
-    }"
-}
 
 /**
  * Test class for screenshot testing of components that are part of this module and contain showkase
  * annotation (@ShowkaseComposable).
  */
 class ComponentTests(
-    componentPreview: ComponentPreview,
+    componentPreview: TestPreview,
     config: TestConfig,
-) : PaparazziShowkaseTest<ComponentPreview>(componentPreview, config) {
+) : PaparazziShowkaseTest<TestPreview>(componentPreview, config) {
 
     companion object {
 
@@ -45,23 +24,11 @@ class ComponentTests(
          * @return combinations of these parameters as collection of arrays
          */
         @JvmStatic
-        @Parameterized.Parameters(name = "{0}, {1}")
-        fun data(): Collection<Array<Any>> {
-            val componentPreviews = Showkase.getMetadata().componentList.map(::ComponentPreview)
-            val fontScales = listOf(1f, 1.5f)
-            val modes = listOf(NightMode.NIGHT, NightMode.NOTNIGHT)
-
-            return componentPreviews.flatMap { componentPreview ->
-                fontScales.flatMap { fontScale ->
-                    modes.mapNotNull { mode ->
-                        if (mode == NightMode.NIGHT && fontScale == 1.5f) {
-                            null
-                        } else {
-                            arrayOf(componentPreview, TestConfig(Device.PIXEL_6, mode, fontScale))
-                        }
-                    }
-                }
-            }
-        }
+        @Parameterized.Parameters(name = "{1}")
+        fun provideValues(): Collection<Array<Any>> =
+            PaparazziScreenTest.provideValues(
+                Showkase.getMetadata(),
+                "com.kounalem.moviedatabase.core.ui",
+            )
     }
 }

@@ -4,11 +4,13 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
+import com.airbnb.android.showkase.models.ShowkaseBrowserComponent
 import com.android.ide.common.rendering.api.SessionParams
 import com.android.resources.NightMode
 import com.kounalem.moviedatabase.core.test.Device
@@ -26,8 +28,8 @@ import org.junit.runners.Parameterized
  * @param config configuration for given test (device, night mode, font scale)
  */
 @RunWith(Parameterized::class)
-abstract class PaparazziShowkaseTest<T : ScreenshotPreview>(
-    private val preview: T,
+abstract class PaparazziShowkaseTest<T : TestPreview>(
+    private val testPreview: TestPreview,
     config: TestConfig = TestConfig(Device.PIXEL_6, NightMode.NOTNIGHT, 1f),
 ) {
     /**
@@ -52,7 +54,12 @@ abstract class PaparazziShowkaseTest<T : ScreenshotPreview>(
      */
     @Test
     fun screenshotTest() {
-        paparazzi.snapshot(preview.toString().substringAfter('_')) {
+        paparazzi.snapshot(
+            // The toString representation starts with the package name of the preview but this just
+            // adds extra length and makes it more likely to go over the filename limit.
+            // Remove the package now
+            testPreview.toString().substringAfter('_'),
+        ) {
             val lifecycleOwner = LocalLifecycleOwner.current
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
@@ -64,9 +71,23 @@ abstract class PaparazziShowkaseTest<T : ScreenshotPreview>(
                 },
             ) {
                 Box {
-                    preview.content.invoke()
+                    testPreview.Content()
                 }
             }
         }
     }
+}
+
+
+interface TestPreview {
+    @Composable
+    fun Content()
+}
+
+class ComponentTestPreview(
+    private val showkaseBrowserComponent: ShowkaseBrowserComponent,
+) : TestPreview {
+    @Composable
+    override fun Content() = showkaseBrowserComponent.component()
+    override fun toString(): String = showkaseBrowserComponent.componentKey
 }
