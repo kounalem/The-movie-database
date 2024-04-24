@@ -33,13 +33,6 @@ android {
     namespace 'com.kounalem.moviedatabase'
     compileSdk 34
 
-    signingConfigs.create("config") {
-        storeFile = file(getProp("Keys.repo"))
-        storePassword getProp("STORE_PASS")
-        keyAlias getProp("STORE_ALIAS")
-        keyPassword getProp("STORE_PASS")
-    }
-
     defaultConfig {
         applicationId "com.kounalem.moviedatabase"
         minSdk 26
@@ -64,6 +57,14 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
+
+            signingConfigs.create("config") {
+                storeFile = file(getProp("Keys.repo"))
+                storePassword getProp("STORE_PASS")
+                keyAlias getProp("STORE_ALIAS")
+                keyPassword getProp("STORE_PASS")
+            }
+
             resValue("string", "app_name", "mdb")
             signingConfig = signingConfigs["config"]
             minifyEnabled false
