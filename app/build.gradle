@@ -33,8 +33,6 @@ android {
     namespace 'com.kounalem.moviedatabase'
     compileSdk 34
 
-    def pass = getProp("STORE_PASS")
-    print(pass)
     signingConfigs.create("config") {
         storeFile = file(getProp("Keys.repo"))
         storePassword getProp("STORE_PASS")
