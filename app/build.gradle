@@ -8,6 +8,17 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
+def getProp(String propName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propName]
+    } else {
+        throw IllegalStateException("Cannot find $propName in local.properties")
+    }
+}
+
 kotlin {
     sourceSets {
         debug {
@@ -21,6 +32,15 @@ kotlin {
 android {
     namespace 'com.kounalem.moviedatabase'
     compileSdk 34
+
+    def pass = getProp("STORE_PASS")
+    print(pass)
+    signingConfigs.create("config") {
+        storeFile = file(getProp("Keys.repo"))
+        storePassword getProp("STORE_PASS")
+        keyAlias getProp("STORE_ALIAS")
+        keyPassword getProp("STORE_PASS")
+    }
 
     defaultConfig {
         applicationId "com.kounalem.moviedatabase"
@@ -41,7 +61,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            resValue("string", "app_name", "mdbDev")
+            signingConfig = signingConfigs["config"]
+        }
         release {
+            resValue("string", "app_name", "mdb")
+            signingConfig = signingConfigs["config"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

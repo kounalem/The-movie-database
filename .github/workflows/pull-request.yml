@@ -10,6 +10,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: ktlint check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3.1.0
+      - name: Set up JDK
+        uses: actions/setup-java@v3.5.1
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: ktlint
+        run: ./gradlew ktlintCheck
   screenshot-tests:
     runs-on: ubuntu-latest
     steps:
