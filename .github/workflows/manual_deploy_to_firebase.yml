@@ -8,7 +8,6 @@ on:
         required: true
         default: 'Manual debug build'
 
-
 jobs:
   build:
     name: Building and distributing app
@@ -23,22 +22,26 @@ jobs:
           distribution: 'zulu'
 
       - name: set up gradle
+        # You can remove this step if it's not needed
+        run: echo "Setting up Gradle"
+
       - uses: gradle/gradle-build-action@v2.7.1
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Exeute gradle command - assemble debug
+      - name: Execute gradle command - assemble debug
         run: ./gradlew assembleDebug
 
-#      - name: build release
-#        run: ./gradlew assembleRelease
+      # Uncomment the following lines if you want to build a release version
+      # - name: build release
+      #   run: ./gradlew assembleRelease
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
+          appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk
-#          file: app/build/outputs/apk/release/app-release-unsigned.apk
+          # file: app/build/outputs/apk/release/app-release-unsigned.apk
