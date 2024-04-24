@@ -8,7 +8,10 @@ on:
         required: true
         default: 'Manual debug build'
         description: 'Release Notes'
-
+  workflow_run:
+    workflows: [ "Pull request validation" ]
+    types:
+      - completed
 jobs:
   build:
     name: Building and distributing app

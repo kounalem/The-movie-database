@@ -1,0 +1,27 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches:
+      - main
+  pull_request_review:
+    types:
+      - submitted
+    branches:
+      - main
+
+concurrency:
+  group: pr-main-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-deploy-workflow:
+    needs: [ lint, unit-tests, screenshot-tests ] # Ensure this runs after other jobs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger manual deploy workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Build & upload to Firebase App Distribution
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: '{"release_notes": "Deploying PR: ${{ github.event.pull_request.title }}"}'
