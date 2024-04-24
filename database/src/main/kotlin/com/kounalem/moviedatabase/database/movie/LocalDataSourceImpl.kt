@@ -11,7 +11,6 @@ internal class LocalDataSourceImpl(
     private val daoMovies: MovieDao,
     private val daoTvShows: TvShowsDao,
 ) : LocalDataSource {
-
     override fun getFilteredMovies(query: String): Flow<List<Movie>> {
         return daoMovies.getFilteredMovies(query).map { movieEntity ->
             movieEntity.map {
@@ -25,22 +24,20 @@ internal class LocalDataSourceImpl(
             entity.map { it.mapToDomain() }
         }
     }
+
     override fun getMovies(pageNo: Int): Flow<List<Movie>> {
         return daoMovies.getMoviesForPage(pageNo).map { entity ->
             entity.map { it.mapToDomain() }
         }
     }
 
-    override suspend fun saveMovieList(movies: List<Movie>): List<Unit> =
-        movies.map { movie -> daoMovies.saveMovie(movie.mapToEntity()) }
+    override suspend fun saveMovieList(movies: List<Movie>): List<Unit> = movies.map { movie -> daoMovies.saveMovie(movie.mapToEntity()) }
 
-    override fun getMovieByIdObs(movieId: Int): Flow<Movie> =
-        daoMovies.getMovieByIdObs(movieId).map {it.mapToDomain()  }
+    override fun getMovieByIdObs(movieId: Int): Flow<Movie> = daoMovies.getMovieByIdObs(movieId).map { it.mapToDomain() }
 
-    override suspend fun updateMovieFavStatus(movieId: Int) =
-        daoMovies.updateMovieFavStatus(movieId)
+    override suspend fun updateMovieFavStatus(movieId: Int) = daoMovies.updateMovieFavStatus(movieId)
 
-    //shows
+    // shows
     override fun getFilteredShows(query: String): Flow<List<TvShow>> {
         return daoTvShows.getFilteredShows(query).map { entity ->
             entity.map {
@@ -55,17 +52,14 @@ internal class LocalDataSourceImpl(
         }
     }
 
-    override suspend fun saveShowList(movies: List<TvShow>): List<Unit> =
-        movies.map { movie -> daoTvShows.saveShow(movie.mapToEntity()) }
+    override suspend fun saveShowList(movies: List<TvShow>): List<Unit> = movies.map { movie -> daoTvShows.saveShow(movie.mapToEntity()) }
 
     override fun getShowById(id: Int): Flow<TvShow?> =
         daoTvShows.getShowDescriptionById(id).map {
             it?.mapToDomain()
         }
 
-    override suspend fun updateShowFavStatus(movieId: Int) =
-        daoTvShows.updateShowFavStatus(movieId)
+    override suspend fun updateShowFavStatus(movieId: Int) = daoTvShows.updateShowFavStatus(movieId)
 
-    override suspend fun saveShowDescription(show: TvShow) =
-        daoTvShows.saveShow(show.mapToEntity())
+    override suspend fun saveShowDescription(show: TvShow) = daoTvShows.saveShow(show.mapToEntity())
 }

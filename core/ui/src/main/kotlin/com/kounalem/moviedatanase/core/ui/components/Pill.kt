@@ -36,17 +36,18 @@ fun Pill(
     onClick: (() -> Unit)? = null,
 ) {
     Row(
-        modifier = modifier
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(50),
-            )
-            .clip(RoundedCornerShape(50))
-            .clickable(
-                enabled = onClick != null,
-                onClick = throttlingListener(onClick = { onClick?.invoke() }),
-            )
-            .padding(PaddingValues(start = large, end = large, top = xsmall, bottom = xsmall)),
+        modifier =
+            modifier
+                .background(
+                    color = backgroundColor,
+                    shape = RoundedCornerShape(50),
+                )
+                .clip(RoundedCornerShape(50))
+                .clickable(
+                    enabled = onClick != null,
+                    onClick = throttlingListener(onClick = { onClick?.invoke() }),
+                )
+                .padding(PaddingValues(start = large, end = large, top = xsmall, bottom = xsmall)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(iconTextSpacing),
     ) {
@@ -57,12 +58,12 @@ fun Pill(
             color = Color.White,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            modifier = Modifier
-                .weight(1f, fill = false)
+            modifier =
+                Modifier
+                    .weight(1f, fill = false),
         )
     }
 }
-
 
 @Composable
 @ScreenPreview
@@ -71,7 +72,6 @@ private fun PillLocalPreview() {
         text = "Hello",
     )
 }
-
 
 @Composable
 @ShowkaseComposable(name = "Pill", group = ShowkaseComposableGroup.COMPONENTS)
@@ -82,4 +82,3 @@ fun PillPreview() {
         )
     }
 }
-

@@ -22,5 +22,4 @@ internal class MovieDetailsKtTest(
                 "com.kounalem.moviedatabase.movies.details",
             )
     }
-
 }

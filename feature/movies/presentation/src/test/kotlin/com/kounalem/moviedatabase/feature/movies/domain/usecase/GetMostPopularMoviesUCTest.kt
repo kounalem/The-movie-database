@@ -14,7 +14,6 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-
 class GetMostPopularMoviesUCTest {
     @MockK
     private lateinit var movieRepository: MovieRepository
@@ -28,58 +27,65 @@ class GetMostPopularMoviesUCTest {
     }
 
     @Test
-    fun `WHEN movies has error outcome THEN usecase returns throwable`() = runTest {
-        coEvery { movieRepository.movies } returns flowOf(Outcome.Error("my error"))
+    fun `WHEN movies has error outcome THEN usecase returns throwable`() =
+        runTest {
+            coEvery { movieRepository.movies } returns flowOf(Outcome.Error("my error"))
 
-        usecase.movies.catch {
-            assertEquals(Throwable("my error"), it)
+            usecase.movies.catch {
+                assertEquals(Throwable("my error"), it)
+            }
         }
-    }
-
-    @Test
-    fun `WHEN movies has Exception outcome THEN usecase returns throwable`() = runTest {
-        coEvery { movieRepository.movies } returns flowOf(Outcome.Exception(Throwable("my error")))
-
-        usecase.movies.catch {
-            assertEquals(Throwable("my error"), it)
-        }
-    }
 
     @Test
-    fun `WHEN movies has Success outcome THEN usecase returns throwable`() = runTest {
-        val given = listOf(
-            Movie(
-                id = 1,
-                posterPath = "",
-                title = "title1",
-                voteAverage = 2.0,
-                overview = "overview1",
-                date = 123,
-                isFavourite = false,
-                originalTitle = "",
-                page = 1
-            ), Movie(
-                id = 2,
-                posterPath = "",
-                title = "title2",
-                voteAverage = 2.0,
-                overview = "overview2",
-                date = 123,
-                isFavourite = false,
-                originalTitle = "",
-                page = 1
-            )
-        )
-        coEvery { movieRepository.movies } returns flowOf(
-            Outcome.Success(
-                given
-            )
-        )
-        val expected = LinkedHashMap<Int, Movie>().apply {
-            given.forEach { put(it.id, it) }
+    fun `WHEN movies has Exception outcome THEN usecase returns throwable`() =
+        runTest {
+            coEvery { movieRepository.movies } returns flowOf(Outcome.Exception(Throwable("my error")))
+
+            usecase.movies.catch {
+                assertEquals(Throwable("my error"), it)
+            }
         }
-        usecase.movies.test {
-            assertEquals(expected, awaitItem())
+
+    @Test
+    fun `WHEN movies has Success outcome THEN usecase returns throwable`() =
+        runTest {
+            val given =
+                listOf(
+                    Movie(
+                        id = 1,
+                        posterPath = "",
+                        title = "title1",
+                        voteAverage = 2.0,
+                        overview = "overview1",
+                        date = 123,
+                        isFavourite = false,
+                        originalTitle = "",
+                        page = 1,
+                    ),
+                    Movie(
+                        id = 2,
+                        posterPath = "",
+                        title = "title2",
+                        voteAverage = 2.0,
+                        overview = "overview2",
+                        date = 123,
+                        isFavourite = false,
+                        originalTitle = "",
+                        page = 1,
+                    ),
+                )
+            coEvery { movieRepository.movies } returns
+                flowOf(
+                    Outcome.Success(
+                        given,
+                    ),
+                )
+            val expected =
+                LinkedHashMap<Int, Movie>().apply {
+                    given.forEach { put(it.id, it) }
+                }
+            usecase.movies.test {
+                assertEquals(expected, awaitItem())
+            }
         }
-    }
 }

@@ -1,13 +1,12 @@
 package com.kounalem.moviedatabase.show.presentation.popular
 
-
 internal interface PopularShowsContract {
-
     sealed interface State {
         data object Loading : State
 
         @JvmInline
         value class Error(val message: String) : State
+
         data class Info(
             val shows: List<Show>,
             val isRefreshing: Boolean,
@@ -24,9 +23,7 @@ internal interface PopularShowsContract {
         }
     }
 
-
     sealed interface Event {
-        data class NavigateToDetails(val id: Int): Event
+        data class NavigateToDetails(val id: Int) : Event
     }
-
 }

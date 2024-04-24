@@ -1,12 +1,12 @@
 package com.kounalem.moviedatabase.show.presentation.details
 
 sealed interface DetailsContract {
-
     sealed interface State {
         data object Loading : State
 
         @JvmInline
         value class Error(val value: String) : State
+
         data class Info(
             val title: String,
             val overview: String,
@@ -26,9 +26,8 @@ sealed interface DetailsContract {
                 val overview: String,
                 val posterPath: String?,
                 val seasonNumber: Int,
-                val voteAverage: Int
+                val voteAverage: Int,
             )
         }
     }
-
 }

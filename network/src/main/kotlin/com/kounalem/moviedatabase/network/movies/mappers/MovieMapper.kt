@@ -15,7 +15,7 @@ internal fun MovieDTO.map(pageNo: Int): Movie {
         date = getTimeStamp(this.date),
         isFavourite = false,
         originalTitle = this.originalTitle.orEmpty(),
-        page = pageNo
+        page = pageNo,
     )
 }
 
@@ -31,4 +31,3 @@ private fun getTimeStamp(date: String): Long {
     val startOfDay = releaseDate.atStartOfDay().toInstant(ZoneOffset.UTC)
     return startOfDay.toEpochMilli()
 }
-

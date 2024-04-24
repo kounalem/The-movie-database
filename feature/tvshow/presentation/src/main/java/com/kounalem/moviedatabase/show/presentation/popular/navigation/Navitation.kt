@@ -3,8 +3,6 @@ package com.kounalem.moviedatabase.show.presentation.popular.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -19,16 +17,13 @@ interface Navigation {
         override val path: NavRoute.Path
             get() = NavRoute.Path("shows")
     }
-
 }
 
-fun NavController.navigateToShowsScreen(navOptions: NavOptions) =
-    navigate(Navigation.PopularShows.path.value, navOptions)
-
+fun NavController.navigateToShowsScreen(navOptions: NavOptions) = navigate(Navigation.PopularShows.path.value, navOptions)
 
 fun navigateToShowsScreen(
     navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
+    navGraphBuilder: NavGraphBuilder,
 ) {
     navGraphBuilder.composable(
         route = Navigation.PopularShows.path.value,
@@ -37,19 +32,20 @@ fun navigateToShowsScreen(
                 EnterTransition.None
             } else {
                 return@composable slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+                    AnimatedContentTransitionScope.SlideDirection.End,
+                    tween(700),
                 )
             }
-        }
+        },
     ) {
         PopularShowScreen(
             navigateToTvShow = { id ->
                 navController.navigate(
                     DetailsNavigation.withArgs(
-                        id.toString()
-                    )
+                        id.toString(),
+                    ),
                 )
-            }
+            },
         )
     }
 }

@@ -41,13 +41,14 @@ fun RowScope.MovieNavigationBarItem(
         enabled = enabled,
         label = label,
         alwaysShowLabel = alwaysShowLabel,
-        colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = MovieNavigationDefaults.navigationSelectedItemColor(),
-            unselectedIconColor = MovieNavigationDefaults.navigationContentColor(),
-            selectedTextColor = MovieNavigationDefaults.navigationSelectedItemColor(),
-            unselectedTextColor = MovieNavigationDefaults.navigationContentColor(),
-            indicatorColor = MovieNavigationDefaults.navigationIndicatorColor(),
-        ),
+        colors =
+            NavigationBarItemDefaults.colors(
+                selectedIconColor = MovieNavigationDefaults.navigationSelectedItemColor(),
+                unselectedIconColor = MovieNavigationDefaults.navigationContentColor(),
+                selectedTextColor = MovieNavigationDefaults.navigationSelectedItemColor(),
+                unselectedTextColor = MovieNavigationDefaults.navigationContentColor(),
+                indicatorColor = MovieNavigationDefaults.navigationIndicatorColor(),
+            ),
     )
 }
 

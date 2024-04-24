@@ -4,5 +4,5 @@ data class TvShowResponseDTO(
     val page: Int,
     val results: List<TvShowDTO>,
     val total_pages: Int,
-    val total_results: Int
+    val total_results: Int,
 )

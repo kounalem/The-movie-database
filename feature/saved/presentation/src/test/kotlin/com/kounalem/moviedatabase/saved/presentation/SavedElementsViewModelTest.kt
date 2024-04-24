@@ -30,62 +30,70 @@ internal class SavedElementsViewModelTest {
     }
 
     @Test
-    fun `GIVEN elements THEN update the state with mapped info`() = runTest {
-        val firstMovie = FilterSavedUC.SavedElement.Movie(
-            id = 1,
-            title = "title movie 1",
-            overview = "overview movie 1",
-            image = "image movie1"
-        )
-        val secondMovie = FilterSavedUC.SavedElement.Movie(
-            id = 2,
-            title = "title movie 2",
-            overview = "overview movie 2",
-            image = "image movie 2"
-        )
-        val show = FilterSavedUC.SavedElement.TvShow(
-            id = 1,
-            title = "title show 1",
-            overview = "overview show 1",
-            image = "image show 1"
-        )
-
-        coEvery { filterSavedInfoUseCase.invoke() } returns flowOf(
-            listOf(
-                firstMovie, secondMovie, show
-            )
-        )
-
-        viewModel.uiModels.test {
-            assertEquals(
-                actual = awaitItem(),
-                expected = SavedElementsContract.State.Elements(
-                    "Saved Elements",
-                    listOf(
-                        SavedElementsContract.State.Elements.Info(
-                            id = 1,
-                            title = "title movie 1",
-                            overview = "overview movie 1",
-                            posterPath = "image movie1",
-                            type =  SavedElementsContract.State.Elements.Type.Movie
-                        ),
-                        SavedElementsContract.State.Elements.Info(
-                            id = 2,
-                            title = "title movie 2",
-                            overview = "overview movie 2",
-                            posterPath = "image movie 2",
-                            type =  SavedElementsContract.State.Elements.Type.Movie
-                        ),
-                        SavedElementsContract.State.Elements.Info(
-                            id = 1,
-                            title = "title show 1",
-                            overview = "overview show 1",
-                            posterPath = "image show 1",
-                            type = SavedElementsContract.State.Elements.Type.Show
-                        )
-                    )
+    fun `GIVEN elements THEN update the state with mapped info`() =
+        runTest {
+            val firstMovie =
+                FilterSavedUC.SavedElement.Movie(
+                    id = 1,
+                    title = "title movie 1",
+                    overview = "overview movie 1",
+                    image = "image movie1",
                 )
-            )
+            val secondMovie =
+                FilterSavedUC.SavedElement.Movie(
+                    id = 2,
+                    title = "title movie 2",
+                    overview = "overview movie 2",
+                    image = "image movie 2",
+                )
+            val show =
+                FilterSavedUC.SavedElement.TvShow(
+                    id = 1,
+                    title = "title show 1",
+                    overview = "overview show 1",
+                    image = "image show 1",
+                )
+
+            coEvery { filterSavedInfoUseCase.invoke() } returns
+                flowOf(
+                    listOf(
+                        firstMovie,
+                        secondMovie,
+                        show,
+                    ),
+                )
+
+            viewModel.uiModels.test {
+                assertEquals(
+                    actual = awaitItem(),
+                    expected =
+                        SavedElementsContract.State.Elements(
+                            "Saved Elements",
+                            listOf(
+                                SavedElementsContract.State.Elements.Info(
+                                    id = 1,
+                                    title = "title movie 1",
+                                    overview = "overview movie 1",
+                                    posterPath = "image movie1",
+                                    type = SavedElementsContract.State.Elements.Type.Movie,
+                                ),
+                                SavedElementsContract.State.Elements.Info(
+                                    id = 2,
+                                    title = "title movie 2",
+                                    overview = "overview movie 2",
+                                    posterPath = "image movie 2",
+                                    type = SavedElementsContract.State.Elements.Type.Movie,
+                                ),
+                                SavedElementsContract.State.Elements.Info(
+                                    id = 1,
+                                    title = "title show 1",
+                                    overview = "overview show 1",
+                                    posterPath = "image show 1",
+                                    type = SavedElementsContract.State.Elements.Type.Show,
+                                ),
+                            ),
+                        ),
+                )
+            }
         }
-    }
 }

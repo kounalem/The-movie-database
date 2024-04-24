@@ -27,9 +27,7 @@ import com.kounalem.moviedatanase.core.ui.small
 import com.kounalem.moviedatanase.core.ui.xsmall
 
 @Composable
-fun PopularShowScreen(
-    navigateToTvShow: (Int) -> Unit,
-) {
+fun PopularShowScreen(navigateToTvShow: (Int) -> Unit) {
     val viewModel = hiltViewModel<PopularShowsViewModel>()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
 
@@ -46,7 +44,7 @@ fun PopularShowScreen(
         navigateToTvShow = viewModel::navigateToDetails,
         search = viewModel::onSearchQueryChange,
         loadNextItems = viewModel::loadNextItems,
-        refresh = viewModel::refreshElements
+        refresh = viewModel::refreshElements,
     )
 }
 
@@ -59,7 +57,7 @@ internal fun PopularShowsView(
     refresh: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         when (state) {
             is PopularShowsContract.State.Error -> {
@@ -76,10 +74,11 @@ internal fun PopularShowsView(
 
             is PopularShowsContract.State.Loading -> {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(small),
-                    horizontalArrangement = Arrangement.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(small),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     CircularProgressIndicator()
                 }
@@ -91,7 +90,7 @@ internal fun PopularShowsView(
                     navigateToTvShow = navigateToTvShow,
                     search = search,
                     loadNextItems = loadNextItems,
-                    refresh = refresh
+                    refresh = refresh,
                 )
             }
         }
@@ -106,15 +105,17 @@ private fun ShowList(
     refresh: () -> Unit,
     loadNextItems: () -> Unit,
 ) {
-    val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = (state as? PopularShowsContract.State.Info)?.isRefreshing ?: false
-    )
+    val swipeRefreshState =
+        rememberSwipeRefreshState(
+            isRefreshing = (state as? PopularShowsContract.State.Info)?.isRefreshing ?: false,
+        )
     val listState = rememberLazyListState()
     MovieOutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth(),
         searchQuery = state.searchQuery,
-        event = search
+        event = search,
     )
 
     PaginationList(
@@ -122,19 +123,20 @@ private fun ShowList(
         refreshState = swipeRefreshState,
         listState = listState,
         isFetchingNewMovies = state.fetchingNewShows,
-        items = state.shows.map { item ->
-            ListItemModel(
-                id = item.id,
-                imagePath = item.posterPath,
-                description = item.overview,
-                title = item.title,
-            )
-        },
+        items =
+            state.shows.map { item ->
+                ListItemModel(
+                    id = item.id,
+                    imagePath = item.posterPath,
+                    description = item.overview,
+                    title = item.title,
+                )
+            },
         searchQuery = state.searchQuery,
         endReached = state.endReached,
         refreshEvent = refresh,
         loadNextItems = { loadNextItems() },
-        selected = { id -> navigateToTvShow(id) }
+        selected = { id -> navigateToTvShow(id) },
     )
 }
 
@@ -142,68 +144,69 @@ private fun ShowList(
 @Composable
 fun PopularShowScreenPreview() {
     PopularShowsView(
-        state = PopularShowsContract.State.Info(
-            listOf(
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
+        state =
+            PopularShowsContract.State.Info(
+                listOf(
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
+                    PopularShowsContract.State.Info.Show(
+                        id = 0,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                    ),
                 ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
-                PopularShowsContract.State.Info.Show(
-                    id = 0,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                ),
+                searchQuery = "",
+                isRefreshing = false,
+                endReached = false,
+                fetchingNewShows = false,
             ),
-            searchQuery = "",
-            isRefreshing = false,
-            endReached = false,
-            fetchingNewShows = false,
-        ),
         navigateToTvShow = {},
         search = {},
         refresh = {},

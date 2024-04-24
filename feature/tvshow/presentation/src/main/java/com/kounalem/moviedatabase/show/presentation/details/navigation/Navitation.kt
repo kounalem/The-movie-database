@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kounalem.moviedatabase.show.presentation.details.ShowDetails
 import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
-import  com.kounalem.moviedatabase.show.presentation.popular.navigation.Navigation.PopularShows as PopularMoviesNavigation
+import com.kounalem.moviedatabase.show.presentation.popular.navigation.Navigation.PopularShows as PopularMoviesNavigation
 
 interface Navigation {
     data object Details : NavRoute {
@@ -23,24 +23,27 @@ interface Navigation {
 
 fun navigateToShowDetailsScreen(
     navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
+    navGraphBuilder: NavGraphBuilder,
 ) {
     navGraphBuilder.composable(
-        route = Navigation.Details.withArgsFormat(
-            Navigation.Details.DETAILS_ID
-        ),
-        arguments = listOf(
-            navArgument(Navigation.Details.DETAILS_ID) {
-                type = NavType.IntType
-                nullable = false
-            }
-        ),
+        route =
+            Navigation.Details.withArgsFormat(
+                Navigation.Details.DETAILS_ID,
+            ),
+        arguments =
+            listOf(
+                navArgument(Navigation.Details.DETAILS_ID) {
+                    type = NavType.IntType
+                    nullable = false
+                },
+            ),
         enterTransition = {
             if (initialState.destination.route != PopularMoviesNavigation.path.value) {
                 EnterTransition.None
             } else {
                 return@composable slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+                    AnimatedContentTransitionScope.SlideDirection.Start,
+                    tween(700),
                 )
             }
         },
@@ -49,7 +52,8 @@ fun navigateToShowDetailsScreen(
                 ExitTransition.None
             } else {
                 return@composable slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+                    AnimatedContentTransitionScope.SlideDirection.End,
+                    tween(700),
                 )
             }
         },

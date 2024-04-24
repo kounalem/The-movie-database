@@ -15,45 +15,48 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-internal class SavedElementsViewModel @Inject constructor(
-    private val filterSavedInfoUseCase: FilterSavedUC,
-) : BaseViewModelImpl<SavedElementsContract.State, Unit>() {
+internal class SavedElementsViewModel
+    @Inject
+    constructor(
+        private val filterSavedInfoUseCase: FilterSavedUC,
+    ) : BaseViewModelImpl<SavedElementsContract.State, Unit>() {
+        private val isLoading = MutableStateFlow(false)
 
-    private val isLoading = MutableStateFlow(false)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val results: StateFlow<List<SavedElementsContract.State.Elements.Info>> =
-        filterSavedInfoUseCase.invoke().onEach {
-            isLoading.value = true
-        }
-            .mapLatest { list ->
-                list.map { item ->
-                    SavedElementsContract.State.Elements.Info(
-                        id = item.id,
-                        posterPath = item.image,
-                        title = item.title,
-                        overview = item.overview,
-                        type = if (item is FilterSavedUC.SavedElement.Movie) SavedElementsContract.State.Elements.Type.Movie else SavedElementsContract.State.Elements.Type.Show,
-                    )
-                }
+        @OptIn(ExperimentalCoroutinesApi::class)
+        private val results: StateFlow<List<SavedElementsContract.State.Elements.Info>> =
+            filterSavedInfoUseCase.invoke().onEach {
+                isLoading.value = true
             }
-            .onEach {
-                isLoading.value = false
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+                .mapLatest { list ->
+                    list.map { item ->
+                        SavedElementsContract.State.Elements.Info(
+                            id = item.id,
+                            posterPath = item.image,
+                            title = item.title,
+                            overview = item.overview,
+                            type = if (item is FilterSavedUC.SavedElement.Movie) SavedElementsContract.State.Elements.Type.Movie else SavedElementsContract.State.Elements.Type.Show,
+                        )
+                    }
+                }
+                .onEach {
+                    isLoading.value = false
+                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    override val uiState: StateFlow<SavedElementsContract.State>
-        get() = combine(
-            results,
-            isLoading,
-        ) { res, isLoading ->
-            if (isLoading)
-                SavedElementsContract.State.Loading
-            else
-                SavedElementsContract.State.Elements(title = "Saved Elements", info = res)
-        }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5_000),
-                SavedElementsContract.State.Loading
-            )
-}
+        override val uiState: StateFlow<SavedElementsContract.State>
+            get() =
+                combine(
+                    results,
+                    isLoading,
+                ) { res, isLoading ->
+                    if (isLoading) {
+                        SavedElementsContract.State.Loading
+                    } else {
+                        SavedElementsContract.State.Elements(title = "Saved Elements", info = res)
+                    }
+                }
+                    .stateIn(
+                        viewModelScope,
+                        SharingStarted.WhileSubscribed(5_000),
+                        SavedElementsContract.State.Loading,
+                    )
+    }

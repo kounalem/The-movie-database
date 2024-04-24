@@ -16,7 +16,11 @@ import com.kounalem.moviedatanase.core.ui.ShowkaseComposableGroup
 import com.kounalem.moviedatanase.core.ui.annotations.ScreenPreview
 
 @Composable
-fun MovieOutlinedTextField(modifier: Modifier, searchQuery: String?, event: (String) -> Unit) {
+fun MovieOutlinedTextField(
+    modifier: Modifier,
+    searchQuery: String?,
+    event: (String) -> Unit,
+) {
     OutlinedTextField(
         value = searchQuery.orEmpty(),
         onValueChange = {
@@ -34,12 +38,13 @@ fun MovieOutlinedTextField(modifier: Modifier, searchQuery: String?, event: (Str
                     imageVector = Icons.Filled.Clear,
                     contentDescription = null,
                     tint = Color.Gray,
-                    modifier = Modifier.clickable {
-                        event("")
-                    }
+                    modifier =
+                        Modifier.clickable {
+                            event("")
+                        },
                 )
             }
-        }
+        },
     )
 }
 
@@ -49,7 +54,7 @@ private fun MovieOutlinedTextFieldLocalPreview() {
     MovieOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         searchQuery = "",
-        event = {}
+        event = {},
     )
 }
 
@@ -59,7 +64,7 @@ private fun MovieOutlinedTextWithQueryFieldLocalPreview() {
     MovieOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         searchQuery = "query",
-        event = {}
+        event = {},
     )
 }
 
@@ -70,8 +75,7 @@ fun MovieOutlinedTextFieldPreview() {
         MovieOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             searchQuery = "",
-            event = {}
+            event = {},
         )
     }
 }
-

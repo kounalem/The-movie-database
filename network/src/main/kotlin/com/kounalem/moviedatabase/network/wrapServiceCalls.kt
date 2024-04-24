@@ -19,7 +19,7 @@ private fun <T : Any, R> Response<T>.toNetworkResponse(mapper: (T) -> R): Networ
 
 internal fun <T : Any, R> wrapServiceCall(
     call: suspend () -> Response<T>,
-    mapper: (T) -> R
+    mapper: (T) -> R,
 ): Flow<NetworkResponse<R>> {
     return flow {
         try {
@@ -30,4 +30,3 @@ internal fun <T : Any, R> wrapServiceCall(
         }
     }
 }
-

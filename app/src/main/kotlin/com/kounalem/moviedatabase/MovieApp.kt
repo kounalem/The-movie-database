@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.kounalem.moviedatanase.core.ui.components.MoviesNavigationBar
 import com.kounalem.moviedatabase.navigation.MovieDatabaseNavHost
 import com.kounalem.moviedatabase.navigation.TopLevelDestination
 import com.kounalem.moviedatanase.core.ui.components.MovieNavigationBarItem
+import com.kounalem.moviedatanase.core.ui.components.MoviesNavigationBar
 import kotlin.random.Random
 
 @Composable
@@ -58,13 +58,16 @@ fun MovieApp(appState: MovieAppState) {
         },
         content = {
             Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()) {
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxSize(),
+            ) {
                 MovieDatabaseNavHost(
-                    modifier =  Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                     appState = appState,
                     onShowSnackbar = { message, action ->
                         snackbarHostState.showSnackbar(
@@ -75,11 +78,9 @@ fun MovieApp(appState: MovieAppState) {
                     },
                 )
             }
-        }
+        },
     )
-
 }
-
 
 @Composable
 private fun MoviesNavigationBar(
@@ -106,11 +107,12 @@ private fun MoviesNavigationBar(
                 },
                 selectedIcon = {
                     Icon(
-                        imageVector = if (selected) {
-                            destination.selectedIcon
-                        } else {
-                            destination.unselectedIcon
-                        },
+                        imageVector =
+                            if (selected) {
+                                destination.selectedIcon
+                            } else {
+                                destination.unselectedIcon
+                            },
                         contentDescription = null,
                     )
                 },
@@ -132,14 +134,15 @@ private fun Modifier.notificationDot(): Modifier =
                 // This is based on the dimensions of the NavigationBar's "indicator pill";
                 // however, its parameters are private, so we must depend on them implicitly
                 // (NavigationBarTokens.ActiveIndicatorWidth = 64.dp)
-                center = center + Offset(
-                    64.dp.toPx() * .45f,
-                    32.dp.toPx() * -.45f - 6.dp.toPx(),
-                ),
+                center =
+                    center +
+                        Offset(
+                            64.dp.toPx() * .45f,
+                            32.dp.toPx() * -.45f - 6.dp.toPx(),
+                        ),
             )
         }
     }
-
 
 private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
     this?.hierarchy?.any {

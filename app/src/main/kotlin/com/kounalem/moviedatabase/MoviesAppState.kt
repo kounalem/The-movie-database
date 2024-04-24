@@ -50,10 +50,10 @@ class MovieAppState(
     coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
 ) {
-
     val currentDestination: NavDestination?
-        @Composable get() = navController
-            .currentBackStackEntryAsState().value?.destination
+        @Composable get() =
+            navController
+                .currentBackStackEntryAsState().value?.destination
 
     /**
      * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
@@ -64,13 +64,14 @@ class MovieAppState(
     val shouldShowBottomBar: Boolean
         get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 
-    val isOffline = networkMonitor.isOnline
-        .map(Boolean::not)
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false,
-        )
+    val isOffline =
+        networkMonitor.isOnline
+            .map(Boolean::not)
+            .stateIn(
+                scope = coroutineScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false,
+            )
 
     /**
      * UI logic for navigating to a top level destination in the app. Top level destinations have
@@ -81,34 +82,40 @@ class MovieAppState(
      */
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         trace("Navigation: ${topLevelDestination.name}") {
-            val topLevelNavOptions = navOptions {
-                // Pop up to the start destination of the graph to
-                // avoid building up a large stack of destinations
-                // on the back stack as users select items
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
+            val topLevelNavOptions =
+                navOptions {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
                 }
-                // Avoid multiple copies of the same destination when
-                // reselecting the same item
-                launchSingleTop = true
-                // Restore state when reselecting a previously selected item
-                restoreState = true
-            }
 
             when (topLevelDestination) {
-                TopLevelDestination.MOVIES -> navController.navigateToMoviesScreen(
-                    topLevelNavOptions
-                )
+                TopLevelDestination.MOVIES ->
+                    navController.navigateToMoviesScreen(
+                        topLevelNavOptions,
+                    )
 
                 TopLevelDestination.SHOWS -> navController.navigateToShowsScreen(topLevelNavOptions)
-                TopLevelDestination.SAVED -> navController.navigateToSavedElementsScreen(
-                    topLevelNavOptions
-                )
+                TopLevelDestination.SAVED ->
+                    navController.navigateToSavedElementsScreen(
+                        topLevelNavOptions,
+                    )
             }
         }
     }
 
-    private inline fun <T> trace(label: String, block: () -> T): T {
+    private inline fun <T> trace(
+        label: String,
+        block: () -> T,
+    ): T {
         Trace.beginSection(label)
         try {
             return block()
@@ -116,6 +123,4 @@ class MovieAppState(
             Trace.endSection()
         }
     }
-
 }
-

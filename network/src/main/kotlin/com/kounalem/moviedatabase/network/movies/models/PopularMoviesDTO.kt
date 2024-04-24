@@ -1,6 +1,7 @@
 package com.kounalem.moviedatabase.network.movies.models
 
 import com.google.gson.annotations.SerializedName
+
 internal data class PopularMoviesDTO(
     val page: Int?,
     @SerializedName("results")
@@ -8,5 +9,5 @@ internal data class PopularMoviesDTO(
     @SerializedName("total_pages")
     val totalPages: Int?,
     @SerializedName("total_results")
-    val totalResults: Int?
+    val totalResults: Int?,
 )

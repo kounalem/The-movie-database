@@ -12,16 +12,11 @@ interface Navigation {
         override val path: NavRoute.Path
             get() = NavRoute.Path("Saved")
     }
-
 }
 
-fun NavController.navigateToSavedElementsScreen(navOptions: NavOptions) =
-    navigate(Navigation.SavedElements.path.value, navOptions)
+fun NavController.navigateToSavedElementsScreen(navOptions: NavOptions) = navigate(Navigation.SavedElements.path.value, navOptions)
 
-
-fun navigateToSavedElementsScreen(
-    navGraphBuilder: NavGraphBuilder
-) {
+fun navigateToSavedElementsScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = Navigation.SavedElements.path.value) {
         SavedElementsScreen()
     }

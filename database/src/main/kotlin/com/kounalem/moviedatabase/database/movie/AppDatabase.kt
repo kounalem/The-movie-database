@@ -10,8 +10,9 @@ import com.kounalem.moviedatabase.database.movie.models.TvShowEntity
 @Database(
     entities = [
         MovieEntity::class,
-        TvShowEntity::class, SeasonEntity::class
-    ], version = 1
+        TvShowEntity::class, SeasonEntity::class,
+    ],
+    version = 1,
 )
 @TypeConverters(value = [MovieConverters::class, IntConverters::class, ListStringConverter::class, SeasonListConverter::class])
 internal abstract class AppDatabase : RoomDatabase() {

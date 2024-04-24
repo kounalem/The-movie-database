@@ -8,7 +8,7 @@ data class TvShow(
     val posterPath: String,
     val firstAirDate: String,
     val name: String,
-    //details
+    // details
     val languages: List<String>?,
     val lastAirDate: String?,
     val seasons: List<Season>?,
@@ -23,7 +23,6 @@ data class TvShow(
         val overview: String,
         val posterPath: String?,
         val seasonNumber: Int,
-        val voteAverage: Double
+        val voteAverage: Double,
     )
-
 }

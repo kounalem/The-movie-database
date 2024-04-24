@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flowOf
 
 private fun <T, R> mapNetworkResponseToOutcome(
     response: NetworkResponse<T>,
-    mapper: (T) -> R
+    mapper: (T) -> R,
 ): Outcome<R> {
     return when (response) {
         is NetworkResponse.Success -> Outcome.Success(mapper(response.body))
@@ -25,4 +25,3 @@ internal fun <T, R> Flow<NetworkResponse<T>>.mapToOutcome(mapper: (T) -> R): Flo
         emit(Outcome.Exception(e))
     }
 }
-

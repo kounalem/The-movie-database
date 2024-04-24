@@ -16,12 +16,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
     internal fun provideLocalDatabase(app: Application): AppDatabase {
         return Room.databaseBuilder(
-            app, AppDatabase::class.java, AppDatabase.NAME
+            app,
+            AppDatabase::class.java,
+            AppDatabase.NAME,
         ).build()
     }
 
@@ -42,7 +43,5 @@ object DatabaseModule {
     internal fun provideLocalDataSource(
         movieDataSource: MovieDao,
         tvShowsDataSource: TvShowsDao,
-    ): LocalDataSource =
-        LocalDataSourceImpl(daoMovies = movieDataSource, daoTvShows = tvShowsDataSource)
-
+    ): LocalDataSource = LocalDataSourceImpl(daoMovies = movieDataSource, daoTvShows = tvShowsDataSource)
 }

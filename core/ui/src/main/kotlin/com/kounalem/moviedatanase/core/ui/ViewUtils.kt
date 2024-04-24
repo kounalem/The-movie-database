@@ -13,11 +13,12 @@ private class ClickThrottler(
 
     private var lastClickTime: Long
         get() = if (key.isNullOrBlank()) internalLastClickTime else (lastClickTimePerKey[key] ?: 0L)
-        set(value) = if (key.isNullOrBlank()) {
-            internalLastClickTime = value
-        } else {
-            lastClickTimePerKey[key] = value
-        }
+        set(value) =
+            if (key.isNullOrBlank()) {
+                internalLastClickTime = value
+            } else {
+                lastClickTimePerKey[key] = value
+            }
 
     fun canClick(): Boolean {
         val currentTime = System.currentTimeMillis()
@@ -42,11 +43,12 @@ fun throttlingListener(
     minimumClickDifferenceMs: Int = 400,
     onClick: () -> Unit,
 ): () -> Unit {
-    val clickThrottler = remember(key, minimumClickDifferenceMs) {
-        ClickThrottler(
-            key,
-            minimumClickDifferenceMs,
-        )
-    }
+    val clickThrottler =
+        remember(key, minimumClickDifferenceMs) {
+            ClickThrottler(
+                key,
+                minimumClickDifferenceMs,
+            )
+        }
     return { if (clickThrottler.canClick()) onClick() }
 }

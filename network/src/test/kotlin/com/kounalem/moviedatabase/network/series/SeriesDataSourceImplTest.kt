@@ -29,89 +29,93 @@ class SeriesDataSourceImplTest {
     }
 
     @Test
-    fun `WHEN get series by id THEN return DAO`() = runTest {
-        val given = Gson().fromJson(detailsJsonString, TvShowDetailsResponseDTO::class.java)
-        val response = given.dtoToResponse()
-        coEvery { service.getSeriesById(1) } returns response
-        val expected = NetworkResponse.Success(
-            TvShow(
-                adult = false,
-                id = 61818,
-                originalName = "Late Night with Seth Meyers",
-                overview = """Seth Meyers, who is "Saturday Night Live’s" longest serving anchor on the show’s wildly popular "Weekend Update," takes over as host of NBC’s "Late Night" — home to A-list celebrity guests, memorable comedy and the best in musical talent. As the Emmy Award-winning head writer for "SNL," Meyers has established a reputation for sharp wit and perfectly timed comedy, and has gained fame for his spot-on jokes and satire. Meyers takes his departure from "SNL" to his new post at "Late Night," as Jimmy Fallon moves to "The Tonight Show".""".trimIndent(),
-                posterPath = "https://image.tmdb.org/t/p/w342/g6MrJxNaHYGYU7Sxo72e5B8gKOV.jpg",
-                firstAirDate = "2014-02-25",
-                name = "Late Night with Seth Meyers",
-                languages = listOf("en"),
-                lastAirDate = "2024-04-10",
-                seasons = listOf(
-                    TvShow.Season(
-                        airDate = "2014-02-25",
-                        episodeCount = 99,
-                        id = 64330,
-                        name = "Season 1",
-                        overview = "",
-                        posterPath = "https://image.tmdb.org/t/p/w342/6aTObv741nQNeIrNhevVw3OlVQw.jpg",
-                        seasonNumber = 1,
-                        voteAverage = 0.0
+    fun `WHEN get series by id THEN return DAO`() =
+        runTest {
+            val given = Gson().fromJson(detailsJsonString, TvShowDetailsResponseDTO::class.java)
+            val response = given.dtoToResponse()
+            coEvery { service.getSeriesById(1) } returns response
+            val expected =
+                NetworkResponse.Success(
+                    TvShow(
+                        adult = false,
+                        id = 61818,
+                        originalName = "Late Night with Seth Meyers",
+                        overview = """Seth Meyers, who is "Saturday Night Live’s" longest serving anchor on the show’s wildly popular "Weekend Update," takes over as host of NBC’s "Late Night" — home to A-list celebrity guests, memorable comedy and the best in musical talent. As the Emmy Award-winning head writer for "SNL," Meyers has established a reputation for sharp wit and perfectly timed comedy, and has gained fame for his spot-on jokes and satire. Meyers takes his departure from "SNL" to his new post at "Late Night," as Jimmy Fallon moves to "The Tonight Show".""".trimIndent(),
+                        posterPath = "https://image.tmdb.org/t/p/w342/g6MrJxNaHYGYU7Sxo72e5B8gKOV.jpg",
+                        firstAirDate = "2014-02-25",
+                        name = "Late Night with Seth Meyers",
+                        languages = listOf("en"),
+                        lastAirDate = "2024-04-10",
+                        seasons =
+                            listOf(
+                                TvShow.Season(
+                                    airDate = "2014-02-25",
+                                    episodeCount = 99,
+                                    id = 64330,
+                                    name = "Season 1",
+                                    overview = "",
+                                    posterPath = "https://image.tmdb.org/t/p/w342/6aTObv741nQNeIrNhevVw3OlVQw.jpg",
+                                    seasonNumber = 1,
+                                    voteAverage = 0.0,
+                                ),
+                            ),
+                        type = "Talk Show",
+                        isFavourite = false,
                     ),
-                ),
-                type = "Talk Show",
-                isFavourite = false,
-            )
-        )
+                )
 
-        datasource.getSeriesById(1).test {
-            assertEquals(expected, awaitItem())
-            awaitComplete()
+            datasource.getSeriesById(1).test {
+                assertEquals(expected, awaitItem())
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `WHEN now playing by page id THEN return DAO`() = runTest {
-        val given = Gson().fromJson(popularJsonString, TvShowResponseDTO::class.java)
-        val response = given.dtoToResponse()
+    fun `WHEN now playing by page id THEN return DAO`() =
+        runTest {
+            val given = Gson().fromJson(popularJsonString, TvShowResponseDTO::class.java)
+            val response = given.dtoToResponse()
 
-        coEvery { service.popular(1) } returns response
-        val expected = NetworkResponse.Success(
-            listOf(
-                TvShow(
-                    adult = false,
-                    id = 22980,
-                    originalName = "Watch What Happens Live with Andy Cohen",
-                    overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
-                    posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJwrMXWhq7UY7hGF2S1h.jpg",
-                    firstAirDate = "2009-07-16",
-                    name = "Watch What Happens Live with Andy Cohen",
-                    languages = null,
-                    lastAirDate = null,
-                    seasons = null,
-                    type = null,
-                    isFavourite = false,
-                ),
-                TvShow(
-                    adult = false,
-                    id = 61818,
-                    originalName = "Late Night with Seth Meyers",
-                    overview = "Seth Meyers, who is \"Saturday Night Live’s\" longest serving anchor on the show’s wildly popular \"Weekend Update,\" takes over as host of NBC’s \"Late Night\" — home to A-list celebrity guests, memorable comedy and the best in musical talent. As the Emmy Award-winning head writer for \"SNL,\" Meyers has established a reputation for sharp wit and perfectly timed comedy, and has gained fame for his spot-on jokes and satire. Meyers takes his departure from \"SNL\" to his new post at \"Late Night,\" as Jimmy Fallon moves to \"The Tonight Show\".",
-                    posterPath = "https://image.tmdb.org/t/p/w342/g6MrJxNaHYGYU7Sxo72e5B8gKOV.jpg",
-                    firstAirDate = "2014-02-25",
-                    name = "Late Night with Seth Meyers",
-                    languages = null,
-                    lastAirDate = null,
-                    seasons = null,
-                    type = null,
-                    isFavourite = false,
+            coEvery { service.popular(1) } returns response
+            val expected =
+                NetworkResponse.Success(
+                    listOf(
+                        TvShow(
+                            adult = false,
+                            id = 22980,
+                            originalName = "Watch What Happens Live with Andy Cohen",
+                            overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
+                            posterPath = "https://image.tmdb.org/t/p/w342/onSD9UXfJwrMXWhq7UY7hGF2S1h.jpg",
+                            firstAirDate = "2009-07-16",
+                            name = "Watch What Happens Live with Andy Cohen",
+                            languages = null,
+                            lastAirDate = null,
+                            seasons = null,
+                            type = null,
+                            isFavourite = false,
+                        ),
+                        TvShow(
+                            adult = false,
+                            id = 61818,
+                            originalName = "Late Night with Seth Meyers",
+                            overview = "Seth Meyers, who is \"Saturday Night Live’s\" longest serving anchor on the show’s wildly popular \"Weekend Update,\" takes over as host of NBC’s \"Late Night\" — home to A-list celebrity guests, memorable comedy and the best in musical talent. As the Emmy Award-winning head writer for \"SNL,\" Meyers has established a reputation for sharp wit and perfectly timed comedy, and has gained fame for his spot-on jokes and satire. Meyers takes his departure from \"SNL\" to his new post at \"Late Night,\" as Jimmy Fallon moves to \"The Tonight Show\".",
+                            posterPath = "https://image.tmdb.org/t/p/w342/g6MrJxNaHYGYU7Sxo72e5B8gKOV.jpg",
+                            firstAirDate = "2014-02-25",
+                            name = "Late Night with Seth Meyers",
+                            languages = null,
+                            lastAirDate = null,
+                            seasons = null,
+                            type = null,
+                            isFavourite = false,
+                        ),
+                    ),
                 )
-            )
-        )
 
-        datasource.popular(1).test {
-            assertEquals(expected, awaitItem())
-            awaitComplete()
+            datasource.popular(1).test {
+                assertEquals(expected, awaitItem())
+                awaitComplete()
+            }
         }
-    }
-
 
     private val detailsJsonString = """
     {
@@ -235,7 +239,8 @@ class SeriesDataSourceImplTest {
     }
 """
 
-    private val popularJsonString = "{\n" +
+    private val popularJsonString =
+        "{\n" +
             "  \"page\": 1,\n" +
             "  \"results\": [\n" +
             "    {\n" +
@@ -285,5 +290,4 @@ class SeriesDataSourceImplTest {
             "  \"total_pages\": 8479,\n" +
             "  \"total_results\": 169575\n" +
             "}"
-
 }

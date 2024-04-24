@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SeriesDataSource {
     fun getSeriesById(id: Int): Flow<NetworkResponse<TvShow>>
+
     fun popular(pageNo: Int): Flow<NetworkResponse<List<TvShow>>>
 }

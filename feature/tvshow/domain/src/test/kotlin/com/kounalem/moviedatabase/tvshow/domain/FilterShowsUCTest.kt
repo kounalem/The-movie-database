@@ -12,7 +12,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import kotlin.test.Test
 
-class FilterShowsUCTest{
+class FilterShowsUCTest {
     @MockK
     private lateinit var repo: TvShowRepository
 
@@ -26,13 +26,14 @@ class FilterShowsUCTest{
     }
 
     @Test
-    fun `WHEN invoke THEN search the repo`() = runTest {
-        val given = listOf(mockk<TvShow>())
-        coEvery { repo.search("query") } returns flowOf(given)
+    fun `WHEN invoke THEN search the repo`() =
+        runTest {
+            val given = listOf(mockk<TvShow>())
+            coEvery { repo.search("query") } returns flowOf(given)
 
-        usecase.invoke("query").test {
-            kotlin.test.assertEquals(given, awaitItem())
-            awaitComplete()
+            usecase.invoke("query").test {
+                kotlin.test.assertEquals(given, awaitItem())
+                awaitComplete()
+            }
         }
-    }
 }

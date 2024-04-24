@@ -19,7 +19,6 @@ interface BaseViewModel<UiModel, Event> {
 }
 
 class EventFlow<Event> : AbstractFlow<Event>() {
-
     // this channel queue events if no active subscribers
     private val eventsQueue = Channel<Event>(capacity = Channel.UNLIMITED)
 
@@ -62,7 +61,7 @@ fun <Event> EventFlow<Event>.emitAsync(event: Event) {
 
 abstract class BaseViewModelImpl<UiModel, Event> : ViewModel(), BaseViewModel<UiModel, Event> {
     override val uiModels: Flow<UiModel>
-        get() = uiState. mapNotNull { it }
+        get() = uiState.mapNotNull { it }
     override val events = EventFlow<Event>()
     abstract val uiState: StateFlow<UiModel?>
 

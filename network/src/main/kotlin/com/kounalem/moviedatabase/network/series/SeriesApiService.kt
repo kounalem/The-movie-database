@@ -9,8 +9,12 @@ import retrofit2.http.Query
 
 internal interface SeriesApiService {
     @GET("tv/popular")
-    suspend fun popular(@Query("page") page: Int): Response<TvShowResponseDTO>
+    suspend fun popular(
+        @Query("page") page: Int,
+    ): Response<TvShowResponseDTO>
 
     @GET("tv/{series_id}")
-    suspend fun getSeriesById(@Path("series_id") id: Int): Response<TvShowDetailsResponseDTO>
+    suspend fun getSeriesById(
+        @Path("series_id") id: Int,
+    ): Response<TvShowDetailsResponseDTO>
 }

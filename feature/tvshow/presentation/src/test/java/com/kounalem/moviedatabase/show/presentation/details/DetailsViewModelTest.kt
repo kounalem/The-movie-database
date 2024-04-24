@@ -1,6 +1,5 @@
 package com.kounalem.moviedatabase.show.presentation.details
 
-
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
@@ -25,9 +24,10 @@ internal class DetailsViewModelTest {
 
     @MockK
     private lateinit var repository: TvShowRepository
-    private val savedStateHandle: SavedStateHandle = SavedStateHandle(
-        mapOf(Navigation.Details.DETAILS_ID to 1)
-    )
+    private val savedStateHandle: SavedStateHandle =
+        SavedStateHandle(
+            mapOf(Navigation.Details.DETAILS_ID to 1),
+        )
 
     private val viewModel by lazy {
         DetailsViewModel(
@@ -42,19 +42,22 @@ internal class DetailsViewModelTest {
     }
 
     @Test
-    fun `GIVEN repo returns error WHEN init THEN update the state`() = runTest {
-        coEvery { repository.getTvShowByIdObs(1) } returns flowOf(Outcome.Error("epic fail"))
+    fun `GIVEN repo returns error WHEN init THEN update the state`() =
+        runTest {
+            coEvery { repository.getTvShowByIdObs(1) } returns flowOf(Outcome.Error("epic fail"))
 
-        viewModel.uiModels.test {
-            assertEquals(
-                actual = awaitItem(), expected = DetailsContract.State.Error("epic fail")
-            )
+            viewModel.uiModels.test {
+                assertEquals(
+                    actual = awaitItem(),
+                    expected = DetailsContract.State.Error("epic fail"),
+                )
+            }
         }
-    }
 
     @Test
-    fun `GIVEN repo returns info WHEN init THEN update the state`() = runTest {
-        coEvery { repository.getTvShowByIdObs(1) } returns
+    fun `GIVEN repo returns info WHEN init THEN update the state`() =
+        runTest {
+            coEvery { repository.getTvShowByIdObs(1) } returns
                 flowOf(
                     Outcome.Success(
                         TvShow(
@@ -70,28 +73,28 @@ internal class DetailsViewModelTest {
                             lastAirDate = null,
                             seasons = listOf(),
                             type = null,
-                        )
-                    )
+                        ),
+                    ),
                 )
 
-
-        viewModel.uiModels.test {
-            assertEquals(
-                actual = awaitItem(),
-                expected = DetailsContract.State.Info(
-                    title = "Alva Martin",
-                    overview = "overview",
-                    poster = "https://image.tmdb.org/t/p/w342poster_path",
-                    isFavourite = false,
-                    seasons = listOf(),
-                    languages = listOf(),
-                    firstAirDate = "deseruisse",
-                    lastAirDate = "ON GOING",
-                    type = null,
+            viewModel.uiModels.test {
+                assertEquals(
+                    actual = awaitItem(),
+                    expected =
+                        DetailsContract.State.Info(
+                            title = "Alva Martin",
+                            overview = "overview",
+                            poster = "https://image.tmdb.org/t/p/w342poster_path",
+                            isFavourite = false,
+                            seasons = listOf(),
+                            languages = listOf(),
+                            firstAirDate = "deseruisse",
+                            lastAirDate = "ON GOING",
+                            type = null,
+                        ),
                 )
-            )
+            }
         }
-    }
 
     @Test
     fun `WHEN favouriteAction event trigger repo call`() =

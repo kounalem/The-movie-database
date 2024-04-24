@@ -44,7 +44,7 @@ fun MovieDatabaseNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Navigation.PopularMovies.path.value
+        startDestination = Navigation.PopularMovies.path.value,
     ) {
         navigateToMoviesScreen(navController, this)
         navigateToMovieDetailsScreen(navController, this)
@@ -52,5 +52,4 @@ fun MovieDatabaseNavHost(
         navigateToShowDetailsScreen(navController, this)
         navigateToSavedElementsScreen(this)
     }
-
 }

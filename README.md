@@ -13,6 +13,8 @@ behaviour of the app to be super clean and unit testable.
 Must do:
 You have to use an API key. Feel free to use mine by adding DATABASE_API_KEY="0154126bcc52cfe539c99204454466a9" in the local.properties file.
 
+I am using ktlint for code formatting
+
 ### Libraries used:
 Retrofit, Hilt, Glide, Room
 

@@ -1,6 +1,5 @@
 package com.kounalem.moviedatabase.network.series.models
 
-
 data class TvShowDTO(
     val adult: Boolean,
     val backdrop_path: String?,
@@ -15,5 +14,5 @@ data class TvShowDTO(
     val first_air_date: String,
     val name: String,
     val vote_average: Double,
-    val vote_count: Int
+    val vote_count: Int,
 )

@@ -19,10 +19,9 @@ data class TvShowDetailsResponseDTO(
     val tagline: String?,
     val type: String,
 ) {
-
     data class GenreDTO(
         val id: Int,
-        val name: String
+        val name: String,
     )
 
     data class SeasonDTO(
@@ -33,7 +32,6 @@ data class TvShowDetailsResponseDTO(
         val overview: String,
         val poster_path: String?,
         val season_number: Int,
-        val vote_average: Double
+        val vote_average: Double,
     )
-
 }

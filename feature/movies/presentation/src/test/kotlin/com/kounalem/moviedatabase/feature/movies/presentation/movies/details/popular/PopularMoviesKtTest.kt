@@ -13,7 +13,6 @@ internal class PopularMoviesKtTest(
     @Suppress("UNUSED_PARAMETER")
     name: String, // Need this parameter to display test name nicely
 ) : PaparazziScreenTest(componentTestPreview) {
-
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{1}")
@@ -23,5 +22,4 @@ internal class PopularMoviesKtTest(
                 "com.kounalem.moviedatabase.movies.list",
             )
     }
-
 }

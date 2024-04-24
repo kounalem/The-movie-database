@@ -17,22 +17,24 @@ internal fun TvShowEntity.mapToDomain(): TvShow {
         languages = languages,
         lastAirDate = lastAirDate,
         type = type,
-        seasons = seasons?.map {
-            it.mapToDomain()
-        }
+        seasons =
+            seasons?.map {
+                it.mapToDomain()
+            },
     )
 }
 
-fun SeasonEntity.mapToDomain() = TvShow.Season(
-    id = id,
-    airDate = airDate,
-    episodeCount = episodeCount,
-    name = name,
-    overview = overview,
-    posterPath = posterPath,
-    seasonNumber = seasonNumber,
-    voteAverage = voteAverage
-)
+fun SeasonEntity.mapToDomain() =
+    TvShow.Season(
+        id = id,
+        airDate = airDate,
+        episodeCount = episodeCount,
+        name = name,
+        overview = overview,
+        posterPath = posterPath,
+        seasonNumber = seasonNumber,
+        voteAverage = voteAverage,
+    )
 
 private fun TvShow.Season.mapToEntity() =
     SeasonEntity(
@@ -43,7 +45,7 @@ private fun TvShow.Season.mapToEntity() =
         overview = overview,
         posterPath = posterPath,
         seasonNumber = seasonNumber,
-        voteAverage = voteAverage
+        voteAverage = voteAverage,
     )
 
 internal fun TvShow.mapToEntity(): TvShowEntity {
@@ -59,8 +61,9 @@ internal fun TvShow.mapToEntity(): TvShowEntity {
         languages = languages,
         lastAirDate = lastAirDate,
         type = type,
-        seasons = seasons?.map {
-            it.mapToEntity()
-        },
+        seasons =
+            seasons?.map {
+                it.mapToEntity()
+            },
     )
 }

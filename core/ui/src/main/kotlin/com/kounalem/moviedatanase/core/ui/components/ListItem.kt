@@ -38,27 +38,29 @@ fun MovieListItem(
     selected: (Int) -> Unit,
 ) {
     Card(
-        modifier = Modifier
-            .padding(vertical = small, horizontal = xsmall)
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = throttlingListener(onClick = { selected(model.id) }))
+        modifier =
+            Modifier
+                .padding(vertical = small, horizontal = xsmall)
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = throttlingListener(onClick = { selected(model.id) })),
     ) {
         Row(
             modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             GlideImage(
                 modifier = Modifier.size(100.dp),
                 imageModel = { model.imagePath },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.Center
-                ),
+                imageOptions =
+                    ImageOptions(
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center,
+                    ),
                 previewPlaceholder = R.drawable.the_room,
             )
             HorizontalSpace(xsmall)
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Text(
                     text = model.title,
@@ -74,13 +76,12 @@ fun MovieListItem(
                     text = model.description,
                     fontWeight = FontWeight.Light,
                     maxLines = 3,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
     }
 }
-
 
 @Composable
 @ScreenPreview
@@ -97,9 +98,9 @@ fun ListItemPreview() {
                 id = 0,
                 imagePath = "",
                 title = "The room",
-                description = "Oh hi, Mark. Everybody Betray Me! I Fed Up With This World! You Are Tearing Me Apart, Lisa!"
-            ), selected = {}
+                description = "Oh hi, Mark. Everybody Betray Me! I Fed Up With This World! You Are Tearing Me Apart, Lisa!",
+            ),
+            selected = {},
         )
     }
 }
-

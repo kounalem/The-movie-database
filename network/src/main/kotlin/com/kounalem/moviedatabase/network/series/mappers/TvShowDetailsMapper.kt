@@ -14,18 +14,19 @@ internal fun TvShowDetailsResponseDTO.map(): TvShow {
         name = name,
         languages = languages,
         lastAirDate = last_air_date,
-        seasons = seasons.map {
-            TvShow.Season(
-                airDate = it.air_date,
-                episodeCount = it.episode_count,
-                id = it.id,
-                name = it.name,
-                overview = it.overview,
-                posterPath = getPosterPath(it.poster_path),
-                seasonNumber = it.season_number,
-                voteAverage = it.vote_average
-            )
-        },
+        seasons =
+            seasons.map {
+                TvShow.Season(
+                    airDate = it.air_date,
+                    episodeCount = it.episode_count,
+                    id = it.id,
+                    name = it.name,
+                    overview = it.overview,
+                    posterPath = getPosterPath(it.poster_path),
+                    seasonNumber = it.season_number,
+                    voteAverage = it.vote_average,
+                )
+            },
         type = type,
         isFavourite = false,
     )

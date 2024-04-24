@@ -10,7 +10,7 @@ internal class SeriesDataSourceImpl(private val service: SeriesApiService) : Ser
     override fun getSeriesById(id: Int): Flow<NetworkResponse<TvShow>> =
         wrapServiceCall(
             call = { service.getSeriesById(id) },
-            mapper = { dto -> dto.map() }
+            mapper = { dto -> dto.map() },
         )
 
     override fun popular(pageNo: Int): Flow<NetworkResponse<List<TvShow>>> =
@@ -20,8 +20,6 @@ internal class SeriesDataSourceImpl(private val service: SeriesApiService) : Ser
                 dto.results.map { showDto ->
                     showDto.map()
                 }
-            }
+            },
         )
-
-
 }

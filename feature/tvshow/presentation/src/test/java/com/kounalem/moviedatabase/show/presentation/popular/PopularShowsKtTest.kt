@@ -2,12 +2,11 @@ package com.kounalem.moviedatabase.show.presentation.popular
 
 import com.airbnb.android.showkase.models.Showkase
 import com.kounalem.moviedatabase.core.test.PaparazziScreenTest
-import com.kounalem.moviedatabase.core.test.TestConfig
 import com.kounalem.moviedatabase.core.test.TestPreview
 import com.kounalem.moviedatanase.core.ui.getMetadata
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+
 @RunWith(Parameterized::class)
 internal class PopularShowsKtTest(
     componentTestPreview: TestPreview,
@@ -23,5 +22,4 @@ internal class PopularShowsKtTest(
                 "com.kounalem.moviedatabase.shows.list",
             )
     }
-
 }

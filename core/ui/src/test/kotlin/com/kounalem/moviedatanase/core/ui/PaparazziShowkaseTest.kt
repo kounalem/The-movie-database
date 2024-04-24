@@ -36,18 +36,20 @@ abstract class PaparazziShowkaseTest<T : TestPreview>(
      * Paparazzi configuration.
      */
     @get:Rule
-    val paparazzi = Paparazzi(
-        maxPercentDifference = 0.0,
-        showSystemUi = false,
-        deviceConfig = when (config.device) {
-            Device.PIXEL_6 -> DeviceConfig.PIXEL_6.copy(softButtons = false, locale = "en-rGB")
-            Device.PIXEL_C -> DeviceConfig.PIXEL_C.copy(softButtons = false, locale = "en-rGB")
-        }.copy(
-            nightMode = config.nightMode,
-            fontScale = config.fontScale,
-        ),
-        renderingMode = SessionParams.RenderingMode.SHRINK,
-    )
+    val paparazzi =
+        Paparazzi(
+            maxPercentDifference = 0.0,
+            showSystemUi = false,
+            deviceConfig =
+                when (config.device) {
+                    Device.PIXEL_6 -> DeviceConfig.PIXEL_6.copy(softButtons = false, locale = "en-rGB")
+                    Device.PIXEL_C -> DeviceConfig.PIXEL_C.copy(softButtons = false, locale = "en-rGB")
+                }.copy(
+                    nightMode = config.nightMode,
+                    fontScale = config.fontScale,
+                ),
+            renderingMode = SessionParams.RenderingMode.SHRINK,
+        )
 
     /**
      * Test to run paparazzi screenshot with given composition configuration.
@@ -64,11 +66,12 @@ abstract class PaparazziShowkaseTest<T : TestPreview>(
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
                 // Needed so that UI that uses it don't crash during screenshot tests
-                LocalOnBackPressedDispatcherOwner provides object : OnBackPressedDispatcherOwner {
-                    override val lifecycle = lifecycleOwner.lifecycle
+                LocalOnBackPressedDispatcherOwner provides
+                    object : OnBackPressedDispatcherOwner {
+                        override val lifecycle = lifecycleOwner.lifecycle
 
-                    override val onBackPressedDispatcher = OnBackPressedDispatcher()
-                },
+                        override val onBackPressedDispatcher = OnBackPressedDispatcher()
+                    },
             ) {
                 Box {
                     testPreview.Content()
@@ -77,7 +80,6 @@ abstract class PaparazziShowkaseTest<T : TestPreview>(
         }
     }
 }
-
 
 interface TestPreview {
     @Composable
@@ -89,5 +91,6 @@ class ComponentTestPreview(
 ) : TestPreview {
     @Composable
     override fun Content() = showkaseBrowserComponent.component()
+
     override fun toString(): String = showkaseBrowserComponent.componentKey
 }

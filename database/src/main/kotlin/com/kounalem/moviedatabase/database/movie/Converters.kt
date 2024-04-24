@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken
 import com.kounalem.moviedatabase.database.movie.models.MovieEntity
 import com.kounalem.moviedatabase.database.movie.models.SeasonEntity
 
-
 internal object MovieConverters {
     @TypeConverter
     fun fromString(value: String): ArrayList<MovieEntity> {
@@ -34,9 +33,7 @@ internal object IntConverters {
     }
 }
 
-
 internal object ListStringConverter {
-
     @TypeConverter
     fun fromListString(value: List<String>?): String? {
         return value?.joinToString(",")
@@ -49,7 +46,6 @@ internal object ListStringConverter {
 }
 
 internal object SeasonListConverter {
-
     private val gson = Gson()
 
     @TypeConverter

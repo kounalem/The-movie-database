@@ -60,14 +60,17 @@ abstract class PaparazziScreenTest(
     }
 
     @get:Rule
-    val paparazzi = Paparazzi(
-        showSystemUi = false,
-        maxPercentDifference = 0.0,
-        deviceConfig =when (config.device) {
-            Device.PIXEL_6 -> DeviceConfig.PIXEL_6.copy(softButtons = false, locale = "en-rGB")
-            Device.PIXEL_C -> DeviceConfig.PIXEL_C.copy(softButtons = false, locale = "en-rGB")
-        },
-    )
+    val paparazzi =
+        Paparazzi(
+            showSystemUi = false,
+            maxPercentDifference = 0.0,
+            deviceConfig =
+                when (config.device) {
+                    Device.PIXEL_6 -> DeviceConfig.PIXEL_6.copy(softButtons = false, locale = "en-rGB")
+                    Device.PIXEL_C -> DeviceConfig.PIXEL_C.copy(softButtons = false, locale = "en-rGB")
+                },
+        )
+
     @Test
     fun screenshotTest() {
         paparazzi.snapshot(
@@ -80,11 +83,12 @@ abstract class PaparazziScreenTest(
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
                 // Needed so that UI that uses it don't crash during screenshot tests
-                LocalOnBackPressedDispatcherOwner provides object : OnBackPressedDispatcherOwner {
-                    override val lifecycle = lifecycleOwner.lifecycle
+                LocalOnBackPressedDispatcherOwner provides
+                    object : OnBackPressedDispatcherOwner {
+                        override val lifecycle = lifecycleOwner.lifecycle
 
-                    override val onBackPressedDispatcher = OnBackPressedDispatcher()
-                },
+                        override val onBackPressedDispatcher = OnBackPressedDispatcher()
+                    },
             ) {
                 Box {
                     testPreview.Content()
@@ -104,6 +108,6 @@ class ComponentTestPreview(
 ) : TestPreview {
     @Composable
     override fun Content() = showkaseBrowserComponent.component()
+
     override fun toString(): String = showkaseBrowserComponent.componentKey
 }
-

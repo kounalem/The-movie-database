@@ -28,11 +28,17 @@ val xlarge = 20.dp
 val HorizontalSpacing = 24.dp
 
 @Composable
-fun VerticalSpace(height: Dp, modifier: Modifier = Modifier) {
+fun VerticalSpace(
+    height: Dp,
+    modifier: Modifier = Modifier,
+) {
     Spacer(modifier = modifier.height(height))
 }
 
 @Composable
-fun HorizontalSpace(width: Dp, modifier: Modifier = Modifier) {
+fun HorizontalSpace(
+    width: Dp,
+    modifier: Modifier = Modifier,
+) {
     Spacer(modifier = modifier.width(width))
 }

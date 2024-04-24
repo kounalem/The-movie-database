@@ -30,5 +30,5 @@ data class SeasonEntity(
     val overview: String,
     val posterPath: String?,
     val seasonNumber: Int,
-    val voteAverage: Double
+    val voteAverage: Double,
 )

@@ -1,8 +1,8 @@
 package com.kounalem.moviedatabase.feature.movies.domain
 
 import app.cash.turbine.test
-import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
+import com.kounalem.moviedatabase.repository.MovieRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -27,13 +27,14 @@ class FilterMoviesUCTest {
     }
 
     @Test
-    fun `WHEN invoke THEN search the repo`() = runTest {
-        val given = listOf(mockk<com.kounalem.moviedatabase.domain.models.Movie>())
-        coEvery { repo.search("query") } returns flowOf(given)
+    fun `WHEN invoke THEN search the repo`() =
+        runTest {
+            val given = listOf(mockk<com.kounalem.moviedatabase.domain.models.Movie>())
+            coEvery { repo.search("query") } returns flowOf(given)
 
-        usecase.invoke("query").test {
-            assertEquals(given, awaitItem())
-            awaitComplete()
+            usecase.invoke("query").test {
+                assertEquals(given, awaitItem())
+                awaitComplete()
+            }
         }
-    }
 }

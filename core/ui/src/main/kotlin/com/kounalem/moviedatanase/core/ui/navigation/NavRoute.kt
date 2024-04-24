@@ -6,7 +6,6 @@ interface NavRoute {
     @JvmInline
     value class Path(val value: String)
 
-
     // build navigation path (for screen navigation)
     fun withArgs(vararg args: String): String {
         return buildString {

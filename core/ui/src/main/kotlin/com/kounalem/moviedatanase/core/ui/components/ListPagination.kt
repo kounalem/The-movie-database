@@ -1,6 +1,5 @@
 package com.kounalem.moviedatanase.core.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -33,13 +31,13 @@ fun PaginationList(
     endReached: Boolean,
     refreshEvent: () -> Unit,
     loadNextItems: () -> Unit,
-    selected: (Int) -> Unit
+    selected: (Int) -> Unit,
 ) {
     if (items.isEmpty()) return
     SwipeRefresh(
         modifier = modifier,
         state = refreshState,
-        onRefresh = refreshEvent
+        onRefresh = refreshEvent,
     ) {
         LazyColumn(state = listState) {
             itemsIndexed(items) { index, item ->
@@ -54,16 +52,17 @@ fun PaginationList(
                     model = item,
                     selected = { id: Int ->
                         selected(id)
-                    }
+                    },
                 )
             }
             if (isFetchingNewMovies) {
                 item {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(small),
-                        horizontalArrangement = Arrangement.Center
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(small),
+                        horizontalArrangement = Arrangement.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -73,7 +72,6 @@ fun PaginationList(
     }
 }
 
-
 @Composable
 @ScreenPreview
 private fun PaginationListLocalPreview() {
@@ -81,32 +79,33 @@ private fun PaginationListLocalPreview() {
         refreshState = rememberSwipeRefreshState(true),
         listState = rememberLazyListState(),
         isFetchingNewMovies = false,
-        items = listOf(
-            ListItemModel(
-                id = 0,
-                imagePath = "",
-                title = "title",
-                description = "description",
+        items =
+            listOf(
+                ListItemModel(
+                    id = 0,
+                    imagePath = "",
+                    title = "title",
+                    description = "description",
+                ),
+                ListItemModel(
+                    id = 0,
+                    imagePath = "",
+                    title = "title",
+                    description = "description",
+                ),
+                ListItemModel(
+                    id = 0,
+                    imagePath = "",
+                    title = "title",
+                    description = "description",
+                ),
+                ListItemModel(
+                    id = 0,
+                    imagePath = "",
+                    title = "title",
+                    description = "description",
+                ),
             ),
-            ListItemModel(
-                id = 0,
-                imagePath = "",
-                title = "title",
-                description = "description",
-            ),
-            ListItemModel(
-                id = 0,
-                imagePath = "",
-                title = "title",
-                description = "description",
-            ),
-            ListItemModel(
-                id = 0,
-                imagePath = "",
-                title = "title",
-                description = "description",
-            )
-        ),
         searchQuery = null,
         endReached = false,
         refreshEvent = {},
@@ -123,32 +122,33 @@ fun PaginationListPreview() {
             refreshState = rememberSwipeRefreshState(true),
             listState = rememberLazyListState(),
             isFetchingNewMovies = false,
-            items = listOf(
-                ListItemModel(
-                    id = 0,
-                    imagePath = "",
-                    title = "title",
-                    description = "description",
+            items =
+                listOf(
+                    ListItemModel(
+                        id = 0,
+                        imagePath = "",
+                        title = "title",
+                        description = "description",
+                    ),
+                    ListItemModel(
+                        id = 0,
+                        imagePath = "",
+                        title = "title",
+                        description = "description",
+                    ),
+                    ListItemModel(
+                        id = 0,
+                        imagePath = "",
+                        title = "title",
+                        description = "description",
+                    ),
+                    ListItemModel(
+                        id = 0,
+                        imagePath = "",
+                        title = "title",
+                        description = "description",
+                    ),
                 ),
-                ListItemModel(
-                    id = 0,
-                    imagePath = "",
-                    title = "title",
-                    description = "description",
-                ),
-                ListItemModel(
-                    id = 0,
-                    imagePath = "",
-                    title = "title",
-                    description = "description",
-                ),
-                ListItemModel(
-                    id = 0,
-                    imagePath = "",
-                    title = "title",
-                    description = "description",
-                )
-            ),
             searchQuery = null,
             endReached = false,
             refreshEvent = {},

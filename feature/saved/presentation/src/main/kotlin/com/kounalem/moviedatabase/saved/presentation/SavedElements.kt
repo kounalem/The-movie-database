@@ -37,19 +37,18 @@ fun SavedElementsScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SavedElementsView(
-    state: SavedElementsContract.State,
-) {
+internal fun SavedElementsView(state: SavedElementsContract.State) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         when (state) {
             is SavedElementsContract.State.Loading -> {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(small),
-                    horizontalArrangement = Arrangement.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(small),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     CircularProgressIndicator()
                 }
@@ -58,34 +57,37 @@ internal fun SavedElementsView(
             is SavedElementsContract.State.Elements -> {
                 val listState = rememberLazyListState()
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     TopAppBar(
                         title = { Text(text = state.title) },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                            actionIconContentColor = MaterialTheme.colorScheme.onSecondary
-                        ),
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                                actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
+                            ),
                     )
                     LazyColumn(state = listState) {
                         itemsIndexed(state.info) { _, item ->
                             Box {
                                 MovieListItem(
-                                    model = ListItemModel(
-                                        id = item.id,
-                                        imagePath = item.posterPath,
-                                        title = item.title,
-                                        description = item.overview
-                                    ),
-                                    selected = { }
+                                    model =
+                                        ListItemModel(
+                                            id = item.id,
+                                            imagePath = item.posterPath,
+                                            title = item.title,
+                                            description = item.overview,
+                                        ),
+                                    selected = { },
                                 )
                                 Pill(
                                     text = item.type.name,
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .padding(top = medium, end = medium),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.TopEnd)
+                                            .padding(top = medium, end = medium),
                                 )
                             }
                         }
@@ -100,31 +102,32 @@ internal fun SavedElementsView(
 @Composable
 fun SavedElementsScreenPreview() {
     SavedElementsView(
-        state = SavedElementsContract.State.Elements(
-            "Saved elements",
-            listOf(
-                SavedElementsContract.State.Elements.Info(
-                    id = 1,
-                    posterPath = "",
-                    title = "title1",
-                    overview = "overview",
-                    type = SavedElementsContract.State.Elements.Type.Show
-                ),
-                SavedElementsContract.State.Elements.Info(
-                    id = 2,
-                    posterPath = "",
-                    title = "title2",
-                    overview = "overview2",
-                    type = SavedElementsContract.State.Elements.Type.Movie
-                ),
-                SavedElementsContract.State.Elements.Info(
-                    id = 2,
-                    posterPath = "",
-                    title = "title3",
-                    overview = "overview3",
-                    type = SavedElementsContract.State.Elements.Type.Movie
+        state =
+            SavedElementsContract.State.Elements(
+                "Saved elements",
+                listOf(
+                    SavedElementsContract.State.Elements.Info(
+                        id = 1,
+                        posterPath = "",
+                        title = "title1",
+                        overview = "overview",
+                        type = SavedElementsContract.State.Elements.Type.Show,
+                    ),
+                    SavedElementsContract.State.Elements.Info(
+                        id = 2,
+                        posterPath = "",
+                        title = "title2",
+                        overview = "overview2",
+                        type = SavedElementsContract.State.Elements.Type.Movie,
+                    ),
+                    SavedElementsContract.State.Elements.Info(
+                        id = 2,
+                        posterPath = "",
+                        title = "title3",
+                        overview = "overview3",
+                        type = SavedElementsContract.State.Elements.Type.Movie,
+                    ),
                 ),
             ),
-        )
     )
 }

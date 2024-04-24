@@ -1,10 +1,9 @@
 package com.kounalem.moviedatabase.saved.presentation
 
-
 internal interface SavedElementsContract {
-
     sealed interface State {
         data object Loading : State
+
         data class Elements(
             val title: String,
             val info: List<Info>,

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface MovieDao {
-
     @Query("SELECT * FROM movie WHERE page = :pageNo")
     fun getMoviesForPage(pageNo: Int): Flow<List<MovieEntity>>
 

@@ -26,24 +26,27 @@ interface Navigation {
 
 fun navigateToMovieDetailsScreen(
     navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
+    navGraphBuilder: NavGraphBuilder,
 ) {
     navGraphBuilder.composable(
-        route = Navigation.Details.withArgsFormat(
-            Navigation.Details.DETAILS_ID
-        ),
-        arguments = listOf(
-            navArgument(Navigation.Details.DETAILS_ID) {
-                type = NavType.IntType
-                nullable = false
-            }
-        ),
+        route =
+            Navigation.Details.withArgsFormat(
+                Navigation.Details.DETAILS_ID,
+            ),
+        arguments =
+            listOf(
+                navArgument(Navigation.Details.DETAILS_ID) {
+                    type = NavType.IntType
+                    nullable = false
+                },
+            ),
         enterTransition = {
             if (initialState.destination.route != PopularMoviesNavigation.path.value) {
                 EnterTransition.None
             } else {
                 return@composable slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+                    AnimatedContentTransitionScope.SlideDirection.Start,
+                    tween(700),
                 )
             }
         },
@@ -52,7 +55,8 @@ fun navigateToMovieDetailsScreen(
                 ExitTransition.None
             } else {
                 return@composable slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+                    AnimatedContentTransitionScope.SlideDirection.End,
+                    tween(700),
                 )
             }
         },
@@ -63,11 +67,11 @@ fun navigateToMovieDetailsScreen(
                 // Update the SavedStateHandle with the data you want to pass
                 navController.previousBackStackEntry?.savedStateHandle?.set(
                     Navigation.Details.RESULT_KEY_FAVOURITE,
-                    isFavourite
+                    isFavourite,
                 )
                 navController.previousBackStackEntry?.savedStateHandle?.set(
                     Navigation.Details.RESULT_KEY_FAVOURITE_ID,
-                    args?.getInt(Navigation.Details.DETAILS_ID)
+                    args?.getInt(Navigation.Details.DETAILS_ID),
                 )
                 navController.popBackStack()
             },

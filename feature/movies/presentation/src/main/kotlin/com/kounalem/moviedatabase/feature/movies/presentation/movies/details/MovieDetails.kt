@@ -76,17 +76,18 @@ internal fun DetailsView(
         }
         (state as? DetailsContract.State.Loading)?.let {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(small),
-                horizontalArrangement = Arrangement.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(small),
+                horizontalArrangement = Arrangement.Center,
             ) {
                 CircularProgressIndicator()
             }
         }
         (state as? DetailsContract.State.Info)?.let {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 TopAppBar(
                     title = { Text(text = state.title) },
@@ -95,22 +96,25 @@ internal fun DetailsView(
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onSecondary
-                    ),
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                            actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
+                        ),
                 )
                 Box {
                     GlideImage(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
                         imageModel = { state.poster.orEmpty() },
-                        imageOptions = ImageOptions(
-                            contentScale = ContentScale.Crop,
-                            alignment = Alignment.Center
-                        ),
+                        imageOptions =
+                            ImageOptions(
+                                contentScale = ContentScale.Crop,
+                                alignment = Alignment.Center,
+                            ),
                         previewPlaceholder = R.drawable.the_room,
                     )
 
@@ -118,17 +122,18 @@ internal fun DetailsView(
                         Modifier
                             .fillMaxSize()
                             .background(Color.Black.copy(alpha = 0.4f))
-                            .verticalScroll(scrollState)
+                            .verticalScroll(scrollState),
                     ) {
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth(),
                         ) {
                             CircleButtonWithHeart(
                                 modifier = Modifier.align(Alignment.TopEnd),
                                 buttonColor = if (state.isFavourite) Color.Red.copy(alpha = 0.6f) else Color.Red,
                                 iconTint = if (state.isFavourite) Color.White.copy(alpha = 0.6f) else Color.White,
-                                onClick = onFavouriteClicked
+                                onClick = onFavouriteClicked,
                             )
                         }
 
@@ -144,13 +149,14 @@ internal fun DetailsView(
 
                         HorizontalSpace(xsmall)
                         Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(large),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(large),
                             overflow = TextOverflow.Ellipsis,
                             text = state.overview,
                             fontWeight = FontWeight.Light,
-                            color = Color.White
+                            color = Color.White,
                         )
                     }
                 }
@@ -171,12 +177,12 @@ private fun CircleButtonWithHeart(
         onClick = onClick,
         modifier = modifier.padding(small),
         shape = androidx.compose.foundation.shape.CircleShape,
-        colors = ButtonDefaults.buttonColors(buttonColor)
+        colors = ButtonDefaults.buttonColors(buttonColor),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = "favourite movie",
-            tint = iconTint
+            tint = iconTint,
         )
     }
 }
@@ -186,13 +192,14 @@ private fun CircleButtonWithHeart(
 fun MovieDetailsScreenPreview() {
     PreviewBox {
         DetailsView(
-            state = DetailsContract.State.Info(
-                title = "title",
-                overview = "overview",
-                rate = "rate'",
-                poster = null,
-                isFavourite = true,
-            ),
+            state =
+                DetailsContract.State.Info(
+                    title = "title",
+                    overview = "overview",
+                    rate = "rate'",
+                    poster = null,
+                    isFavourite = true,
+                ),
             onFavouriteClicked = {},
             popBackStack = {},
         )

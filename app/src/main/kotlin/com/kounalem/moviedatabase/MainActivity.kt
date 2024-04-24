@@ -24,13 +24,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MovieDatabaseTheme {
-                val appState = rememberMovieAppState(
-                    windowSizeClass = calculateWindowSizeClass(this),
-                    networkMonitor = networkMonitor,
-                )
+                val appState =
+                    rememberMovieAppState(
+                        windowSizeClass = calculateWindowSizeClass(this),
+                        networkMonitor = networkMonitor,
+                    )
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     MovieApp(appState)
                 }

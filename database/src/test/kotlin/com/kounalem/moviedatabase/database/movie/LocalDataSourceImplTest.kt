@@ -17,7 +17,6 @@ import org.junit.Before
 import org.junit.Test
 
 internal class LocalDataSourceImplTest {
-
     @MockK
     private lateinit var movieDao: MovieDao
 
@@ -40,7 +39,7 @@ internal class LocalDataSourceImplTest {
             lastAirDate = null,
             seasons = listOf(),
             type = null,
-            isFavourite = false
+            isFavourite = false,
         )
     }
 
@@ -57,7 +56,7 @@ internal class LocalDataSourceImplTest {
             lastAirDate = null,
             seasons = listOf(),
             type = null,
-            isFavourite = false
+            isFavourite = false,
         )
     }
 
@@ -102,30 +101,32 @@ internal class LocalDataSourceImplTest {
             dataSource.getFilteredMovies(given).test {
                 assertEquals(
                     listOf(
-                        dummyMovie
-                    ), awaitItem()
+                        dummyMovie,
+                    ),
+                    awaitItem(),
                 )
                 awaitComplete()
             }
         }
 
     @Test
-    fun `WHEN get all movies THEN return mapped domain model`() = runTest {
+    fun `WHEN get all movies THEN return mapped domain model`() =
+        runTest {
+            every { movieDao.getMoviesForPage(1) } returns flowOf(listOf(dummyMovieEntity))
 
-        every { movieDao.getMoviesForPage(1) } returns flowOf(listOf(dummyMovieEntity))
-
-        dataSource.getMovies(1).test {
-            assertEquals(listOf(dummyMovie), awaitItem())
-            awaitComplete()
+            dataSource.getMovies(1).test {
+                assertEquals(listOf(dummyMovie), awaitItem())
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `give movie list WHEN save movie list THEN save mapped to entity model`() = runTest {
-        dataSource.saveMovieList(listOf(dummyMovie))
+    fun `give movie list WHEN save movie list THEN save mapped to entity model`() =
+        runTest {
+            dataSource.saveMovieList(listOf(dummyMovie))
 
-        coVerify { movieDao.saveMovie(dummyMovieEntity) }
-    }
+            coVerify { movieDao.saveMovie(dummyMovieEntity) }
+        }
 
     @Test
     fun `GIVEN query WHEN getFilteredShows THEN return filtered domain show list models`() =
@@ -140,26 +141,29 @@ internal class LocalDataSourceImplTest {
         }
 
     @Test
-    fun `WHEN get all shows THEN return mapped domain model`() = runTest {
-        every { showDao.getAllShows() } returns flowOf(listOf(dummyTvShowEntity))
+    fun `WHEN get all shows THEN return mapped domain model`() =
+        runTest {
+            every { showDao.getAllShows() } returns flowOf(listOf(dummyTvShowEntity))
 
-        dataSource.getAllShows().test {
-            assertEquals(listOf(dummyTvShow), awaitItem())
-            awaitComplete()
+            dataSource.getAllShows().test {
+                assertEquals(listOf(dummyTvShow), awaitItem())
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `give tv show list WHEN save show list THEN save mapped to entity model`() = runTest {
-        dataSource.saveShowList(listOf(dummyTvShow))
+    fun `give tv show list WHEN save show list THEN save mapped to entity model`() =
+        runTest {
+            dataSource.saveShowList(listOf(dummyTvShow))
 
-        coVerify { showDao.saveShow(dummyTvShowEntity) }
-    }
+            coVerify { showDao.saveShow(dummyTvShowEntity) }
+        }
 
     @Test
-    fun `WHEN saveShowDescription THEN call dao`() = runTest {
-        dataSource.saveShowDescription(dummyTvShow)
+    fun `WHEN saveShowDescription THEN call dao`() =
+        runTest {
+            dataSource.saveShowDescription(dummyTvShow)
 
-        coVerify { showDao.saveShow(dummyTvShowEntity) }
-    }
+            coVerify { showDao.saveShow(dummyTvShowEntity) }
+        }
 }
