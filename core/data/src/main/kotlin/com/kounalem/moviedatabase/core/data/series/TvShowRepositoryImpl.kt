@@ -61,11 +61,11 @@ internal class TvShowRepositoryImpl
                 if (description != null && description.seasons?.isNotEmpty() == true) {
                     flowOf(Outcome.Success(description))
                 } else {
-                    server.getSeriesById(id).mapToOutcome { description ->
+                    server.getSeriesById(id).mapToOutcome { serie ->
                         coroutineScope.launch {
-                            local.saveShowDescription(description)
+                            local.saveShowDescription(serie)
                         }
-                        description
+                        serie
                     }
                 }
             }.catch {

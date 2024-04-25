@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace 'com.kounalem.moviedatabase.saved.presentation'
+    namespace 'ccom.kounalem.moviedatabase.saved.presentation'
     compileSdk 34
 
     buildFeatures {
@@ -28,6 +28,7 @@ android {
     }
 
     kotlinOptions {
+        freeCompilerArgs += "-Xcontext-receivers"
         jvmTarget = '17'
     }
 }

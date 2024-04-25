@@ -2,6 +2,7 @@ package com.kounalem.moviedatabase.core.data
 
 import com.kounalem.moviedatabase.network.NetworkResponse
 import com.kounalem.moviedatabase.repository.Outcome
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
@@ -18,6 +19,7 @@ private fun <T, R> mapNetworkResponseToOutcome(
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal fun <T, R> Flow<NetworkResponse<T>>.mapToOutcome(mapper: (T) -> R): Flow<Outcome<R>> {
     return this.flatMapLatest { response ->
         flowOf(mapNetworkResponseToOutcome(response, mapper))

@@ -18,7 +18,7 @@ import javax.inject.Inject
 internal class SavedElementsViewModel
     @Inject
     constructor(
-        private val filterSavedInfoUseCase: FilterSavedUC,
+        filterSavedInfoUseCase: FilterSavedUC,
     ) : BaseViewModelImpl<SavedElementsContract.State, Unit>() {
         private val isLoading = MutableStateFlow(false)
 
