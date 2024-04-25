@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesScreen
-import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
+import com.kounalem.moviedatabase.core.ui.navigation.NavRoute
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation.Details as MovieDetailsNavigation
 
 interface Navigation {

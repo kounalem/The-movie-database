@@ -6,7 +6,7 @@ import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.details.navigation.Navigation
 import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.repository.Outcome
-import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
+import com.kounalem.moviedatabase.core.ui.BaseViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

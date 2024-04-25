@@ -22,11 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kounalem.moviedatanase.core.ui.components.MovieListItem
-import com.kounalem.moviedatanase.core.ui.components.Pill
-import com.kounalem.moviedatanase.core.ui.medium
-import com.kounalem.moviedatanase.core.ui.model.ListItemModel
-import com.kounalem.moviedatanase.core.ui.small
+import com.kounalem.moviedatabase.core.ui.components.MovieListItem
+import com.kounalem.moviedatabase.core.ui.components.Pill
+import com.kounalem.moviedatabase.core.ui.medium
+import com.kounalem.moviedatabase.core.ui.model.ListItemModel
+import com.kounalem.moviedatabase.core.ui.small
 
 @Composable
 fun SavedElementsScreen() {
@@ -108,21 +108,21 @@ fun SavedElementsScreenPreview() {
                 listOf(
                     SavedElementsContract.State.Elements.Info(
                         id = 1,
-                        posterPath = "",
+                        posterPath = "path",
                         title = "title1",
                         overview = "overview",
                         type = SavedElementsContract.State.Elements.Type.Show,
                     ),
                     SavedElementsContract.State.Elements.Info(
                         id = 2,
-                        posterPath = "",
+                        posterPath = "path",
                         title = "title2",
                         overview = "overview2",
                         type = SavedElementsContract.State.Elements.Type.Movie,
                     ),
                     SavedElementsContract.State.Elements.Info(
                         id = 2,
-                        posterPath = "",
+                        posterPath = "path",
                         title = "title3",
                         overview = "overview3",
                         type = SavedElementsContract.State.Elements.Type.Movie,

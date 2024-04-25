@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.GetMostPopularMoviesUC
 import com.kounalem.moviedatabase.repository.MovieRepository
-import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
-import com.kounalem.moviedatanase.core.ui.emitAsync
-import com.kounalem.moviedatanase.core.ui.paginator.Paginator
+import com.kounalem.moviedatabase.core.ui.BaseViewModelImpl
+import com.kounalem.moviedatabase.core.ui.emitAsync
+import com.kounalem.moviedatabase.core.ui.paginator.Paginator
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

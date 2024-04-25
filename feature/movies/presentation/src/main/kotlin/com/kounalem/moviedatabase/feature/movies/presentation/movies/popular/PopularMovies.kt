@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.kounalem.moviedatanase.core.ui.components.MovieOutlinedTextField
-import com.kounalem.moviedatanase.core.ui.components.PaginationList
-import com.kounalem.moviedatanase.core.ui.components.Pill
-import com.kounalem.moviedatanase.core.ui.model.ListItemModel
-import com.kounalem.moviedatanase.core.ui.small
-import com.kounalem.moviedatanase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.components.MovieOutlinedTextField
+import com.kounalem.moviedatabase.core.ui.components.PaginationList
+import com.kounalem.moviedatabase.core.ui.components.Pill
+import com.kounalem.moviedatabase.core.ui.model.ListItemModel
+import com.kounalem.moviedatabase.core.ui.small
+import com.kounalem.moviedatabase.core.ui.xsmall
 
 @Composable
 fun PopularMoviesScreen(

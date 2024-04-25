@@ -25,8 +25,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.kounalem.moviedatabase.navigation.MovieDatabaseNavHost
 import com.kounalem.moviedatabase.navigation.TopLevelDestination
-import com.kounalem.moviedatanase.core.ui.components.MovieNavigationBarItem
-import com.kounalem.moviedatanase.core.ui.components.MoviesNavigationBar
+import com.kounalem.moviedatabase.core.ui.MovieNavigationBarItem
+import com.kounalem.moviedatabase.core.ui.MoviesNavigationBar
 import kotlin.random.Random
 
 @Composable

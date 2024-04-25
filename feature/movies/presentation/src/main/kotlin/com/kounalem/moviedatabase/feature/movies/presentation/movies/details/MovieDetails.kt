@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kounalem.moviedatabase.core.ui.R
-import com.kounalem.moviedatanase.core.ui.HorizontalSpace
-import com.kounalem.moviedatanase.core.ui.PreviewBox
-import com.kounalem.moviedatanase.core.ui.large
-import com.kounalem.moviedatanase.core.ui.small
-import com.kounalem.moviedatanase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.HorizontalSpace
+import com.kounalem.moviedatabase.core.ui.PreviewBox
+import com.kounalem.moviedatabase.core.ui.large
+import com.kounalem.moviedatabase.core.ui.small
+import com.kounalem.moviedatabase.core.ui.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -105,19 +105,20 @@ internal fun DetailsView(
                         ),
                 )
                 Box {
-                    GlideImage(
-                        modifier =
+                    if(state.poster?.isNotEmpty() == true) {
+                        GlideImage(
+                            modifier =
                             Modifier
                                 .fillMaxSize(),
-                        imageModel = { state.poster.orEmpty() },
-                        imageOptions =
+                            imageModel = { state.poster },
+                            imageOptions =
                             ImageOptions(
                                 contentScale = ContentScale.Crop,
                                 alignment = Alignment.Center,
                             ),
-                        previewPlaceholder = R.drawable.the_room,
-                    )
-
+                            previewPlaceholder = R.drawable.the_room,
+                        )
+                    }
                     Column(
                         Modifier
                             .fillMaxSize()
@@ -197,7 +198,7 @@ fun MovieDetailsScreenPreview() {
                     title = "title",
                     overview = "overview",
                     rate = "rate'",
-                    poster = null,
+                    poster = "poster",
                     isFavourite = true,
                 ),
             onFavouriteClicked = {},

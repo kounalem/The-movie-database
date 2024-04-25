@@ -2,7 +2,7 @@ package com.kounalem.moviedatabase.saved.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.kounalem.moviedatabase.saved.domain.FilterSavedUC
-import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
+import com.kounalem.moviedatabase.core.ui.BaseViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

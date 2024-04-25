@@ -10,7 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kounalem.moviedatabase.show.presentation.details.ShowDetails
-import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
+import com.kounalem.moviedatabase.core.ui.navigation.NavRoute
 import com.kounalem.moviedatabase.show.presentation.popular.navigation.Navigation.PopularShows as PopularMoviesNavigation
 
 interface Navigation {

@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.kounalem.moviedatabase.saved.presentation.SavedElementsScreen
-import com.kounalem.moviedatanase.core.ui.navigation.NavRoute
+import com.kounalem.moviedatabase.core.ui.navigation.NavRoute
 
 interface Navigation {
     data object SavedElements : NavRoute {

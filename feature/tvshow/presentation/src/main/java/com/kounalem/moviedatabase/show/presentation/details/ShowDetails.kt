@@ -44,14 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kounalem.moviedatabase.core.ui.HorizontalSpace
+import com.kounalem.moviedatabase.core.ui.PreviewBox
 import com.kounalem.moviedatabase.core.ui.R
-import com.kounalem.moviedatanase.core.ui.HorizontalSpace
-import com.kounalem.moviedatanase.core.ui.PreviewBox
-import com.kounalem.moviedatanase.core.ui.components.Pill
-import com.kounalem.moviedatanase.core.ui.large
-import com.kounalem.moviedatanase.core.ui.small
-import com.kounalem.moviedatanase.core.ui.xlarge
-import com.kounalem.moviedatanase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.components.Pill
+import com.kounalem.moviedatabase.core.ui.large
+import com.kounalem.moviedatabase.core.ui.small
+import com.kounalem.moviedatabase.core.ui.xlarge
+import com.kounalem.moviedatabase.core.ui.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -85,9 +85,9 @@ internal fun DetailsView(
         (state as? DetailsContract.State.Loading)?.let {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(small),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(small),
                 horizontalArrangement = Arrangement.Center,
             ) {
                 CircularProgressIndicator()
@@ -105,27 +105,28 @@ internal fun DetailsView(
                         }
                     },
                     colors =
-                        TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                            actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
-                        ),
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
+                    ),
                 )
                 Box {
-                    GlideImage(
-                        modifier =
+                    if (state.poster?.isNotEmpty() == true) {
+                        GlideImage(
+                            modifier =
                             Modifier
                                 .fillMaxSize(),
-                        imageModel = { state.poster.orEmpty() },
-                        imageOptions =
+                            imageModel = { state.poster },
+                            imageOptions =
                             ImageOptions(
                                 contentScale = ContentScale.Crop,
                                 alignment = Alignment.Center,
                             ),
-                        previewPlaceholder = R.drawable.the_room,
-                    )
-
+                            previewPlaceholder = R.drawable.the_room,
+                        )
+                    }
                     Column(
                         Modifier
                             .fillMaxSize()
@@ -134,15 +135,15 @@ internal fun DetailsView(
                     ) {
                         Box(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth(),
+                            Modifier
+                                .fillMaxWidth(),
                         ) {
                             state.firstAirDate?.let { firstAirDate ->
                                 Text(
                                     modifier =
-                                        Modifier
-                                            .padding(start = large, top = xlarge)
-                                            .align(Alignment.TopStart),
+                                    Modifier
+                                        .padding(start = large, top = xlarge)
+                                        .align(Alignment.TopStart),
                                     text = "$firstAirDate - ${state.lastAirDate}",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 16.sp,
@@ -174,9 +175,9 @@ internal fun DetailsView(
                         HorizontalSpace(xsmall)
                         Text(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(large),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(large),
                             overflow = TextOverflow.Ellipsis,
                             text = state.overview,
                             fontWeight = FontWeight.Light,
@@ -193,27 +194,28 @@ internal fun DetailsView(
                                     itemsIndexed(season) { _, item ->
                                         Card(
                                             modifier =
-                                                Modifier
-                                                    .width(150.dp)
-                                                    .padding(horizontal = xsmall),
+                                            Modifier
+                                                .width(150.dp)
+                                                .padding(horizontal = xsmall),
                                         ) {
                                             Box {
-                                                GlideImage(
-                                                    imageModel = { item.posterPath.orEmpty() },
-                                                    imageOptions =
+                                                if (item.posterPath?.isNotEmpty() == true) {
+                                                    GlideImage(
+                                                        imageModel = { item.posterPath },
+                                                        imageOptions =
                                                         ImageOptions(
                                                             contentScale = ContentScale.Crop,
                                                             alignment = Alignment.Center,
                                                         ),
-                                                    previewPlaceholder = R.drawable.the_room,
-                                                )
-
+                                                        previewPlaceholder = R.drawable.the_room,
+                                                    )
+                                                }
                                                 Text(
                                                     modifier =
-                                                        Modifier
-                                                            .fillMaxWidth()
-                                                            .padding(large)
-                                                            .align(Alignment.BottomCenter),
+                                                    Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(large)
+                                                        .align(Alignment.BottomCenter),
                                                     overflow = TextOverflow.Ellipsis,
                                                     text = state.overview,
                                                     maxLines = 3,
@@ -260,59 +262,59 @@ fun showDetailsScreenPreview() {
     PreviewBox {
         DetailsView(
             state =
-                DetailsContract.State.Info(
-                    title = "title",
-                    overview = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    poster = null,
-                    isFavourite = true,
-                    seasons =
-                        listOf(
-                            DetailsContract.State.Info.Season(
-                                airDate = "aeque",
-                                episodeCount = 5438,
-                                id = 1121,
-                                name = "Marcy Rivera",
-                                overview = "definitiones",
-                                posterPath = null,
-                                seasonNumber = 6885,
-                                voteAverage = 1912,
-                            ),
-                            DetailsContract.State.Info.Season(
-                                airDate = "vehicula",
-                                episodeCount = 7174,
-                                id = 6749,
-                                name = "Earnestine Campos",
-                                overview = "ornatus",
-                                posterPath = null,
-                                seasonNumber = 6168,
-                                voteAverage = 1389,
-                            ),
-                            DetailsContract.State.Info.Season(
-                                airDate = "saepe",
-                                episodeCount = 6421,
-                                id = 9141,
-                                name = "Marci Craig",
-                                overview = "legimus",
-                                posterPath = null,
-                                seasonNumber = 7029,
-                                voteAverage = 8033,
-                            ),
-                            DetailsContract.State.Info.Season(
-                                airDate = "mauris",
-                                episodeCount = 2761,
-                                id = 8413,
-                                name = "Terry Olsen",
-                                overview = "decore",
-                                posterPath = null,
-                                seasonNumber = 2025,
-                                voteAverage = 3260,
-                            ),
-                        ),
-                    languages = listOf("English", "Greek"),
-                    lastAirDate = "ON GOING",
-                    type = null,
-                    firstAirDate = "21-2-22",
+            DetailsContract.State.Info(
+                title = "title",
+                overview = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                poster = "poster",
+                isFavourite = true,
+                seasons =
+                listOf(
+                    DetailsContract.State.Info.Season(
+                        airDate = "aeque",
+                        episodeCount = 5438,
+                        id = 1121,
+                        name = "Marcy Rivera",
+                        overview = "definitiones",
+                        posterPath = "posterPath",
+                        seasonNumber = 6885,
+                        voteAverage = 1912,
+                    ),
+                    DetailsContract.State.Info.Season(
+                        airDate = "vehicula",
+                        episodeCount = 7174,
+                        id = 6749,
+                        name = "Earnestine Campos",
+                        overview = "ornatus",
+                        posterPath = "posterPath",
+                        seasonNumber = 6168,
+                        voteAverage = 1389,
+                    ),
+                    DetailsContract.State.Info.Season(
+                        airDate = "saepe",
+                        episodeCount = 6421,
+                        id = 9141,
+                        name = "Marci Craig",
+                        overview = "legimus",
+                        posterPath = "posterPath",
+                        seasonNumber = 7029,
+                        voteAverage = 8033,
+                    ),
+                    DetailsContract.State.Info.Season(
+                        airDate = "mauris",
+                        episodeCount = 2761,
+                        id = 8413,
+                        name = "Terry Olsen",
+                        overview = "decore",
+                        posterPath = "posterPath",
+                        seasonNumber = 2025,
+                        voteAverage = 3260,
+                    ),
                 ),
+                languages = listOf("English", "Greek"),
+                lastAirDate = "ON GOING",
+                type = null,
+                firstAirDate = "21-2-22",
+            ),
             onFavouriteClicked = {},
             popBackStack = {},
         )

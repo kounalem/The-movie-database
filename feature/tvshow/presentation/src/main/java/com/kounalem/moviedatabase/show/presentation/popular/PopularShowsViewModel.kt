@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.kounalem.moviedatabase.repository.Outcome
 import com.kounalem.moviedatabase.repository.TvShowRepository
 import com.kounalem.moviedatabase.tvshow.domain.FilterShowsUC
-import com.kounalem.moviedatanase.core.ui.BaseViewModelImpl
-import com.kounalem.moviedatanase.core.ui.emitAsync
-import com.kounalem.moviedatanase.core.ui.paginator.Paginator
+import com.kounalem.moviedatabase.core.ui.BaseViewModelImpl
+import com.kounalem.moviedatabase.core.ui.emitAsync
+import com.kounalem.moviedatabase.core.ui.paginator.Paginator
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
