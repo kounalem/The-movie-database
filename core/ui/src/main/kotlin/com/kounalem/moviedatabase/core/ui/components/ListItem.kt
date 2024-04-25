@@ -3,10 +3,12 @@ package com.kounalem.moviedatabase.core.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +21,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.kounalem.moviedatabase.core.ui.R
 import com.kounalem.moviedatabase.core.ui.HorizontalSpace
 import com.kounalem.moviedatabase.core.ui.PreviewBox
+import com.kounalem.moviedatabase.core.ui.R
 import com.kounalem.moviedatabase.core.ui.ShowkaseComposableGroup
 import com.kounalem.moviedatabase.core.ui.annotations.ScreenPreview
 import com.kounalem.moviedatabase.core.ui.model.ListItemModel
@@ -39,19 +41,25 @@ fun MovieListItem(
 ) {
     Card(
         modifier =
-            Modifier
-                .padding(vertical = small, horizontal = xsmall)
-                .clip(RoundedCornerShape(16.dp))
-                .clickable(onClick = throttlingListener(onClick = { selected(model.id) })),
+        Modifier
+            .padding(vertical = small, horizontal = xsmall)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = throttlingListener(onClick = { selected(model.id) })),
     ) {
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if(model.imagePath.isNotEmpty()) {
+            if (model.imagePath.isNotEmpty()) {
                 GlideImage(
                     modifier = Modifier.size(100.dp),
                     imageModel = { model.imagePath },
+                    loading = {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.Center),
+                        )
+                    },
                     imageOptions =
                     ImageOptions(
                         contentScale = ContentScale.Crop,
