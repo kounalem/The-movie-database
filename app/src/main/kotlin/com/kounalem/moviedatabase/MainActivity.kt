@@ -11,6 +11,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import com.kounalem.moviedatabase.core.data.NetworkMonitor
 import com.kounalem.moviedatabase.core.ui.MovieDatabaseTheme
+import com.kounalem.moviedatabase.debug.DevMenuSensorDelegate
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -18,6 +19,9 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var sensorDelegate: DevMenuSensorDelegate
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,5 +41,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sensorDelegate.registerShakeListener(this)
+    }
+
+    override fun onPause() {
+        sensorDelegate.removeShakeListener()
+        super.onPause()
     }
 }

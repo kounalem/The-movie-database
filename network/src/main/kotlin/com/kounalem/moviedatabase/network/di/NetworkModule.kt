@@ -62,9 +62,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideServerMoviesDataSource(service: MoviesApiService): MoviesDataSource = ServerDataSourceImpl(service = service)
+    internal fun provideServerMoviesDataSource(service: MoviesApiService): MoviesDataSource =
+        ServerDataSourceImpl(service = service)
 
     @Provides
     @Singleton
-    internal fun provideServerSeriesDataSource(service: SeriesApiService): SeriesDataSource = SeriesDataSourceImpl(service = service)
+    internal fun provideServerSeriesDataSource(service: SeriesApiService): SeriesDataSource =
+        SeriesDataSourceImpl(service = service)
 }

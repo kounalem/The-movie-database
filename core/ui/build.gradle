@@ -62,7 +62,7 @@ dependencies {
 
     implementation libs.landscapist.glide
 
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling)
 
     debugImplementation(libs.showkase)
     implementation(libs.showkase.annotation)

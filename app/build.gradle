@@ -33,6 +33,10 @@ android {
     namespace 'com.kounalem.moviedatabase'
     compileSdk 34
 
+    buildFeatures {
+        buildConfig true
+    }
+
     defaultConfig {
         applicationId "com.kounalem.moviedatabase"
         minSdk 26
@@ -131,6 +135,10 @@ dependencies {
     kapt libs.hilt.compiler
     kapt libs.androidx.hilt.compiler
     implementation libs.androidx.hilt.navigation.compose
+
+    debugImplementation(libs.showkase)
+    debugImplementation(libs.showkase.annotation)
+    kaptDebug libs.showkase.processor
 }
 
 // Allow references to generated code
