@@ -1,12 +1,14 @@
 package com.kounalem.moviedatabase.network.di
 
 import com.kounalem.moviedatabase.network.BuildConfig
+import com.kounalem.moviedatabase.network.ServerInfo
 import com.kounalem.moviedatabase.network.movies.MoviesApiService
 import com.kounalem.moviedatabase.network.movies.MoviesDataSource
 import com.kounalem.moviedatabase.network.movies.ServerDataSourceImpl
 import com.kounalem.moviedatabase.network.series.SeriesApiService
 import com.kounalem.moviedatabase.network.series.SeriesDataSource
 import com.kounalem.moviedatabase.network.series.SeriesDataSourceImpl
+import com.kounalem.moviedatabase.preferences.PreferenceRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,8 +27,10 @@ object NetworkModule {
     @Provides
     @Singleton
     @MovieClient
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder().baseUrl("http://api.themoviedb.org/3/")
+    fun provideRetrofit(preferenceRepository: PreferenceRepository): Retrofit {
+        val baseUrl =
+            ServerInfo.getInfo(preferenceRepository.getString(PreferenceRepository.ENVIRONMENT))
+        return Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create()).client(
                 OkHttpClient.Builder().addInterceptor(
                     HttpLoggingInterceptor().apply {

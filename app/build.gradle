@@ -122,6 +122,8 @@ dependencies {
     implementation(project(":feature:tvshow:presentation"))
     implementation(project(":feature:saved:presentation"))
     implementation(project(":core:data"))
+    implementation(project(":preferences"))
+    implementation project(':network')
 
     //androidx
     implementation(libs.androidx.compose.material)

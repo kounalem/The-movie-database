@@ -1,7 +1,3 @@
-/*
- * Created by Emmanouil Kounalakis on 22.09.2021.
- * Copyright (c) 2021 Muzz ltd. All rights reserved.
- */
 package com.kounalem.moviedatabase
 
 import android.app.Activity
