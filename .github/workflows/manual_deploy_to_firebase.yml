@@ -37,8 +37,8 @@ jobs:
       - name: Get local.properties from secrets
         run: echo "${{secrets.LOCAL_PROPERTIES }}" > $GITHUB_WORKSPACE/local.properties
 
-      - name: Execute gradle command - assemble debug
-        run: ./gradlew assembleDebug
+      - name: Execute gradle command - assemble dev debug
+        run: ./gradlew assembleDevDebug
 
       # Uncomment the following lines if you want to build a release version
       # - name: build release
@@ -50,7 +50,7 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
+          file: app/build/outputs/apk/dev/debug/app-dev-debug.apk
           releaseNotes: ${{ inputs.release_notes }}
 
           # file: app/build/outputs/apk/release/app-release-unsigned.apk

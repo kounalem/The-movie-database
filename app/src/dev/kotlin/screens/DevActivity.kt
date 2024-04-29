@@ -1,4 +1,4 @@
-package com.kounalem.moviedatabase
+package screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

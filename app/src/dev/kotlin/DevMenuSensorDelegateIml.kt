@@ -1,5 +1,3 @@
-package com.kounalem.moviedatabase
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,6 +8,7 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import com.kounalem.moviedatabase.debug.DevMenuSensorDelegate
 import dagger.hilt.android.qualifiers.ApplicationContext
+import screens.DevActivity
 import javax.inject.Inject
 import kotlin.math.sqrt
 class DevMenuSensorDelegateIml @Inject constructor(

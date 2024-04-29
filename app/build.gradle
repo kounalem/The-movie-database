@@ -57,11 +57,10 @@ android {
 
     buildTypes {
         debug {
-            resValue("string", "app_name", "mdbDev")
+            resValue("string", "app_name", "mdbDebug")
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-
             signingConfigs.create("config") {
                 storeFile = file(getProp("Keys.repo"))
                 storePassword getProp("STORE_PASS")
@@ -76,8 +75,22 @@ android {
         }
     }
 
+    flavorDimensions = ["mode"]
+    productFlavors {
+        production {
+            dimension "mode"
+            applicationIdSuffix ".prod"
+        }
+        dev {
+            dimension "mode"
+            applicationIdSuffix ".dev"
+        }
+    }
+
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("main").java.srcDirs("src/dev/kotlin")
+        getByName("main").java.srcDirs("src/production/kotlin")
         getByName("test").java.srcDirs("src/test/kotlin")
     }
 
@@ -138,9 +151,9 @@ dependencies {
     kapt libs.androidx.hilt.compiler
     implementation libs.androidx.hilt.navigation.compose
 
-    debugImplementation(libs.showkase)
-    debugImplementation(libs.showkase.annotation)
-    kaptDebug libs.showkase.processor
+    devImplementation(libs.showkase)
+    devImplementation(libs.showkase.annotation)
+    kaptDev libs.showkase.processor
 }
 
 // Allow references to generated code

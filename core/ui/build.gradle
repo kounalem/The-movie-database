@@ -21,7 +21,6 @@ android {
         getByName("test").java.srcDirs("src/test/kotlin")
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -64,9 +63,9 @@ dependencies {
 
     implementation(libs.androidx.compose.ui.tooling)
 
-    debugImplementation(libs.showkase)
+    implementation(libs.showkase)
     implementation(libs.showkase.annotation)
-    kaptDebug libs.showkase.processor
+    kapt libs.showkase.processor
 
     testImplementation(project(":core:test"))
 }

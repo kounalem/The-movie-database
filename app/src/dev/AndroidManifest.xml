@@ -7,7 +7,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".DevActivity"
+            android:name="screens.DevActivity"
             android:theme="@style/Theme.MovieDatabase"></activity>
     </application>
 

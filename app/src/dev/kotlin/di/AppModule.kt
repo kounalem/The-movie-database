@@ -1,7 +1,7 @@
-package com.kounalem.moviedatabase.di
+package di
 
+import DevMenuSensorDelegateIml
 import android.content.Context
-import com.kounalem.moviedatabase.DevMenuSensorDelegateIml
 import com.kounalem.moviedatabase.debug.DevMenuSensorDelegate
 import dagger.Module
 import dagger.Provides

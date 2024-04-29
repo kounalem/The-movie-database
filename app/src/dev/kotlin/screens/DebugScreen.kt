@@ -1,4 +1,4 @@
-package com.kounalem.moviedatabase
+package screens
 
 import android.app.Activity
 import android.util.Log
