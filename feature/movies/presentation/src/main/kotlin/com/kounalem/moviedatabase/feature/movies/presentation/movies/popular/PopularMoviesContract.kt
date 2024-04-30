@@ -18,6 +18,7 @@ internal interface PopularMoviesContract {
             val endReached: Boolean,
             val fetchingNewMovies: Boolean,
             val savedMoviesFilter: SavedMoviesFilter,
+            val showFavouritePill: Boolean,
         ) : State {
             data class SavedMoviesFilter(
                 val filterText: String,

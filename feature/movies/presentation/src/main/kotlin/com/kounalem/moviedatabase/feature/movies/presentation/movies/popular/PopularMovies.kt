@@ -84,9 +84,9 @@ internal fun PopularMoviesView(
             is PopularMoviesContract.State.Loading -> {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(small),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(small),
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     CircularProgressIndicator()
@@ -124,8 +124,8 @@ private fun MovieList(
 
     MovieOutlinedTextField(
         modifier =
-            Modifier
-                .fillMaxWidth(),
+        Modifier
+            .fillMaxWidth(),
         searchQuery = state.searchQuery,
         event = {
             onSearchQueryChange(it)
@@ -139,25 +139,27 @@ private fun MovieList(
             listState = listState,
             isFetchingNewMovies = state.fetchingNewMovies,
             items =
-                state.movies.map { item ->
-                    ListItemModel(
-                        id = item.id,
-                        imagePath = item.posterPath,
-                        description = item.overview,
-                        title = item.title,
-                    )
-                },
+            state.movies.map { item ->
+                ListItemModel(
+                    id = item.id,
+                    imagePath = item.posterPath,
+                    description = item.overview,
+                    title = item.title,
+                )
+            },
             searchQuery = state.searchQuery,
             endReached = state.endReached,
             refreshEvent = onRefresh,
             loadNextItems = { loadNextItems() },
             selected = { id -> navigateToDetails(id) },
         )
-        Pill(
-            modifier = Modifier.align(Alignment.TopEnd),
-            text = state.savedMoviesFilter.filterText,
-            onClick = onSavedMoviesClicked,
-        )
+        if (state.showFavouritePill) {
+            Pill(
+                modifier = Modifier.align(Alignment.TopEnd),
+                text = state.savedMoviesFilter.filterText,
+                onClick = onSavedMoviesClicked,
+            )
+        }
     }
 }
 
@@ -166,74 +168,75 @@ private fun MovieList(
 fun PopularMoviesScreenPreview() {
     PopularMoviesView(
         state =
-            PopularMoviesContract.State.Info(
-                listOf(
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
-                    PopularMoviesContract.State.Info.Movie(
-                        id = 0,
-                        posterPath = "",
-                        title = "title1",
-                        overview = "overview",
-                    ),
+        PopularMoviesContract.State.Info(
+            listOf(
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
                 ),
-                searchQuery = "",
-                isRefreshing = false,
-                endReached = false,
-                fetchingNewMovies = false,
-                savedMoviesFilter = (
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+                PopularMoviesContract.State.Info.Movie(
+                    id = 0,
+                    posterPath = "",
+                    title = "title1",
+                    overview = "overview",
+                ),
+            ),
+            searchQuery = "",
+            isRefreshing = false,
+            endReached = false,
+            fetchingNewMovies = false,
+            showFavouritePill = true,
+            savedMoviesFilter = (
                     PopularMoviesContract.State.Info.SavedMoviesFilter(
                         "filter movies",
                         false,
                     )
-                ),
-            ),
+                    ),
+        ),
         navigateToDetails = {},
         onSavedMoviesClicked = {},
         onRefresh = {},

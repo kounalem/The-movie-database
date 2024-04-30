@@ -58,7 +58,8 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
                     searchQuery = null,
                     endReached = false,
                     fetchingNewMovies = false,
-                    savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter("", false)
+                    savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter("", false),
+                    showFavouritePill = true
                 ),
             )
         }
@@ -86,7 +87,8 @@ internal class PopularMoviesKtTest(config: TestConfig) : PaparazziScreenTest(con
                     searchQuery = null,
                     endReached = false,
                     fetchingNewMovies = true,
-                    savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter("", false)
+                    savedMoviesFilter = PopularMoviesContract.State.Info.SavedMoviesFilter("", false),
+                    showFavouritePill = true
                 ),
             )
         }

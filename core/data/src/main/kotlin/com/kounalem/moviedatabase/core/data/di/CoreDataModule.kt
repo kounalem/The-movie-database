@@ -16,8 +16,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -28,11 +26,12 @@ object CoreDataModule {
     fun provideMovieRepository(
         serverDataSource: MoviesDataSource,
         localDataSource: LocalDataSource,
+        @com.kounalem.moviedatabase.shared.annotation.Application appScope: CoroutineScope,
     ): MovieRepository {
         return MovieRepositoryImpl(
             server = serverDataSource,
             local = localDataSource,
-            coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            coroutineScope = appScope,
         )
     }
 
@@ -41,11 +40,12 @@ object CoreDataModule {
     fun provideShowRepository(
         serverDataSource: SeriesDataSource,
         localDataSource: LocalDataSource,
+        @com.kounalem.moviedatabase.shared.annotation.Application appScope: CoroutineScope,
     ): TvShowRepository {
         return TvShowRepositoryImpl(
             server = serverDataSource,
             local = localDataSource,
-            coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            coroutineScope = appScope,
         )
     }
 

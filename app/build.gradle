@@ -19,6 +19,10 @@ def getProp(String propName) {
     }
 }
 
+ext {
+    appversion = "1.0"
+}
+
 kotlin {
     sourceSets {
         debug {
@@ -42,7 +46,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName = appversion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -53,6 +57,8 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+
+        buildConfigField("String", "APP_VERSION", "\"$appversion\"")
     }
 
     buildTypes {
@@ -79,11 +85,9 @@ android {
     productFlavors {
         production {
             dimension "mode"
-            applicationIdSuffix ".prod"
         }
         dev {
             dimension "mode"
-            applicationIdSuffix ".dev"
         }
     }
 
@@ -134,9 +138,12 @@ dependencies {
     implementation(project(":feature:movies:presentation"))
     implementation(project(":feature:tvshow:presentation"))
     implementation(project(":feature:saved:presentation"))
+    implementation(project(":core:domain:repository"))
+    implementation(project(":feature:movies:domain"))
     implementation(project(":core:data"))
     implementation(project(":preferences"))
     implementation project(':network')
+    implementation project(':shared')
 
     //androidx
     implementation(libs.androidx.compose.material)
@@ -144,7 +151,8 @@ dependencies {
     implementation(libs.androidx.compose.material3.windowSizeClass)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation "androidx.tracing:tracing:1.2.0"
+    implementation(libs.androidx.tracing)
+    implementation(libs.androidx.lifecycle.extensions)
     //Hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler

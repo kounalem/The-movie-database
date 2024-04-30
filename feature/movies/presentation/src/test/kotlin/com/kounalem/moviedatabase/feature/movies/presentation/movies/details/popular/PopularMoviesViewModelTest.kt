@@ -5,6 +5,7 @@ import com.kounalem.moviedatabase.core.test.CoroutineTestRule
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.GetMostPopularMoviesUC
+import com.kounalem.moviedatabase.feature.movies.domain.usecase.PopularMoviesFeatureFlags
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesContract
 import com.kounalem.moviedatabase.feature.movies.presentation.movies.popular.PopularMoviesViewModel
 import com.kounalem.moviedatabase.repository.MovieRepository
@@ -34,11 +35,15 @@ internal class PopularMoviesViewModelTest {
     @MockK
     private lateinit var popularMoviesUC: GetMostPopularMoviesUC
 
+    @MockK
+    private lateinit var featureFlags: PopularMoviesFeatureFlags
+
     private val viewModel by lazy {
         PopularMoviesViewModel(
             repo = movieRepository,
             filterMoviesUC = filterMoviesUC,
             popularMoviesUC = popularMoviesUC,
+            featureFlags = featureFlags
         )
     }
 
@@ -47,6 +52,7 @@ internal class PopularMoviesViewModelTest {
         MockKAnnotations.init(this, relaxed = true)
 
         coEvery { popularMoviesUC.movies } returns flowOf(LinkedHashMap())
+        coEvery { featureFlags.showFilterByFavourite } returns true
     }
 
     @Test
@@ -82,42 +88,43 @@ internal class PopularMoviesViewModelTest {
                     secondMovie,
                 )
             coEvery { popularMoviesUC.movies } returns
-                flowOf(
-                    LinkedHashMap<Int, Movie>().apply {
-                        popularMovies.forEach { put(it.id, it) }
-                    },
-                )
+                    flowOf(
+                        LinkedHashMap<Int, Movie>().apply {
+                            popularMovies.forEach { put(it.id, it) }
+                        },
+                    )
 
             viewModel.uiModels.test {
                 assertEquals(
                     actual = awaitItem(),
                     expected =
-                        PopularMoviesContract.State.Info(
-                            movies =
-                                listOf(
-                                    PopularMoviesContract.State.Info.Movie(
-                                        id = 1,
-                                        posterPath = "",
-                                        title = "title1",
-                                        overview = "overview1",
-                                    ),
-                                    PopularMoviesContract.State.Info.Movie(
-                                        id = 2,
-                                        posterPath = "",
-                                        title = "title2",
-                                        overview = "overview2",
-                                    ),
-                                ),
-                            isRefreshing = false,
-                            searchQuery = null,
-                            endReached = false,
-                            fetchingNewMovies = false,
-                            savedMoviesFilter =
-                                PopularMoviesContract.State.Info.SavedMoviesFilter(
-                                    filterText = "All movies",
-                                    isFiltering = false,
-                                ),
+                    PopularMoviesContract.State.Info(
+                        movies =
+                        listOf(
+                            PopularMoviesContract.State.Info.Movie(
+                                id = 1,
+                                posterPath = "",
+                                title = "title1",
+                                overview = "overview1",
+                            ),
+                            PopularMoviesContract.State.Info.Movie(
+                                id = 2,
+                                posterPath = "",
+                                title = "title2",
+                                overview = "overview2",
+                            ),
                         ),
+                        isRefreshing = false,
+                        searchQuery = null,
+                        endReached = false,
+                        fetchingNewMovies = false,
+                        savedMoviesFilter =
+                        PopularMoviesContract.State.Info.SavedMoviesFilter(
+                            filterText = "All movies",
+                            isFiltering = false,
+                        ),
+                        showFavouritePill = true
+                    ),
                 )
             }
         }
@@ -171,11 +178,11 @@ internal class PopularMoviesViewModelTest {
                 )
             coEvery { filterMoviesUC.invoke("hi") } returns flowOf(given)
             coEvery { popularMoviesUC.movies } returns
-                flowOf(
-                    LinkedHashMap<Int, Movie>().apply {
-                        popularMovies.forEach { put(it.id, it) }
-                    },
-                )
+                    flowOf(
+                        LinkedHashMap<Int, Movie>().apply {
+                            popularMovies.forEach { put(it.id, it) }
+                        },
+                    )
 
             viewModel.onSearchQueryChange("hi")
             advanceTimeBy(600L)
@@ -184,32 +191,33 @@ internal class PopularMoviesViewModelTest {
                 assertEquals(
                     actual = awaitItem(),
                     expected =
-                        PopularMoviesContract.State.Info(
-                            movies =
-                                listOf(
-                                    PopularMoviesContract.State.Info.Movie(
-                                        id = 1,
-                                        posterPath = "",
-                                        title = "title1",
-                                        overview = "overview1",
-                                    ),
-                                    PopularMoviesContract.State.Info.Movie(
-                                        id = 2,
-                                        posterPath = "",
-                                        title = "title2",
-                                        overview = "overview2",
-                                    ),
-                                ),
-                            isRefreshing = false,
-                            searchQuery = "hi",
-                            endReached = false,
-                            fetchingNewMovies = false,
-                            savedMoviesFilter =
-                                PopularMoviesContract.State.Info.SavedMoviesFilter(
-                                    filterText = "All movies",
-                                    isFiltering = false,
-                                ),
+                    PopularMoviesContract.State.Info(
+                        movies =
+                        listOf(
+                            PopularMoviesContract.State.Info.Movie(
+                                id = 1,
+                                posterPath = "",
+                                title = "title1",
+                                overview = "overview1",
+                            ),
+                            PopularMoviesContract.State.Info.Movie(
+                                id = 2,
+                                posterPath = "",
+                                title = "title2",
+                                overview = "overview2",
+                            ),
                         ),
+                        isRefreshing = false,
+                        searchQuery = "hi",
+                        endReached = false,
+                        fetchingNewMovies = false,
+                        savedMoviesFilter =
+                        PopularMoviesContract.State.Info.SavedMoviesFilter(
+                            filterText = "All movies",
+                            isFiltering = false,
+                        ),
+                        showFavouritePill = true
+                    ),
                 )
             }
         }
@@ -230,9 +238,9 @@ internal class PopularMoviesViewModelTest {
                     page = 1,
                 )
             coEvery { popularMoviesUC.movies } returns
-                flowOf(
-                    linkedMapOf(movie.id to movie),
-                )
+                    flowOf(
+                        linkedMapOf(movie.id to movie),
+                    )
 
             viewModel.loadNextItems()
 
@@ -240,26 +248,27 @@ internal class PopularMoviesViewModelTest {
                 assertEquals(
                     actual = awaitItem(),
                     expected =
-                        PopularMoviesContract.State.Info(
-                            movies =
-                                listOf(
-                                    PopularMoviesContract.State.Info.Movie(
-                                        id = 1,
-                                        posterPath = "",
-                                        title = "title",
-                                        overview = "overview",
-                                    ),
-                                ),
-                            isRefreshing = false,
-                            searchQuery = null,
-                            endReached = false,
-                            fetchingNewMovies = false,
-                            savedMoviesFilter =
-                                PopularMoviesContract.State.Info.SavedMoviesFilter(
-                                    filterText = "All movies",
-                                    isFiltering = false,
-                                ),
+                    PopularMoviesContract.State.Info(
+                        movies =
+                        listOf(
+                            PopularMoviesContract.State.Info.Movie(
+                                id = 1,
+                                posterPath = "",
+                                title = "title",
+                                overview = "overview",
+                            ),
                         ),
+                        isRefreshing = false,
+                        searchQuery = null,
+                        endReached = false,
+                        fetchingNewMovies = false,
+                        savedMoviesFilter =
+                        PopularMoviesContract.State.Info.SavedMoviesFilter(
+                            filterText = "All movies",
+                            isFiltering = false,
+                        ),
+                        showFavouritePill = true
+                    ),
                 )
             }
         }

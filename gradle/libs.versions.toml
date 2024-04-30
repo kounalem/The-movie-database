@@ -13,6 +13,7 @@ ksp = "1.9.23-1.0.19"
 composeBom = "2024.03.00"
 activityCompose = "1.8.2"
 glide = "2.2.1"
+lifecycleExtensions = "2.2.0"
 lifecycleRuntimeCompose = "2.7.0"
 lifecycleRuntimeKtx = "2.7.0"
 loggingInterceptor = "5.0.0-alpha.3"
@@ -24,6 +25,7 @@ retrofit = "2.9.0"
 room = "2.6.1"
 showkase = "1.0.2"
 junit = "4.13.2"
+tracing = "1.2.0"
 turbine = "1.0.0"
 uiTooling = "1.6.4"
 hilt = "2.48"
@@ -40,6 +42,8 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 [libraries]
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
+androidx-tracing = { module = "androidx.tracing:tracing", version.ref = "tracing" }
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }

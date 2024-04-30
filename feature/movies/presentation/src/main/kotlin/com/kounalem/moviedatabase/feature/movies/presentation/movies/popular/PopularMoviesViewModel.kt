@@ -7,6 +7,7 @@ import com.kounalem.moviedatabase.repository.MovieRepository
 import com.kounalem.moviedatabase.core.ui.BaseViewModelImpl
 import com.kounalem.moviedatabase.core.ui.emitAsync
 import com.kounalem.moviedatabase.core.ui.paginator.Paginator
+import com.kounalem.moviedatabase.feature.movies.domain.usecase.PopularMoviesFeatureFlags
 import com.zhuinden.flowcombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,6 +30,7 @@ internal class PopularMoviesViewModel
         private val repo: MovieRepository,
         private val filterMoviesUC: FilterMoviesUC,
         private val popularMoviesUC: GetMostPopularMoviesUC,
+        private val featureFlags: PopularMoviesFeatureFlags,
     ) : BaseViewModelImpl<PopularMoviesContract.State, PopularMoviesContract.Event>() {
         private val isLoading = MutableStateFlow(false)
         private val error: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -114,6 +116,7 @@ internal class PopularMoviesViewModel
                                     endReached = endReached,
                                     fetchingNewMovies = true,
                                     savedMoviesFilter = filterSavedMovies,
+                                    showFavouritePill = false
                                 )
                             }
                         } else if (filteredMovies.isNotEmpty() && searchQuery?.isNotEmpty() == true) {
@@ -124,6 +127,7 @@ internal class PopularMoviesViewModel
                                 endReached = false,
                                 fetchingNewMovies = false,
                                 savedMoviesFilter = filterSavedMovies,
+                                showFavouritePill = featureFlags.showFilterByFavourite
                             )
                         } else {
                             PopularMoviesContract.State.Info(
@@ -139,6 +143,7 @@ internal class PopularMoviesViewModel
                                 endReached = endReached,
                                 fetchingNewMovies = fetchingNewMovies,
                                 savedMoviesFilter = filterSavedMovies,
+                                showFavouritePill = featureFlags.showFilterByFavourite
                             )
                         }
                     }.stateIn(
