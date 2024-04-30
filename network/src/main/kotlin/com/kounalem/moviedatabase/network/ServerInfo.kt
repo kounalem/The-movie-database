@@ -50,7 +50,7 @@ data class ServerInfo(
         )
 
         val Local = ServerInfo(
-            id = "staging",
+            id = "local",
             host = "api.themoviedb.org",
             wsAddress = "http://api.themoviedb.org/3/",
             scheme = "http"

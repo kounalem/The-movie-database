@@ -18,6 +18,7 @@ import com.kounalem.moviedatabase.core.ui.large
 import com.kounalem.moviedatabase.core.ui.showShowkase
 import com.kounalem.moviedatabase.core.ui.xlarge
 import com.kounalem.moviedatabase.managers.FeatureFlags
+import com.kounalem.moviedatabase.network.ServerInfo.Companion.Dev
 import com.kounalem.moviedatabase.network.ServerInfo.Companion.Local
 import com.kounalem.moviedatabase.network.ServerInfo.Companion.Prod
 import com.kounalem.moviedatabase.network.ServerInfo.Companion.Staging
@@ -66,7 +67,7 @@ private fun SelectEnvironment(preferenceRepository: PreferenceRepository) {
             .fillMaxWidth()
             .padding(horizontal = large),
     ) {
-        itemsIndexed(listOf(Prod, Local, Staging, Prod)) { _, item ->
+        itemsIndexed(listOf(Prod, Dev, Staging, Local)) { _, item ->
             ListToggleItem(
                 title = item.id,
                 description = null,
