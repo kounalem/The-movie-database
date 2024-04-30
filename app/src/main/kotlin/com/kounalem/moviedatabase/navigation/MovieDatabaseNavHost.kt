@@ -46,10 +46,10 @@ fun MovieDatabaseNavHost(
         navController = navController,
         startDestination = Navigation.PopularMovies.path.value,
     ) {
-        navigateToMoviesScreen(navController, this)
-        navigateToMovieDetailsScreen(navController, this)
-        navigateToShowsScreen(navController, this)
-        navigateToShowDetailsScreen(navController, this)
-        navigateToSavedElementsScreen(this)
+        navigateToMoviesScreen(navController = navController, navGraphBuilder = this)
+        navigateToMovieDetailsScreen(navController = navController, navGraphBuilder = this)
+        navigateToShowsScreen(navController = navController, navGraphBuilder = this)
+        navigateToShowDetailsScreen(navController = navController, navGraphBuilder = this)
+        navigateToSavedElementsScreen(navGraphBuilder = this)
     }
 }

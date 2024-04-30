@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
@@ -19,14 +20,15 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.kounalem.moviedatabase.navigation.MovieDatabaseNavHost
-import com.kounalem.moviedatabase.navigation.TopLevelDestination
 import com.kounalem.moviedatabase.core.ui.MovieNavigationBarItem
 import com.kounalem.moviedatabase.core.ui.MoviesNavigationBar
+import com.kounalem.moviedatabase.navigation.MovieDatabaseNavHost
+import com.kounalem.moviedatabase.navigation.TopLevelDestination
 import kotlin.random.Random
 
 @Composable
@@ -35,7 +37,7 @@ fun MovieApp(appState: MovieAppState) {
 
     val isOffline by appState.isOffline.collectAsStateWithLifecycle()
     // If user is not connected to the internet show a snack bar to inform them.
-    val notConnectedMessage = "No internet connection"
+    val notConnectedMessage = stringResource(id = R.string.not_connected)
     LaunchedEffect(isOffline) {
         if (isOffline) {
             snackbarHostState.showSnackbar(
@@ -59,15 +61,15 @@ fun MovieApp(appState: MovieAppState) {
         content = {
             Column(
                 modifier =
-                    Modifier
-                        .padding(it)
-                        .fillMaxSize(),
+                Modifier
+                    .padding(it)
+                    .fillMaxSize(),
             ) {
                 MovieDatabaseNavHost(
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .weight(1f),
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1f),
                     appState = appState,
                     onShowSnackbar = { message, action ->
                         snackbarHostState.showSnackbar(
@@ -79,6 +81,7 @@ fun MovieApp(appState: MovieAppState) {
                 )
             }
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     )
 }
 
@@ -108,11 +111,11 @@ private fun MoviesNavigationBar(
                 selectedIcon = {
                     Icon(
                         imageVector =
-                            if (selected) {
-                                destination.selectedIcon
-                            } else {
-                                destination.unselectedIcon
-                            },
+                        if (selected) {
+                            destination.selectedIcon
+                        } else {
+                            destination.unselectedIcon
+                        },
                         contentDescription = null,
                     )
                 },
@@ -135,7 +138,7 @@ private fun Modifier.notificationDot(): Modifier =
                 // however, its parameters are private, so we must depend on them implicitly
                 // (NavigationBarTokens.ActiveIndicatorWidth = 64.dp)
                 center =
-                    center +
+                center +
                         Offset(
                             64.dp.toPx() * .45f,
                             32.dp.toPx() * -.45f - 6.dp.toPx(),

@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import com.kounalem.moviedatabase.core.ui.components.Pill
 import com.kounalem.moviedatabase.core.ui.model.ListItemModel
 import com.kounalem.moviedatabase.core.ui.small
 import com.kounalem.moviedatabase.core.ui.xsmall
+import com.kounalem.moviedatabase.feature.movies.presentation.R
 
 @Composable
 fun PopularMoviesScreen(
