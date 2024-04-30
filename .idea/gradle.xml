@@ -31,6 +31,7 @@
             <option value="$PROJECT_DIR$/feature/tvshow/presentation" />
             <option value="$PROJECT_DIR$/network" />
             <option value="$PROJECT_DIR$/preferences" />
+            <option value="$PROJECT_DIR$/shared" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

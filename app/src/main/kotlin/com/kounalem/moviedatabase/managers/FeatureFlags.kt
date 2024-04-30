@@ -2,6 +2,7 @@ package com.kounalem.moviedatabase.managers
 
 import android.content.Context
 import androidx.core.content.edit
+import com.kounalem.moviedatabase.config.BuildTypeInfo
 import com.kounalem.moviedatabase.managers.FeatureFlags.Stage
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.PopularMoviesFeatureFlags
 import javax.inject.Inject
@@ -46,8 +47,8 @@ import kotlin.reflect.KProperty
 class FeatureFlags @Inject constructor(
     context: Context,
 //   TODO create a config repo eg private val featureRemoteConfig: ConfigRepository,
-    private val buildTypeInfo: com.kounalem.moviedatabase.config.BuildTypeInfo,
-) : com.kounalem.moviedatabase.feature.movies.domain.usecase.PopularMoviesFeatureFlags {
+    private val buildTypeInfo: BuildTypeInfo,
+) : PopularMoviesFeatureFlags {
     override val showFilterByFavourite by FeatureFlag(SHOW_FILTERED_MOVIES_BY_FAVOURITE, Stage.DEV)
 
     enum class Stage {

@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class BuildTypeInfoImpl @Inject constructor() : BuildTypeInfo {
 
-    override fun isDev() = BuildConfig.FLAVOR.contains("alpha", ignoreCase = true)
+    override fun isDev() = BuildConfig.FLAVOR.contains("dev", ignoreCase = true)
 
     override fun isDebug() = BuildConfig.DEBUG
 

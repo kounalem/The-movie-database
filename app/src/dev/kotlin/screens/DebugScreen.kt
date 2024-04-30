@@ -3,24 +3,19 @@ package screens
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.kounalem.moviedatabase.core.ui.components.ListToggleItem
 import com.kounalem.moviedatabase.core.ui.large
 import com.kounalem.moviedatabase.core.ui.showShowkase
-import com.kounalem.moviedatabase.core.ui.small
 import com.kounalem.moviedatabase.core.ui.xlarge
 import com.kounalem.moviedatabase.managers.FeatureFlags
 import com.kounalem.moviedatabase.network.ServerInfo.Companion.Local
@@ -72,14 +67,17 @@ private fun SelectEnvironment(preferenceRepository: PreferenceRepository) {
             .padding(horizontal = large),
     ) {
         itemsIndexed(listOf(Prod, Local, Staging, Prod)) { _, item ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                val checkedState = remember { mutableStateOf(environmentId == item.id) }
-                Text(text = item.id)
-                Spacer(modifier = Modifier.padding(horizontal = small))
-                Switch(checked = checkedState.value, onCheckedChange = {
-                    preferenceRepository.insert(PreferenceRepository.ENVIRONMENT, item.id)
-                })
-            }
+            ListToggleItem(
+                title = item.id,
+                description = null,
+                toggleInitValue = environmentId == item.id,
+                toggled = {
+                    preferenceRepository.insert(
+                        PreferenceRepository.ENVIRONMENT,
+                        item.id
+                    )
+                }
+            )
         }
     }
 }
@@ -107,18 +105,14 @@ private fun FeatureFlags(featureFlags: FeatureFlags) {
             .padding(horizontal = large),
     ) {
         itemsIndexed(flags) { _, item ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                val checkedState = remember { mutableStateOf(item.isFlagSet()) }
-                Text(
-                    text = item.name,
-                )
-                Spacer(modifier = Modifier.padding(horizontal = small))
-                Switch(checked = checkedState.value, onCheckedChange = {
-                    val updated = !checkedState.value
-                    item.setLocalFlag(updated)
-                    checkedState.value = updated
-                })
-            }
+            ListToggleItem(
+                title = item.name,
+                description = null,
+                toggleInitValue = item.isFlagSet(),
+                toggled = {
+                    item.setLocalFlag(it)
+                }
+            )
         }
     }
 }
