@@ -5,28 +5,9 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
-def getProp(String propName) {
-    def propsFile = rootProject.file('local.properties')
-    if (propsFile.exists()) {
-        def props = new Properties()
-        props.load(new FileInputStream(propsFile))
-        return props[propName]
-    } else {
-        throw IllegalStateException("Cannot find $propName in local.properties")
-    }
-}
-
 android {
     namespace 'com.kounalem.moviedatabase.datasourcemodels'
     compileSdk 34
-
-    buildFeatures {
-        buildConfig true
-    }
-
-    defaultConfig {
-        buildConfigField "String", "PREF_KEY_ALIAS", getProp("PREF_KEY_ALIAS")
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

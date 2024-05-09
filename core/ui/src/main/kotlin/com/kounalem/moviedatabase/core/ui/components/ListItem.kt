@@ -109,14 +109,15 @@ fun ListToggleItem(
     toggled: (Boolean) -> Unit,
 ) {
 
-    var checkedState = toggleInitValue
+    val checkedState = remember { mutableStateOf(toggleInitValue) }
+//    var checkedState = toggleInitValue
 
     Card(
         modifier =
         Modifier
             .padding(vertical = small, horizontal = xsmall)
             .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = throttlingListener(onClick = { toggled(checkedState) })),
+            .clickable(onClick = throttlingListener(onClick = { toggled(checkedState.value) })),
     ) {
         Row(
             modifier = modifier.padding(start = xsmall),
@@ -150,9 +151,9 @@ fun ListToggleItem(
             Switch(
                 modifier = Modifier
                     .padding(end = small),
-                checked = checkedState,
+                checked = checkedState.value,
                 onCheckedChange = {
-                    checkedState = it
+                    checkedState.value = it
                     toggled(it)
                 }
             )
