@@ -11,26 +11,44 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kounalem.moviedatabase.core.ui.components.ListToggleItem
 import com.kounalem.moviedatabase.core.ui.large
 import com.kounalem.moviedatabase.core.ui.showShowkase
 import com.kounalem.moviedatabase.core.ui.xlarge
+import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
+import com.kounalem.moviedatabase.domain.models.EnvironmentConfig
+import com.kounalem.moviedatabase.domain.models.UserData
 import com.kounalem.moviedatabase.managers.FeatureFlags
-import com.kounalem.moviedatabase.network.ServerInfo.Companion.Dev
-import com.kounalem.moviedatabase.network.ServerInfo.Companion.Local
-import com.kounalem.moviedatabase.network.ServerInfo.Companion.Prod
-import com.kounalem.moviedatabase.network.ServerInfo.Companion.Staging
-import com.kounalem.moviedatabase.preferences.PreferenceRepository
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun DebugScreen(
     navController: NavHostController,
     activity: Activity,
-    preferenceRepository: PreferenceRepository,
+    userPreferencesRepository: UserPreferencesRepository,
     featureFlags: FeatureFlags
 ) {
+
+    val userData by userPreferencesRepository.userData
+        .collectAsStateWithLifecycle(initialValue = UserData(EnvironmentConfig.Dev))
+
+    var currentEnv by remember { mutableStateOf(userData.environment) }
+    LaunchedEffect(userData) {
+        currentEnv = userData.environment
+    }
+    LaunchedEffect(currentEnv) {
+        if (currentEnv != userData.environment)
+            userPreferencesRepository.setEnvironment(currentEnv)
+    }
 
     Column(modifier = Modifier.padding(top = xlarge)) {
         Button(modifier = Modifier
@@ -46,7 +64,12 @@ fun DebugScreen(
         }
 
         Spacer(modifier = Modifier.padding(vertical = xlarge))
-        SelectEnvironment(preferenceRepository)
+        SelectEnvironment(
+            currentEnv = currentEnv,
+            updateConfig = { newConfig ->
+                currentEnv = newConfig
+            }
+        )
 
         Spacer(modifier = Modifier.padding(vertical = xlarge))
         FeatureFlags(featureFlags)
@@ -55,28 +78,36 @@ fun DebugScreen(
 }
 
 @Composable
-private fun SelectEnvironment(preferenceRepository: PreferenceRepository) {
+private fun SelectEnvironment(
+    currentEnv: EnvironmentConfig,
+    updateConfig: (config: EnvironmentConfig) -> Unit,
+) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = large), text = "Select environment:"
     )
-    val environmentId = preferenceRepository.getString(PreferenceRepository.ENVIRONMENT)
+
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = large),
     ) {
-        itemsIndexed(listOf(Prod, Dev, Staging, Local)) { _, item ->
+        itemsIndexed(
+            listOf(
+                EnvironmentConfig.Prod,
+                EnvironmentConfig.Dev,
+                EnvironmentConfig.Staging,
+                EnvironmentConfig.Local
+            )
+        ) { _, item ->
             ListToggleItem(
-                title = item.id,
+                title = item.name,
                 description = null,
-                toggleInitValue = environmentId == item.id,
+                toggleInitValue = currentEnv == item,
                 toggled = {
-                    preferenceRepository.insert(
-                        PreferenceRepository.ENVIRONMENT,
-                        item.id
-                    )
+                    if (it)
+                        updateConfig(item)
                 }
             )
         }

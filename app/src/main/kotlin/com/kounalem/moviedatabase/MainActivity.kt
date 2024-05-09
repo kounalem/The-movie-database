@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import com.kounalem.moviedatabase.core.data.NetworkMonitor
 import com.kounalem.moviedatabase.core.ui.MovieDatabaseTheme
 import com.kounalem.moviedatabase.debug.DevMenuSensorDelegate
-import com.kounalem.moviedatabase.preferences.PreferenceRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

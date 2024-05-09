@@ -1,5 +1,6 @@
 package com.kounalem.moviedatabase.network.di
 
+import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
 import com.kounalem.moviedatabase.network.BuildConfig
 import com.kounalem.moviedatabase.network.ServerInfo
 import com.kounalem.moviedatabase.network.movies.MoviesApiService
@@ -8,11 +9,16 @@ import com.kounalem.moviedatabase.network.movies.ServerDataSourceImpl
 import com.kounalem.moviedatabase.network.series.SeriesApiService
 import com.kounalem.moviedatabase.network.series.SeriesDataSource
 import com.kounalem.moviedatabase.network.series.SeriesDataSourceImpl
-import com.kounalem.moviedatabase.preferences.PreferenceRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,9 +33,20 @@ object NetworkModule {
     @Provides
     @Singleton
     @MovieClient
-    fun provideRetrofit(preferenceRepository: PreferenceRepository): Retrofit {
-        val baseUrl =
-            ServerInfo.getInfo(preferenceRepository.getString(PreferenceRepository.ENVIRONMENT))
+    fun provideRetrofit(
+        preferenceRepository: UserPreferencesRepository,
+        @com.kounalem.moviedatabase.shared.annotation.Application appScope: CoroutineScope,
+    ): Retrofit {
+        val deferredBaseUrl = appScope.async {
+            preferenceRepository.userData.first().environment.name
+        }
+
+        val deferred: String = runBlocking {
+            deferredBaseUrl.await()
+        }
+
+        val baseUrl = ServerInfo.getInfo(deferred)
+
         return Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create()).client(
                 OkHttpClient.Builder().addInterceptor(

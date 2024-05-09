@@ -18,7 +18,7 @@ class ApplicationLifecycleCallbacks @Inject constructor(
     // analytics
     private val networkMonitor: Lazy<NetworkMonitor>,
     // config
-    // private val sharedPreferences: Lazy<PreferenceRepository>,
+    // private val preferences: Lazy<UserPreferencesRepository>,
     @com.kounalem.moviedatabase.shared.annotation.Application private val appScope: CoroutineScope,
 ) : DefaultLifecycleObserver {
 

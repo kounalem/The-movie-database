@@ -1,11 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
 }
-
 
 def getProp(String propName) {
     def propsFile = rootProject.file('local.properties')
@@ -19,7 +17,7 @@ def getProp(String propName) {
 }
 
 android {
-    namespace 'com.kounalem.moviedatabase.network'
+    namespace 'com.kounalem.moviedatabase.datasourcemodels'
     compileSdk 34
 
     buildFeatures {
@@ -27,11 +25,7 @@ android {
     }
 
     defaultConfig {
-        minSdk 24
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-        buildConfigField "String", "DATABASE_API_KEY", getProp("DATABASE_API_KEY")
+        buildConfigField "String", "PREF_KEY_ALIAS", getProp("PREF_KEY_ALIAS")
     }
 
     compileOptions {
@@ -44,29 +38,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain:models"))
-    implementation(project(":datasource"))
-    implementation(project(":shared"))
-
-    // Retrofit
-    implementation libs.retrofit
-    implementation libs.converter.gson
-    implementation libs.okhttp
-    implementation libs.logging.interceptor
+    implementation project(':shared')
+    implementation project(':core:domain:models')
+    implementation project(':datasourceproto')
+    implementation libs.androidx.datastore
+    implementation libs.protobuf.kotlin.lite
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
+    implementation(libs.androidx.ktx)
 
     //hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
     kapt libs.androidx.hilt.compiler
-
-    //test
-    testImplementation libs.junit
-    testImplementation libs.kotlinx.coroutines.test
-    testImplementation libs.mockk
-    testImplementation libs.turbine
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes true
 }

@@ -139,9 +139,10 @@ dependencies {
     implementation(project(":feature:tvshow:presentation"))
     implementation(project(":feature:saved:presentation"))
     implementation(project(":core:domain:repository"))
+    implementation(project(":core:domain:models"))
     implementation(project(":feature:movies:domain"))
     implementation(project(":core:data"))
-    implementation(project(":preferences"))
+    implementation(project(":datasource"))
     implementation project(':network')
     implementation project(':shared')
 

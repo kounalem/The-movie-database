@@ -3,8 +3,9 @@ package com.kounalem.moviedatabase.managers
 import android.content.Context
 import androidx.core.content.edit
 import com.kounalem.moviedatabase.config.BuildTypeInfo
-import com.kounalem.moviedatabase.managers.FeatureFlags.Stage
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.PopularMoviesFeatureFlags
+import com.kounalem.moviedatabase.managers.FeatureFlags.Stage
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KProperty
@@ -45,7 +46,7 @@ import kotlin.reflect.KProperty
  */
 @Singleton
 class FeatureFlags @Inject constructor(
-    context: Context,
+    @ApplicationContext context: Context,
 //   TODO create a config repo eg private val featureRemoteConfig: ConfigRepository,
     private val buildTypeInfo: BuildTypeInfo,
 ) : PopularMoviesFeatureFlags {

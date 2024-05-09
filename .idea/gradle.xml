@@ -19,6 +19,8 @@
             <option value="$PROJECT_DIR$/core/test" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/database" />
+            <option value="$PROJECT_DIR$/datasource" />
+            <option value="$PROJECT_DIR$/datasourceproto" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/movies" />
             <option value="$PROJECT_DIR$/feature/movies/domain" />
@@ -30,7 +32,6 @@
             <option value="$PROJECT_DIR$/feature/tvshow/domain" />
             <option value="$PROJECT_DIR$/feature/tvshow/presentation" />
             <option value="$PROJECT_DIR$/network" />
-            <option value="$PROJECT_DIR$/preferences" />
             <option value="$PROJECT_DIR$/shared" />
           </set>
         </option>
