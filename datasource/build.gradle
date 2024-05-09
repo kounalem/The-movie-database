@@ -24,7 +24,6 @@ dependencies {
     implementation project(':datasourceproto')
     implementation libs.androidx.datastore
     implementation libs.protobuf.kotlin.lite
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
     implementation(libs.androidx.ktx)
 
     //hilt
