@@ -13,11 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,33 +24,29 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kounalem.moviedatabase.core.ui.HorizontalSpace
-import com.kounalem.moviedatabase.core.ui.PreviewBox
+import com.kounalem.moviedatabase.core.ui.theming.HorizontalSpace
+import com.kounalem.moviedatabase.core.ui.theming.PreviewBox
 import com.kounalem.moviedatabase.core.ui.R
-import com.kounalem.moviedatabase.core.ui.components.Pill
-import com.kounalem.moviedatabase.core.ui.large
-import com.kounalem.moviedatabase.core.ui.small
-import com.kounalem.moviedatabase.core.ui.xlarge
-import com.kounalem.moviedatabase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.components.MoviePill
+import com.kounalem.moviedatabase.core.ui.components.MovieText
+import com.kounalem.moviedatabase.core.ui.components.MovieTopAppBar
+import com.kounalem.moviedatabase.core.ui.theming.large
+import com.kounalem.moviedatabase.core.ui.theming.small
+import com.kounalem.moviedatabase.core.ui.theming.xlarge
+import com.kounalem.moviedatabase.core.ui.theming.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -73,11 +68,10 @@ internal fun DetailsView(
     val scrollState = rememberScrollState()
     Box {
         (state as? DetailsContract.State.Error)?.let {
-            Text(
+            MovieText(
                 text = it.value,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
             )
@@ -97,20 +91,9 @@ internal fun DetailsView(
             Column(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                TopAppBar(
-                    title = { Text(text = state.title) },
-                    navigationIcon = {
-                        IconButton(onClick = { popBackStack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                        }
-                    },
-                    colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
-                    ),
+                MovieTopAppBar(
+                    text = state.title,
+                    popBackStack = popBackStack
                 )
                 Box {
                     if (state.poster?.isNotEmpty() == true) {
@@ -139,15 +122,14 @@ internal fun DetailsView(
                                 .fillMaxWidth(),
                         ) {
                             state.firstAirDate?.let { firstAirDate ->
-                                Text(
+                                MovieText(
                                     modifier =
                                     Modifier
                                         .padding(start = large, top = xlarge)
                                         .align(Alignment.TopStart),
                                     text = "$firstAirDate - ${state.lastAirDate}",
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 16.sp,
                                     color = Color.White,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1,
                                 )
@@ -161,11 +143,10 @@ internal fun DetailsView(
                         }
 
                         state.type?.let { type ->
-                            Text(
+                            MovieText(
                                 modifier = Modifier.padding(start = large),
                                 text = type,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
+                                style = MaterialTheme.typography.bodyLarge,
                                 color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
@@ -173,25 +154,25 @@ internal fun DetailsView(
                         }
 
                         HorizontalSpace(xsmall)
-                        Text(
+                        MovieText(
                             modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .padding(large),
                             overflow = TextOverflow.Ellipsis,
                             text = state.overview,
-                            fontWeight = FontWeight.Light,
                             color = Color.White,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                         FlowRow(modifier = Modifier.padding(small)) {
                             state.languages?.forEach {
-                                Pill(text = it)
+                                MoviePill(text = it)
                             }
                         }
                         state.seasons?.filter { it.posterPath?.isNotEmpty() ?: false }
                             ?.let { season ->
                                 LazyRow {
-                                    itemsIndexed(season) { _, item ->
+                                    items(season,  key = { it.name }) {item ->
                                         Card(
                                             modifier =
                                             Modifier
@@ -210,7 +191,7 @@ internal fun DetailsView(
                                                         previewPlaceholder = R.drawable.the_room,
                                                     )
                                                 }
-                                                Text(
+                                                MovieText(
                                                     modifier =
                                                     Modifier
                                                         .fillMaxWidth()
@@ -219,7 +200,7 @@ internal fun DetailsView(
                                                     overflow = TextOverflow.Ellipsis,
                                                     text = state.overview,
                                                     maxLines = 3,
-                                                    fontWeight = FontWeight.Light,
+                                                    style = MaterialTheme.typography.labelMedium,
                                                     color = Color.White,
                                                 )
                                             }

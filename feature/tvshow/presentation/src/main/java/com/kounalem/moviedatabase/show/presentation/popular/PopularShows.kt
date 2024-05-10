@@ -9,22 +9,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kounalem.moviedatabase.core.ui.components.MovieOutlinedTextField
-import com.kounalem.moviedatabase.core.ui.components.PaginationList
+import com.kounalem.moviedatabase.core.ui.components.MoviePaginationList
+import com.kounalem.moviedatabase.core.ui.components.MovieText
 import com.kounalem.moviedatabase.core.ui.model.ListItemModel
-import com.kounalem.moviedatabase.core.ui.small
-import com.kounalem.moviedatabase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.theming.small
+import com.kounalem.moviedatabase.core.ui.theming.xsmall
 
 @Composable
 fun PopularShowScreen(navigateToTvShow: (Int) -> Unit) {
@@ -61,12 +59,10 @@ internal fun PopularShowsView(
     ) {
         when (state) {
             is PopularShowsContract.State.Error -> {
-                Text(
+                MovieText(
                     modifier = Modifier.padding(vertical = small, horizontal = xsmall),
                     text = "Oooopsie",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.error,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                 )
@@ -118,7 +114,7 @@ private fun ShowList(
         event = search,
     )
 
-    PaginationList(
+    MoviePaginationList(
         modifier = Modifier,
         refreshState = swipeRefreshState,
         listState = listState,

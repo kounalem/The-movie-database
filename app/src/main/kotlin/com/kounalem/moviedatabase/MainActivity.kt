@@ -10,7 +10,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import com.kounalem.moviedatabase.core.data.NetworkMonitor
-import com.kounalem.moviedatabase.core.ui.MovieDatabaseTheme
+import com.kounalem.moviedatabase.core.ui.theming.MovieDatabaseTheme
 import com.kounalem.moviedatabase.debug.DevMenuSensorDelegate
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

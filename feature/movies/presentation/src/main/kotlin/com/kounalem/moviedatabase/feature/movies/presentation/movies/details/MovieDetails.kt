@@ -12,37 +12,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kounalem.moviedatabase.core.ui.theming.HorizontalSpace
+import com.kounalem.moviedatabase.core.ui.theming.PreviewBox
 import com.kounalem.moviedatabase.core.ui.R
-import com.kounalem.moviedatabase.core.ui.HorizontalSpace
-import com.kounalem.moviedatabase.core.ui.PreviewBox
-import com.kounalem.moviedatabase.core.ui.large
-import com.kounalem.moviedatabase.core.ui.small
-import com.kounalem.moviedatabase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.components.MovieText
+import com.kounalem.moviedatabase.core.ui.components.MovieTopAppBar
+import com.kounalem.moviedatabase.core.ui.theming.large
+import com.kounalem.moviedatabase.core.ui.theming.small
+import com.kounalem.moviedatabase.core.ui.theming.xsmall
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -65,11 +60,10 @@ internal fun DetailsView(
     val scrollState = rememberScrollState()
     Box {
         (state as? DetailsContract.State.Error)?.let {
-            Text(
+            MovieText(
                 text = it.value,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
             )
@@ -77,9 +71,9 @@ internal fun DetailsView(
         (state as? DetailsContract.State.Loading)?.let {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(small),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(small),
                 horizontalArrangement = Arrangement.Center,
             ) {
                 CircularProgressIndicator()
@@ -89,23 +83,12 @@ internal fun DetailsView(
             Column(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                TopAppBar(
-                    title = { Text(text = state.title) },
-                    navigationIcon = {
-                        IconButton(onClick = { popBackStack(state.isFavourite) }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                        }
-                    },
-                    colors =
-                        TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                            actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
-                        ),
+                MovieTopAppBar(
+                    text = state.title,
+                    popBackStack = { popBackStack(state.isFavourite) }
                 )
                 Box {
-                    if(state.poster?.isNotEmpty() == true) {
+                    if (state.poster?.isNotEmpty() == true) {
                         GlideImage(
                             modifier =
                             Modifier
@@ -127,8 +110,8 @@ internal fun DetailsView(
                     ) {
                         Box(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth(),
+                            Modifier
+                                .fillMaxWidth(),
                         ) {
                             CircleButtonWithHeart(
                                 modifier = Modifier.align(Alignment.TopEnd),
@@ -138,25 +121,21 @@ internal fun DetailsView(
                             )
                         }
 
-                        Text(
+                        MovieText(
                             modifier = Modifier.padding(start = large),
                             text = state.rate,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
                         )
 
                         HorizontalSpace(xsmall)
-                        Text(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(large),
+                        MovieText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(large),
                             overflow = TextOverflow.Ellipsis,
                             text = state.overview,
-                            fontWeight = FontWeight.Light,
                             color = Color.White,
                         )
                     }
@@ -194,13 +173,13 @@ fun MovieDetailsScreenPreview() {
     PreviewBox {
         DetailsView(
             state =
-                DetailsContract.State.Info(
-                    title = "title",
-                    overview = "overview",
-                    rate = "rate'",
-                    poster = "poster",
-                    isFavourite = true,
-                ),
+            DetailsContract.State.Info(
+                title = "title",
+                overview = "overview",
+                rate = "rate'",
+                poster = "poster",
+                isFavourite = true,
+            ),
             onFavouriteClicked = {},
             popBackStack = {},
         )

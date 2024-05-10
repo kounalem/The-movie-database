@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.kounalem.moviedatabase.core.ui.MovieDatabaseTheme
+import com.kounalem.moviedatabase.core.ui.theming.MovieDatabaseTheme
 import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
 import com.kounalem.moviedatabase.managers.FeatureFlags
 import dagger.hilt.android.AndroidEntryPoint

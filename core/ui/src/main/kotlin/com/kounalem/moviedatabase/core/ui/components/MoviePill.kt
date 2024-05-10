@@ -7,28 +7,26 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.kounalem.moviedatabase.core.ui.PreviewBox
+import com.kounalem.moviedatabase.core.ui.theming.PreviewBox
 import com.kounalem.moviedatabase.core.ui.ShowkaseComposableGroup
 import com.kounalem.moviedatabase.core.ui.annotations.ScreenPreview
-import com.kounalem.moviedatabase.core.ui.large
-import com.kounalem.moviedatabase.core.ui.light_onBackground
-import com.kounalem.moviedatabase.core.ui.medium
+import com.kounalem.moviedatabase.core.ui.theming.large
+import com.kounalem.moviedatabase.core.ui.theming.light_onBackground
+import com.kounalem.moviedatabase.core.ui.theming.medium
 import com.kounalem.moviedatabase.core.ui.throttlingListener
-import com.kounalem.moviedatabase.core.ui.xsmall
+import com.kounalem.moviedatabase.core.ui.theming.xsmall
 
 @Composable
-fun Pill(
+fun MoviePill(
     text: String,
     modifier: Modifier = Modifier,
     backgroundColor: Color = light_onBackground,
@@ -51,10 +49,9 @@ fun Pill(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(iconTextSpacing),
     ) {
-        Text(
+        MovieText(
             text = text,
-            fontWeight = FontWeight.Light,
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.labelLarge,
             color = Color.White,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -68,7 +65,7 @@ fun Pill(
 @Composable
 @ScreenPreview
 private fun PillLocalPreview() {
-    Pill(
+    MoviePill(
         text = "Hello",
     )
 }
@@ -77,7 +74,7 @@ private fun PillLocalPreview() {
 @ShowkaseComposable(name = "Pill", group = ShowkaseComposableGroup.COMPONENTS)
 fun PillPreview() {
     PreviewBox {
-        Pill(
+        MoviePill(
             text = "Hello",
         )
     }

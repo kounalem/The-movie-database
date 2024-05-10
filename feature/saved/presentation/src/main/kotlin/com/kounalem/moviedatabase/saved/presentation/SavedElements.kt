@@ -8,14 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kounalem.moviedatabase.core.ui.components.MovieListItem
-import com.kounalem.moviedatabase.core.ui.components.Pill
-import com.kounalem.moviedatabase.core.ui.medium
+import com.kounalem.moviedatabase.core.ui.components.MoviePill
+import com.kounalem.moviedatabase.core.ui.components.MovieTopAppBar
+import com.kounalem.moviedatabase.core.ui.theming.medium
 import com.kounalem.moviedatabase.core.ui.model.ListItemModel
-import com.kounalem.moviedatabase.core.ui.small
+import com.kounalem.moviedatabase.core.ui.theming.small
 
 @Composable
 fun SavedElementsScreen() {
@@ -35,7 +31,6 @@ fun SavedElementsScreen() {
     SavedElementsView(state = state)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SavedElementsView(state: SavedElementsContract.State) {
     Column(
@@ -45,9 +40,9 @@ internal fun SavedElementsView(state: SavedElementsContract.State) {
             is SavedElementsContract.State.Loading -> {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(small),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(small),
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     CircularProgressIndicator()
@@ -59,35 +54,28 @@ internal fun SavedElementsView(state: SavedElementsContract.State) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    TopAppBar(
-                        title = { Text(text = state.title) },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                                actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
-                            ),
+                    MovieTopAppBar(
+                        text = state.title,
                     )
                     LazyColumn(state = listState) {
-                        itemsIndexed(state.info) { _, item ->
+                        items(state.info, key = { it.id }) { item ->
                             Box {
                                 MovieListItem(
                                     model =
-                                        ListItemModel(
-                                            id = item.id,
-                                            imagePath = item.posterPath,
-                                            title = item.title,
-                                            description = item.overview,
-                                        ),
+                                    ListItemModel(
+                                        id = item.id,
+                                        imagePath = item.posterPath,
+                                        title = item.title,
+                                        description = item.overview,
+                                    ),
                                     selected = { },
                                 )
-                                Pill(
+                                MoviePill(
                                     text = item.type.name,
                                     modifier =
-                                        Modifier
-                                            .align(Alignment.TopEnd)
-                                            .padding(top = medium, end = medium),
+                                    Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(top = medium, end = medium),
                                 )
                             }
                         }
@@ -103,31 +91,31 @@ internal fun SavedElementsView(state: SavedElementsContract.State) {
 fun SavedElementsScreenPreview() {
     SavedElementsView(
         state =
-            SavedElementsContract.State.Elements(
-                "Saved elements",
-                listOf(
-                    SavedElementsContract.State.Elements.Info(
-                        id = 1,
-                        posterPath = "path",
-                        title = "title1",
-                        overview = "overview",
-                        type = SavedElementsContract.State.Elements.Type.Show,
-                    ),
-                    SavedElementsContract.State.Elements.Info(
-                        id = 2,
-                        posterPath = "path",
-                        title = "title2",
-                        overview = "overview2",
-                        type = SavedElementsContract.State.Elements.Type.Movie,
-                    ),
-                    SavedElementsContract.State.Elements.Info(
-                        id = 2,
-                        posterPath = "path",
-                        title = "title3",
-                        overview = "overview3",
-                        type = SavedElementsContract.State.Elements.Type.Movie,
-                    ),
+        SavedElementsContract.State.Elements(
+            "Saved elements",
+            listOf(
+                SavedElementsContract.State.Elements.Info(
+                    id = 1,
+                    posterPath = "path",
+                    title = "title1",
+                    overview = "overview",
+                    type = SavedElementsContract.State.Elements.Type.Show,
+                ),
+                SavedElementsContract.State.Elements.Info(
+                    id = 2,
+                    posterPath = "path",
+                    title = "title2",
+                    overview = "overview2",
+                    type = SavedElementsContract.State.Elements.Type.Movie,
+                ),
+                SavedElementsContract.State.Elements.Info(
+                    id = 2,
+                    posterPath = "path",
+                    title = "title3",
+                    overview = "overview3",
+                    type = SavedElementsContract.State.Elements.Type.Movie,
                 ),
             ),
+        ),
     )
 }

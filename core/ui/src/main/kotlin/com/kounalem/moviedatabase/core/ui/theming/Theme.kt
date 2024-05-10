@@ -1,4 +1,4 @@
-package com.kounalem.moviedatabase.core.ui
+package com.kounalem.moviedatabase.core.ui.theming
 
 import android.app.Activity
 import android.os.Build
@@ -42,10 +42,6 @@ private val DarkColorScheme =
         outline = dark_outline,
         inverseOnSurface = dark_inverseOnSurface,
         inverseSurface = dark_inverseSurface,
-        inversePrimary = dark_inversePrimary,
-        surfaceTint = dark_surfaceTint,
-        outlineVariant = dark_outlineVariant,
-        scrim = dark_scrim,
     )
 
 private val LightColorScheme =
@@ -75,10 +71,6 @@ private val LightColorScheme =
         outline = light_outline,
         inverseOnSurface = light_inverseOnSurface,
         inverseSurface = light_inverseSurface,
-        inversePrimary = light_inversePrimary,
-        surfaceTint = light_surfaceTint,
-        outlineVariant = light_outlineVariant,
-        scrim = light_scrim,
     )
 
 @Composable
@@ -105,7 +97,8 @@ fun MovieDatabaseTheme(
             if (context is Activity) {
                 val window = context.window
                 window.statusBarColor = colorScheme.primary.toArgb()
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                    darkTheme
             }
         }
     }

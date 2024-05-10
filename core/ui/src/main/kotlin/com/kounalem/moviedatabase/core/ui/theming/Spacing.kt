@@ -1,4 +1,4 @@
-package com.kounalem.moviedatabase.core.ui
+package com.kounalem.moviedatabase.core.ui.theming
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

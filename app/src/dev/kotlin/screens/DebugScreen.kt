@@ -7,12 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,15 +19,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.kounalem.moviedatabase.core.ui.components.ListToggleItem
-import com.kounalem.moviedatabase.core.ui.large
+import com.kounalem.moviedatabase.core.ui.components.MovieListSingleChoiceToggleItem
+import com.kounalem.moviedatabase.core.ui.components.MovieListToggleItem
+import com.kounalem.moviedatabase.core.ui.components.MovieText
+import com.kounalem.moviedatabase.core.ui.theming.large
 import com.kounalem.moviedatabase.core.ui.showShowkase
-import com.kounalem.moviedatabase.core.ui.xlarge
+import com.kounalem.moviedatabase.core.ui.theming.xlarge
 import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
 import com.kounalem.moviedatabase.domain.models.EnvironmentConfig
 import com.kounalem.moviedatabase.domain.models.UserData
 import com.kounalem.moviedatabase.managers.FeatureFlags
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun DebugScreen(
@@ -60,7 +60,7 @@ fun DebugScreen(
                 )
             })
         }) {
-            Text(text = "Go to showcase")
+            MovieText(text = "Go to showcase", style = MaterialTheme.typography.titleMedium)
         }
 
         Spacer(modifier = Modifier.padding(vertical = xlarge))
@@ -82,10 +82,12 @@ private fun SelectEnvironment(
     currentEnv: EnvironmentConfig,
     updateConfig: (config: EnvironmentConfig) -> Unit,
 ) {
-    Text(
+    MovieText(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = large), text = "Select environment:"
+            .padding(horizontal = large),
+        text = "Select environment:",
+        style = MaterialTheme.typography.titleMedium
     )
 
     LazyColumn(
@@ -93,19 +95,21 @@ private fun SelectEnvironment(
             .fillMaxWidth()
             .padding(horizontal = large),
     ) {
-        itemsIndexed(
+        items(
             listOf(
                 EnvironmentConfig.Prod,
                 EnvironmentConfig.Dev,
                 EnvironmentConfig.Staging,
                 EnvironmentConfig.Local
-            )
-        ) { _, item ->
-            ListToggleItem(
+            ),
+            key = { it.name }
+        )
+        { item ->
+            MovieListSingleChoiceToggleItem(
                 title = item.name,
                 description = null,
                 toggleInitValue = currentEnv == item,
-                toggled = {
+                onToggle = {
                     if (it)
                         updateConfig(item)
                 }
@@ -125,23 +129,28 @@ private fun FeatureFlags(featureFlags: FeatureFlags) {
         }
     }
 
-    Text(
+    MovieText(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = large),
         text = "Feature Flags:",
+        style = MaterialTheme.typography.titleMedium
     )
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = large),
     ) {
-        itemsIndexed(flags) { _, item ->
-            ListToggleItem(
+        items(
+            flags,
+            key = { it.name }
+        )
+        { item ->
+            MovieListToggleItem(
                 title = item.name,
                 description = null,
                 toggleInitValue = item.isFlagSet(),
-                toggled = {
+                onToggle = {
                     item.setLocalFlag(it)
                 }
             )

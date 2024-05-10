@@ -15,10 +15,10 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kounalem.moviedatabase.core.ui.annotations.ScreenPreview
 import com.kounalem.moviedatabase.core.ui.model.ListItemModel
-import com.kounalem.moviedatabase.core.ui.small
+import com.kounalem.moviedatabase.core.ui.theming.small
 
 @Composable
-fun PaginationList(
+fun MoviePaginationList(
     modifier: Modifier = Modifier,
     refreshState: com.google.accompanist.swiperefresh.SwipeRefreshState,
     listState: LazyListState,
@@ -37,7 +37,11 @@ fun PaginationList(
         onRefresh = refreshEvent,
     ) {
         LazyColumn(state = listState) {
-            itemsIndexed(items) { index, item ->
+            itemsIndexed(
+                items = items,
+                key = { index, item -> item.id },
+                contentType = { _, item -> item.title },
+            ) { index, item ->
                 val isLastItem = index == (items.size - 1)
                 val shouldLoadNextItems =
                     isLastItem && !endReached && searchQuery.isNullOrEmpty() && !isFetchingNewMovies
@@ -72,7 +76,7 @@ fun PaginationList(
 @Composable
 @ScreenPreview
 private fun PaginationListLocalPreview() {
-    PaginationList(
+    MoviePaginationList(
         refreshState = rememberSwipeRefreshState(true),
         listState = rememberLazyListState(),
         isFetchingNewMovies = false,

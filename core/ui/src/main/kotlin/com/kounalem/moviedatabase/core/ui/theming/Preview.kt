@@ -1,10 +1,11 @@
-package com.kounalem.moviedatabase.core.ui
+package com.kounalem.moviedatabase.core.ui.theming
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.kounalem.moviedatabase.core.ui.theming.MovieDatabaseTheme
 
 @Composable
 fun PreviewBox(

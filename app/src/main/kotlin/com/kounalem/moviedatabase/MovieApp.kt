@@ -10,7 +10,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +26,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.kounalem.moviedatabase.core.ui.MovieNavigationBarItem
 import com.kounalem.moviedatabase.core.ui.MoviesNavigationBar
+import com.kounalem.moviedatabase.core.ui.components.MovieText
 import com.kounalem.moviedatabase.navigation.MovieDatabaseNavHost
 import com.kounalem.moviedatabase.navigation.TopLevelDestination
 import kotlin.random.Random
@@ -119,7 +119,7 @@ private fun MoviesNavigationBar(
                         contentDescription = null,
                     )
                 },
-                label = { Text(destination.titleText) },
+                label = { MovieText(destination.titleText) },
                 modifier = if (hasUnread) Modifier.notificationDot() else Modifier,
             )
         }
