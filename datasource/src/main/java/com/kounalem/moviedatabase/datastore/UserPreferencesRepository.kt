@@ -42,7 +42,7 @@ class UserPreferencesRepository @Inject constructor(
                 }
             }
         } catch (ioException: IOException) {
-            Log.e("NiaPreferences", "Failed to update user preferences", ioException)
+            Log.e("Movie DB preferences", "Failed to update user preferences", ioException)
         }
     }
 }
