@@ -40,7 +40,7 @@ internal class SavedElementsKtTest(config: TestConfig) : PaparazziScreenTest(con
                             type = SavedElementsContract.State.Elements.Type.Movie,
                         ),
                         SavedElementsContract.State.Elements.Info(
-                            id = 2,
+                            id = 3,
                             posterPath = "",
                             title = "title3",
                             overview = "overview3",

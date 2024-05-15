@@ -239,22 +239,6 @@ fun ListItemPreview() {
                 id = 0,
                 imagePath = "",
                 title = "The room",
-                description = "",
-            ),
-            selected = {},
-        )
-    }
-}
-
-@Composable
-@ShowkaseComposable(name = "ListItem", group = ShowkaseComposableGroup.ROWS)
-fun ListItemWithDescriptionPreview() {
-    PreviewBox {
-        MovieListItem(
-            ListItemModel(
-                id = 0,
-                imagePath = "",
-                title = "The room",
                 description = "Oh hi, Mark. Everybody Betray Me! I Fed Up With This World! You Are Tearing Me Apart, Lisa!",
             ),
             selected = {},

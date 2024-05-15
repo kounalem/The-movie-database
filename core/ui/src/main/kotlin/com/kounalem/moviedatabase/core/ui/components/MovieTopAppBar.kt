@@ -55,7 +55,7 @@ private fun MovieTopAppBarLocalPreview() {
 }
 
 @Composable
-@ShowkaseComposable(name = "Pill", group = ShowkaseComposableGroup.COMPONENTS)
+@ShowkaseComposable(name = "TopAppBar", group = ShowkaseComposableGroup.COMPONENTS)
 fun MovieTopAppBarPreview() {
     PreviewBox {
         MovieTopAppBar(

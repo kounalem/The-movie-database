@@ -15,7 +15,7 @@ import javax.inject.Singleton
 object DebugModule {
     @Provides
     @Singleton
-    fun provideDevDelegate(
+    fun provideDeveloperDelegate(
         @ApplicationContext context: Context,
     ): DevMenuSensorDelegate = DevMenuSensorDelegateIml(context)
 

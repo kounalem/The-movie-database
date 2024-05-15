@@ -14,8 +14,8 @@ data class ServerInfo(
                 "${Dev.scheme}://${Dev.host}/$ApiVersion/"
             }
 
-            Prod.id -> {
-                "${Prod.scheme}://${Prod.host}/$ApiVersion/"
+            Staging.id -> {
+                "${Staging.scheme}://${Staging.host}/$ApiVersion/"
             }
 
             Local.id -> {
@@ -23,7 +23,7 @@ data class ServerInfo(
             }
 
             else -> {
-                "${Staging.scheme}://${Staging.host}/$ApiVersion/"
+                "${Prod.scheme}://${Prod.host}/$ApiVersion/"
             }
         }
 

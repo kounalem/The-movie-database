@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
+import com.kounalem.moviedatabase.config.BuildTypeInfo
 import com.kounalem.moviedatabase.core.data.NetworkMonitor
 import com.kounalem.moviedatabase.core.ui.theming.MovieDatabaseTheme
 import com.kounalem.moviedatabase.debug.DevMenuSensorDelegate
@@ -22,6 +23,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var sensorDelegate: DevMenuSensorDelegate
+
+    @Inject
+    lateinit var buidTypeInfo: BuildTypeInfo
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +49,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        sensorDelegate.registerShakeListener(this)
+        if (buidTypeInfo.isDev())
+            sensorDelegate.registerShakeListener(this)
     }
 
     override fun onPause() {
-        sensorDelegate.removeShakeListener()
+        if (buidTypeInfo.isDev())
+            sensorDelegate.removeShakeListener()
         super.onPause()
     }
 }
