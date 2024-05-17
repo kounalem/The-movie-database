@@ -20,7 +20,7 @@ android {
 
 dependencies {
     implementation project(':shared')
-    implementation project(':core:domain:models')
+    implementation project(':core:domain:model')
     implementation project(':core:datastore-proto')
     implementation libs.androidx.datastore
     implementation libs.protobuf.kotlin.lite

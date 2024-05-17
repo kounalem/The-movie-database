@@ -26,8 +26,8 @@ android {
 dependencies {
     implementation project(':core:network')
     implementation(project(":core:database"))
-    implementation(project(":core:domain:models"))
-    implementation(project(":core:domain:repository"))
+    implementation(project(":core:domain:model"))
+    implementation(project(":core:domain:repo"))
     implementation(project(":shared"))
 
     //hilt

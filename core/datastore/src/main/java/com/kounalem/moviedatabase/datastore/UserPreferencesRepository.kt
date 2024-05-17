@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import com.kounalem.moviedatabase.domain.models.EnvironmentConfig
 import com.kounalem.moviedatabase.domain.models.UserData
-import com.kounalem.moviedatabase.shared.annotation.Application
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 

@@ -26,9 +26,8 @@ android {
 
 dependencies {
 
-    implementation(project(':core:domain:usecase'))
-    implementation(project(':core:domain:models'))
-    implementation(project(":core:domain:repository"))
+    implementation(project(':core:domain:model'))
+    implementation(project(":core:domain:repo"))
 
     //hilt
     implementation libs.hilt.android

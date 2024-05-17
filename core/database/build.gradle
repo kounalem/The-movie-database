@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain:models"))
+    implementation(project(":core:domain:model"))
 
     // Room
     implementation libs.androidx.room.runtime
