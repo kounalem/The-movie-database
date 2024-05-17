@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
 }
@@ -11,11 +10,11 @@ android {
     compileSdk 34
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = '1.8'
     }
 }
 
@@ -38,6 +37,4 @@ dependencies {
     testImplementation libs.kotlinx.coroutines.test
     testImplementation libs.mockk
     testImplementation libs.turbine
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
-
-}
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'}

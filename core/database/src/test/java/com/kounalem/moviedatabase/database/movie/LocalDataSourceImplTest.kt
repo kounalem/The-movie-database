@@ -3,18 +3,18 @@ package com.kounalem.moviedatabase.database.movie
 import app.cash.turbine.test
 import com.kounalem.moviedatabase.database.movie.models.MovieEntity
 import com.kounalem.moviedatabase.database.movie.models.TvShowEntity
-import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.domain.models.TvShow
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+
 
 internal class LocalDataSourceImplTest {
     @MockK
@@ -61,7 +61,7 @@ internal class LocalDataSourceImplTest {
     }
 
     private val dummyMovie by lazy {
-        Movie(
+        com.kounalem.moviedatabase.domain.models.Movie(
             id = 1,
             posterPath = "",
             title = "",
@@ -99,7 +99,7 @@ internal class LocalDataSourceImplTest {
             coEvery { movieDao.getFilteredMovies(given) } returns flowOf(listOf(dummyMovieEntity))
 
             dataSource.getFilteredMovies(given).test {
-                assertEquals(
+                TestCase.assertEquals(
                     listOf(
                         dummyMovie,
                     ),
@@ -115,7 +115,7 @@ internal class LocalDataSourceImplTest {
             every { movieDao.getMoviesForPage(1) } returns flowOf(listOf(dummyMovieEntity))
 
             dataSource.getMovies(1).test {
-                assertEquals(listOf(dummyMovie), awaitItem())
+                TestCase.assertEquals(listOf(dummyMovie), awaitItem())
                 awaitComplete()
             }
         }
@@ -135,7 +135,7 @@ internal class LocalDataSourceImplTest {
             coEvery { showDao.getFilteredShows(given) } returns flowOf(listOf(dummyTvShowEntity))
 
             dataSource.getFilteredShows(given).test {
-                assertEquals(listOf(dummyTvShow), awaitItem())
+                TestCase.assertEquals(listOf(dummyTvShow), awaitItem())
                 awaitComplete()
             }
         }
@@ -146,7 +146,7 @@ internal class LocalDataSourceImplTest {
             every { showDao.getAllShows() } returns flowOf(listOf(dummyTvShowEntity))
 
             dataSource.getAllShows().test {
-                assertEquals(listOf(dummyTvShow), awaitItem())
+                TestCase.assertEquals(listOf(dummyTvShow), awaitItem())
                 awaitComplete()
             }
         }

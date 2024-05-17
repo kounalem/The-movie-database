@@ -143,7 +143,7 @@ dependencies {
     implementation(project(":feature:movies:domain"))
     implementation(project(":core:data"))
     implementation(project(":datasource"))
-    implementation project(':network')
+    implementation project(':core:network')
     implementation project(':shared')
 
     //androidx
