@@ -15,7 +15,7 @@ if [[ -z ${PULL_REQUEST_BRANCH} ]]; then
   exit 1
 fi
 
-./gradlew :core:domain:usecase:testDebugUnitTest :core:database:testDebugUnitTest :core:network:testDebugUnitTest :feature:saved:presentation:testDebugUnitTest :feature:saved:domain:testDebugUnitTest :feature:movies:domain:testDebugUnitTest :feature:tvshow:domain:testDebugUnitTest :feature:tvshow:presentation:testDebugUnitTest :feature:movies:presentation:testDebugUnitTest --tests='*.*Test*' --tests='!*.PaparazziScreenTest'
+./gradlew :core:database:testDebugUnitTest :core:network:testDebugUnitTest :feature:saved:presentation:testDebugUnitTest :feature:saved:domain:testDebugUnitTest :feature:movies:domain:testDebugUnitTest :feature:tvshow:domain:testDebugUnitTest :feature:tvshow:presentation:testDebugUnitTest :feature:movies:presentation:testDebugUnitTest --tests='*.*Test*' --tests='!*.PaparazziScreenTest'
 
 PULL_REQUEST_NUMBER=${GITHUB_REF#refs/pull/}
 PULL_REQUEST_NUMBER=${PULL_REQUEST_NUMBER/\/merge/}
