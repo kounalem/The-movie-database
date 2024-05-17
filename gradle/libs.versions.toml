@@ -38,6 +38,7 @@ appcompatVersion = "1.6.1"
 proto = "0.9.1"
 material = "1.11.0"
 protobuf = "3.25.2"
+jetbrainsKotlinJvm = "1.9.23"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
@@ -47,6 +48,7 @@ protobuf = { id = "com.google.protobuf", version.ref = "proto" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }

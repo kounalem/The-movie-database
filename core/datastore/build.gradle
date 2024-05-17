@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.kounalem.moviedatabase.datasourcemodels'
+    namespace 'com.kounalem.moviedatabase.datastore'
     compileSdk 34
 
     compileOptions {
@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation project(':shared')
     implementation project(':core:domain:models')
-    implementation project(':datasourceproto')
+    implementation project(':core:datastore-proto')
     implementation libs.androidx.datastore
     implementation libs.protobuf.kotlin.lite
     implementation(libs.androidx.ktx)
@@ -29,5 +29,4 @@ dependencies {
     //hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
-    kapt libs.androidx.hilt.compiler
-}
+    kapt libs.androidx.hilt.compiler}

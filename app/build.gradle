@@ -142,7 +142,7 @@ dependencies {
     implementation(project(":core:domain:models"))
     implementation(project(":feature:movies:domain"))
     implementation(project(":core:data"))
-    implementation(project(":datasource"))
+    implementation(project(":core:datastore"))
     implementation project(':core:network')
     implementation project(':shared')
 
