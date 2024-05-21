@@ -26,4 +26,7 @@ internal interface MovieDao {
 
     @Query("SELECT * FROM movie WHERE id=:movieId LIMIT 1")
     fun getMovieByIdObs(movieId: Int): Flow<MovieEntity>
+
+    @Query("DELETE FROM movie")
+    suspend fun deleteAll()
 }

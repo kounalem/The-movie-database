@@ -25,17 +25,23 @@ internal class LocalDataSourceImpl(
         }
     }
 
+    override suspend fun clearAllMovies() = daoMovies.deleteAll()
+
+
     override fun getMovies(pageNo: Int): Flow<List<Movie>> {
         return daoMovies.getMoviesForPage(pageNo).map { entity ->
             entity.map { it.mapToDomain() }
         }
     }
 
-    override suspend fun saveMovieList(movies: List<Movie>): List<Unit> = movies.map { movie -> daoMovies.saveMovie(movie.mapToEntity()) }
+    override suspend fun saveMovieList(movies: List<Movie>): List<Unit> =
+        movies.map { movie -> daoMovies.saveMovie(movie.mapToEntity()) }
 
-    override fun getMovieByIdObs(movieId: Int): Flow<Movie> = daoMovies.getMovieByIdObs(movieId).map { it.mapToDomain() }
+    override fun getMovieByIdObs(movieId: Int): Flow<Movie> =
+        daoMovies.getMovieByIdObs(movieId).map { it.mapToDomain() }
 
-    override suspend fun updateMovieFavStatus(movieId: Int) = daoMovies.updateMovieFavStatus(movieId)
+    override suspend fun updateMovieFavStatus(movieId: Int) =
+        daoMovies.updateMovieFavStatus(movieId)
 
     // shows
     override fun getFilteredShows(query: String): Flow<List<TvShow>> {
@@ -52,7 +58,8 @@ internal class LocalDataSourceImpl(
         }
     }
 
-    override suspend fun saveShowList(movies: List<TvShow>): List<Unit> = movies.map { movie -> daoTvShows.saveShow(movie.mapToEntity()) }
+    override suspend fun saveShowList(movies: List<TvShow>): List<Unit> =
+        movies.map { movie -> daoTvShows.saveShow(movie.mapToEntity()) }
 
     override fun getShowById(id: Int): Flow<TvShow?> =
         daoTvShows.getShowDescriptionById(id).map {
@@ -62,4 +69,6 @@ internal class LocalDataSourceImpl(
     override suspend fun updateShowFavStatus(movieId: Int) = daoTvShows.updateShowFavStatus(movieId)
 
     override suspend fun saveShowDescription(show: TvShow) = daoTvShows.saveShow(show.mapToEntity())
+
+    override suspend fun clearAllShows() = daoTvShows.deleteAll()
 }

@@ -15,4 +15,5 @@ interface MovieRepository {
     suspend fun updateMovieFavStatus(id: Int)
 
     fun getAllLocalSavedMovies(): Flow<List<Movie>>
+    suspend fun clearLocalInfo()
 }

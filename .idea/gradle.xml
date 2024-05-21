@@ -12,15 +12,15 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/data" />
+            <option value="$PROJECT_DIR$/core/database" />
+            <option value="$PROJECT_DIR$/core/datastore" />
+            <option value="$PROJECT_DIR$/core/datastore-proto" />
             <option value="$PROJECT_DIR$/core/domain" />
-            <option value="$PROJECT_DIR$/core/domain/models" />
-            <option value="$PROJECT_DIR$/core/domain/repository" />
-            <option value="$PROJECT_DIR$/core/domain/usecase" />
+            <option value="$PROJECT_DIR$/core/domain/model" />
+            <option value="$PROJECT_DIR$/core/domain/repo" />
+            <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/test" />
             <option value="$PROJECT_DIR$/core/ui" />
-            <option value="$PROJECT_DIR$/database" />
-            <option value="$PROJECT_DIR$/datasource" />
-            <option value="$PROJECT_DIR$/datasourceproto" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/movies" />
             <option value="$PROJECT_DIR$/feature/movies/domain" />
@@ -31,7 +31,6 @@
             <option value="$PROJECT_DIR$/feature/tvshow" />
             <option value="$PROJECT_DIR$/feature/tvshow/domain" />
             <option value="$PROJECT_DIR$/feature/tvshow/presentation" />
-            <option value="$PROJECT_DIR$/network" />
             <option value="$PROJECT_DIR$/shared" />
           </set>
         </option>

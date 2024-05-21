@@ -15,4 +15,6 @@ interface TvShowRepository {
     suspend fun updateTvShowFavStatus(id: Int)
 
     fun getAllLocalSavedShows(): Flow<List<TvShow>>
+
+    suspend fun clearLocalInfo()
 }

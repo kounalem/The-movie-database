@@ -23,4 +23,7 @@ internal interface TvShowsDao {
 
     @Query("SELECT * FROM tvshow WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%' ORDER BY firstAirDate ASC")
     fun getFilteredShows(query: String): Flow<List<TvShowEntity>>
+
+    @Query("DELETE FROM tvshow")
+    suspend fun deleteAll()
 }

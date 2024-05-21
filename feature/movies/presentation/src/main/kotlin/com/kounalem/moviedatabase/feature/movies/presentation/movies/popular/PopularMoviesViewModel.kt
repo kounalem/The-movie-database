@@ -144,16 +144,18 @@ constructor(
                     PopularMoviesContract.State.Loading,
                 )
 
-    fun loadNextItems() {
+    fun loadNextItems(refresh: Boolean = false) {
         viewModelScope.launch {
+            if (refresh) {
+                repo.clearLocalInfo()
+            }
             paginator.loadNextItems()
         }
     }
 
     fun refreshElements() {
-        isRefreshing.value = true
         paginator.reset()
-        loadNextItems()
+        loadNextItems(refresh = true)
     }
 
     fun onSearchQueryChange(query: String) {

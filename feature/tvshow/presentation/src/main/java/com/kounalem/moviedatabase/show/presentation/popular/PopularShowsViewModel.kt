@@ -142,12 +142,12 @@ constructor(
 
     fun loadNextItems() {
         viewModelScope.launch {
+            repo.clearLocalInfo()
             paginator.loadNextItems()
         }
     }
 
     fun refreshElements() {
-        isRefreshing.value = true
         paginator.reset()
         loadNextItems()
     }

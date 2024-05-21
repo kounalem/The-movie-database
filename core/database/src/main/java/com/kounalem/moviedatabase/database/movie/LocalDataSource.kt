@@ -9,6 +9,8 @@ interface LocalDataSource {
 
     fun getAllMovies(): Flow<List<Movie>>
 
+    suspend fun clearAllMovies()
+
     fun getMovies(pageNo: Int): Flow<List<Movie>>
 
     suspend fun saveMovieList(movies: List<Movie>): List<Unit>
@@ -28,4 +30,5 @@ interface LocalDataSource {
     suspend fun updateShowFavStatus(movieId: Int)
 
     suspend fun saveShowDescription(show: TvShow)
+    suspend fun clearAllShows()
 }

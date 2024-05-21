@@ -16,11 +16,12 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kounalem.moviedatabase.core.ui.annotations.ScreenPreview
 import com.kounalem.moviedatabase.core.ui.model.ListItemModel
 import com.kounalem.moviedatabase.core.ui.theming.small
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 
 @Composable
 fun MoviePaginationList(
     modifier: Modifier = Modifier,
-    refreshState: com.google.accompanist.swiperefresh.SwipeRefreshState,
+    refreshState: SwipeRefreshState,
     listState: LazyListState,
     isFetchingNewMovies: Boolean,
     items: List<ListItemModel>,

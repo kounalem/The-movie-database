@@ -21,58 +21,61 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 internal class TvShowRepositoryImpl
-    @Inject
-    constructor(
-        private val server: SeriesDataSource,
-        private val local: LocalDataSource,
-        private val coroutineScope: CoroutineScope,
-    ) : TvShowRepository {
-        private val errors: MutableStateFlow<String?> = MutableStateFlow(null)
-        private val _tvShows =
-            local.getAllShows().onStart { getServerTvShows(pageNo = 1) }
-        override val tvShows: Flow<Outcome<List<TvShow>>>
-            get() =
-                combine(_tvShows, errors) { result, e ->
-                    if (result.isEmpty() && !e.isNullOrEmpty()) {
-                        Outcome.Error(e)
-                    } else {
-                        Outcome.Success(result)
-                    }
+@Inject
+constructor(
+    private val server: SeriesDataSource,
+    private val local: LocalDataSource,
+    private val coroutineScope: CoroutineScope,
+) : TvShowRepository {
+    private val errors: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val _tvShows =
+        local.getAllShows().onStart { getServerTvShows(pageNo = 1) }
+    override val tvShows: Flow<Outcome<List<TvShow>>>
+        get() =
+            combine(_tvShows, errors) { result, e ->
+                if (result.isEmpty() && !e.isNullOrEmpty()) {
+                    Outcome.Error(e)
+                } else {
+                    Outcome.Success(result)
                 }
+            }
 
-        override fun search(query: String): Flow<List<TvShow>> = local.getFilteredShows(query).distinctUntilChanged()
+    override fun search(query: String): Flow<List<TvShow>> =
+        local.getFilteredShows(query).distinctUntilChanged()
 
-        override fun getServerTvShows(pageNo: Int) {
-            coroutineScope.launch {
-                server.popular(pageNo).collect { result ->
-                    if (result is NetworkResponse.Success) {
-                        local.saveShowList(result.body)
-                        errors.value = null
-                    } else {
-                        errors.value = "Could not retrieve shows"
-                    }
+    override fun getServerTvShows(pageNo: Int) {
+        coroutineScope.launch {
+            server.popular(pageNo).collect { result ->
+                if (result is NetworkResponse.Success) {
+                    local.saveShowList(result.body)
+                    errors.value = null
+                } else {
+                    errors.value = "Could not retrieve shows"
                 }
             }
         }
-
-        @OptIn(ExperimentalCoroutinesApi::class)
-        override fun getTvShowByIdObs(id: Int): Flow<Outcome<TvShow>> =
-            local.getShowById(id).flatMapLatest { description ->
-                if (description != null && description.seasons?.isNotEmpty() == true) {
-                    flowOf(Outcome.Success(description))
-                } else {
-                    server.getSeriesById(id).mapToOutcome { serie ->
-                        coroutineScope.launch {
-                            local.saveShowDescription(serie)
-                        }
-                        serie
-                    }
-                }
-            }.catch {
-                Outcome.Exception<TvShow>(it)
-            }
-
-        override suspend fun updateTvShowFavStatus(id: Int) = local.updateShowFavStatus(id)
-
-        override fun getAllLocalSavedShows(): Flow<List<TvShow>> = local.getAllShows()
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getTvShowByIdObs(id: Int): Flow<Outcome<TvShow>> =
+        local.getShowById(id).flatMapLatest { description ->
+            if (description != null && description.seasons?.isNotEmpty() == true) {
+                flowOf(Outcome.Success(description))
+            } else {
+                server.getSeriesById(id).mapToOutcome { serie ->
+                    coroutineScope.launch {
+                        local.saveShowDescription(serie)
+                    }
+                    serie
+                }
+            }
+        }.catch {
+            Outcome.Exception<TvShow>(it)
+        }
+
+    override suspend fun updateTvShowFavStatus(id: Int) = local.updateShowFavStatus(id)
+
+    override fun getAllLocalSavedShows(): Flow<List<TvShow>> = local.getAllShows()
+
+    override suspend fun clearLocalInfo() = local.clearAllShows()
+}
