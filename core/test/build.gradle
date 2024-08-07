@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'technology.moro.core.test'
+    namespace 'com.kounalem.moviedatabase.core.test'
     compileSdk 34
 
     sourceSets {

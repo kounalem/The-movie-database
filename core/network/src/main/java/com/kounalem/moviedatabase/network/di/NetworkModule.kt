@@ -1,6 +1,6 @@
 package com.kounalem.moviedatabase.network.di
 
-import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
+import com.kounalem.moviedatabase.datastore.UserPreferencesDatastore
 import com.kounalem.moviedatabase.network.BuildConfig
 import com.kounalem.moviedatabase.network.ServerInfo
 import com.kounalem.moviedatabase.network.movies.MoviesApiService
@@ -32,11 +32,11 @@ object NetworkModule {
     @Singleton
     @MovieClient
     fun provideRetrofit(
-        preferenceRepository: UserPreferencesRepository,
+        UserPreferencesDatastore: UserPreferencesDatastore,
         @com.kounalem.moviedatabase.shared.annotation.Application appScope: CoroutineScope,
     ): Retrofit {
         val deferredBaseUrl = appScope.async {
-            preferenceRepository.userData.first().environment.name
+            UserPreferencesDatastore.userData.first().environment.name
         }
 
         val deferred: String = runBlocking {

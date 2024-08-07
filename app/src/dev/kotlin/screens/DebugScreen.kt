@@ -25,7 +25,7 @@ import com.kounalem.moviedatabase.core.ui.components.MovieText
 import com.kounalem.moviedatabase.core.ui.theming.large
 import com.kounalem.moviedatabase.core.ui.showShowkase
 import com.kounalem.moviedatabase.core.ui.theming.xlarge
-import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
+import com.kounalem.moviedatabase.datastore.UserPreferencesDatastore
 import com.kounalem.moviedatabase.domain.models.EnvironmentConfig
 import com.kounalem.moviedatabase.domain.models.UserData
 import com.kounalem.moviedatabase.managers.FeatureFlags
@@ -34,11 +34,11 @@ import com.kounalem.moviedatabase.managers.FeatureFlags
 fun DebugScreen(
     navController: NavHostController,
     activity: Activity,
-    userPreferencesRepository: UserPreferencesRepository,
+    userPreferencesDatastore: UserPreferencesDatastore,
     featureFlags: FeatureFlags
 ) {
 
-    val userData by userPreferencesRepository.userData
+    val userData by userPreferencesDatastore.userData
         .collectAsStateWithLifecycle(initialValue = UserData(EnvironmentConfig.Dev))
 
     var currentEnv by remember { mutableStateOf(userData.environment) }
@@ -47,7 +47,7 @@ fun DebugScreen(
     }
     LaunchedEffect(currentEnv) {
         if (currentEnv != userData.environment)
-            userPreferencesRepository.setEnvironment(currentEnv)
+            userPreferencesDatastore.setEnvironment(currentEnv)
     }
 
     Column(modifier = Modifier.padding(top = xlarge)) {

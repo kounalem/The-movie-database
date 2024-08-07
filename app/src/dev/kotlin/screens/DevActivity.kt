@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kounalem.moviedatabase.core.ui.theming.MovieDatabaseTheme
-import com.kounalem.moviedatabase.datastore.UserPreferencesRepository
+import com.kounalem.moviedatabase.datastore.UserPreferencesDatastore
 import com.kounalem.moviedatabase.managers.FeatureFlags
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DevActivity : ComponentActivity() {
     @Inject
-    lateinit var userPreferencesRepository: UserPreferencesRepository
+    lateinit var userPreferencesRepository: UserPreferencesDatastore
 
     @Inject
     internal lateinit var featureFlags: FeatureFlags
@@ -35,7 +35,7 @@ class DevActivity : ComponentActivity() {
                     DebugScreen(
                         navController = navController,
                         activity = this,
-                        userPreferencesRepository = userPreferencesRepository,
+                        userPreferencesDatastore = userPreferencesRepository,
                         featureFlags = featureFlags,
                     )
                 }

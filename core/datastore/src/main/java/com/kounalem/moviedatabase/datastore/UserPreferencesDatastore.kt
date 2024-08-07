@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-class UserPreferencesRepository @Inject constructor(
+class UserPreferencesDatastore @Inject constructor(
     private val userPreferences: DataStore<UserPreferences>
 ) {
 
