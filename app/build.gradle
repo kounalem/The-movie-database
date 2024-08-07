@@ -8,17 +8,6 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
-def getProp(String propName) {
-    def propsFile = rootProject.file('local.properties')
-    if (propsFile.exists()) {
-        def props = new Properties()
-        props.load(new FileInputStream(propsFile))
-        return props[propName]
-    } else {
-        throw IllegalStateException("Cannot find $propName in local.properties")
-    }
-}
-
 ext {
     appversion = "1.0"
 }
@@ -68,10 +57,10 @@ android {
         }
         release {
             signingConfigs.create("config") {
-                storeFile = file(getProp("Keys.repo"))
-                storePassword getProp("STORE_PASS")
-                keyAlias getProp("STORE_ALIAS")
-                keyPassword getProp("STORE_PASS")
+                storeFile = file("/Users/emmanouilkounalakis/moviedb")
+                storePassword "Mykey1!"
+                keyAlias "moviedb"
+                keyPassword "Mykey1!"
             }
 
             resValue("string", "app_name", "mdb")
