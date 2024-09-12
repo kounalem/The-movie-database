@@ -1,6 +1,7 @@
 package com.kounalem.moviedatabase.feature.movies.presentation.movies.details.popular
 
 import app.cash.turbine.test
+import com.kounalem.moviedatabase.core.test.BaseTest
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
 import com.kounalem.moviedatabase.domain.models.Movie
 import com.kounalem.moviedatabase.feature.movies.domain.usecase.FilterMoviesUC
@@ -22,7 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class PopularMoviesViewModelTest {
+internal class PopularMoviesViewModelTest: BaseTest() {
     @get:Rule
     val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
@@ -272,4 +273,15 @@ internal class PopularMoviesViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun `WHEN navigate to details THEN navigateToDetails event`() =
+        runTest {
+            val events = viewModel.events.testSubscribe()
+            viewModel.navigateToDetails(123)
+            events.assertLast {
+                assertEquals(PopularMoviesContract.Event.NavigateToDetails(123), it)
+            }.dispose()
+        }
+
 }

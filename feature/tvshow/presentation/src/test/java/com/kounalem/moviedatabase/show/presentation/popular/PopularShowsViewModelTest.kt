@@ -1,6 +1,7 @@
 package com.kounalem.moviedatabase.show.presentation.popular
 
 import app.cash.turbine.test
+import com.kounalem.moviedatabase.core.test.BaseTest
 import com.kounalem.moviedatabase.core.test.CoroutineTestRule
 import com.kounalem.moviedatabase.domain.models.TvShow
 import com.kounalem.moviedatabase.repository.Outcome
@@ -12,14 +13,13 @@ import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class PopularShowsViewModelTest {
+internal class PopularShowsViewModelTest : BaseTest() {
     @get:Rule
     val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
@@ -47,40 +47,40 @@ internal class PopularShowsViewModelTest {
     fun `GIVEN shows THEN update the state with mapped info`() =
         runTest {
             coEvery { repo.tvShows } returns
-                flowOf(
-                    Outcome.Success(
-                        listOf(
-                            dummyTvShow1,
-                            dummyTvShow2,
+                    flowOf(
+                        Outcome.Success(
+                            listOf(
+                                dummyTvShow1,
+                                dummyTvShow2,
+                            ),
                         ),
-                    ),
-                )
+                    )
 
             viewModel.uiModels.test {
                 assertEquals(
                     actual = awaitItem(),
                     expected =
-                        PopularShowsContract.State.Info(
-                            shows =
-                                listOf(
-                                    PopularShowsContract.State.Info.Show(
-                                        id = 22980,
-                                        posterPath = "",
-                                        title = "Watch What Happens Live with Andy Cohen",
-                                        overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
-                                    ),
-                                    PopularShowsContract.State.Info.Show(
-                                        id = 22981,
-                                        posterPath = "",
-                                        title = "Watch What Happens Live withManolis Kounalakis",
-                                        overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
-                                    ),
-                                ),
-                            isRefreshing = false,
-                            searchQuery = null,
-                            endReached = false,
-                            fetchingNewShows = false,
+                    PopularShowsContract.State.Info(
+                        shows =
+                        listOf(
+                            PopularShowsContract.State.Info.Show(
+                                id = 22980,
+                                posterPath = "",
+                                title = "Watch What Happens Live with Andy Cohen",
+                                overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
+                            ),
+                            PopularShowsContract.State.Info.Show(
+                                id = 22981,
+                                posterPath = "",
+                                title = "Watch What Happens Live withManolis Kounalakis",
+                                overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
+                            ),
                         ),
+                        isRefreshing = false,
+                        searchQuery = null,
+                        endReached = false,
+                        fetchingNewShows = false,
+                    ),
                 )
             }
         }
@@ -91,14 +91,14 @@ internal class PopularShowsViewModelTest {
             val given = listOf(dummyTvShow1, dummyTvShow2)
             coEvery { filterShowsUc.invoke("hi") } returns flowOf(given)
             coEvery { repo.tvShows } returns
-                flowOf(
-                    Outcome.Success(
-                        listOf(
-                            dummyTvShow1,
-                            dummyTvShow2,
+                    flowOf(
+                        Outcome.Success(
+                            listOf(
+                                dummyTvShow1,
+                                dummyTvShow2,
+                            ),
                         ),
-                    ),
-                )
+                    )
 
             viewModel.onSearchQueryChange("hi")
             advanceTimeBy(600L)
@@ -107,27 +107,27 @@ internal class PopularShowsViewModelTest {
                 assertEquals(
                     actual = awaitItem(),
                     expected =
-                        PopularShowsContract.State.Info(
-                            shows =
-                                listOf(
-                                    PopularShowsContract.State.Info.Show(
-                                        id = 22980,
-                                        posterPath = "",
-                                        title = "Watch What Happens Live with Andy Cohen",
-                                        overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
-                                    ),
-                                    PopularShowsContract.State.Info.Show(
-                                        id = 22981,
-                                        posterPath = "",
-                                        title = "Watch What Happens Live withManolis Kounalakis",
-                                        overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
-                                    ),
-                                ),
-                            isRefreshing = false,
-                            searchQuery = "hi",
-                            endReached = false,
-                            fetchingNewShows = false,
+                    PopularShowsContract.State.Info(
+                        shows =
+                        listOf(
+                            PopularShowsContract.State.Info.Show(
+                                id = 22980,
+                                posterPath = "",
+                                title = "Watch What Happens Live with Andy Cohen",
+                                overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
+                            ),
+                            PopularShowsContract.State.Info.Show(
+                                id = 22981,
+                                posterPath = "",
+                                title = "Watch What Happens Live withManolis Kounalakis",
+                                overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show.",
+                            ),
                         ),
+                        isRefreshing = false,
+                        searchQuery = "hi",
+                        endReached = false,
+                        fetchingNewShows = false,
+                    ),
                 )
             }
         }
@@ -143,23 +143,33 @@ internal class PopularShowsViewModelTest {
                 assertEquals(
                     actual = awaitItem(),
                     expected =
-                        PopularShowsContract.State.Info(
-                            shows =
-                                listOf(
-                                    PopularShowsContract.State.Info.Show(
-                                        id = 22980,
-                                        posterPath = "",
-                                        title = "Watch What Happens Live with Andy Cohen",
-                                        overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
-                                    ),
-                                ),
-                            isRefreshing = false,
-                            searchQuery = null,
-                            endReached = false,
-                            fetchingNewShows = false,
+                    PopularShowsContract.State.Info(
+                        shows =
+                        listOf(
+                            PopularShowsContract.State.Info.Show(
+                                id = 22980,
+                                posterPath = "",
+                                title = "Watch What Happens Live with Andy Cohen",
+                                overview = "Bravo network executive Andy Cohen discusses pop culture topics with celebrities and reality show personalities.",
+                            ),
                         ),
+                        isRefreshing = false,
+                        searchQuery = null,
+                        endReached = false,
+                        fetchingNewShows = false,
+                    ),
                 )
             }
+        }
+
+    @Test
+    fun `WHEN navigate to details THEN navigateToDetails event`() =
+        runTest {
+            val events = viewModel.events.testSubscribe()
+            viewModel.navigateToDetails(123)
+            events.assertLast {
+                assertEquals(PopularShowsContract.Event.NavigateToDetails(123), it)
+            }.dispose()
         }
 
     private val dummyTvShow1 =
