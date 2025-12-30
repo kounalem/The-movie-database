@@ -8,9 +8,14 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
 
 dependencies {
     implementation(project(':core:domain:model'))
-    implementation libs.kotlinx.coroutines.core.v152
-
+    implementation libs.coroutines
 }
