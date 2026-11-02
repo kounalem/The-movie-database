@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3.5.1
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -28,13 +28,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
           fetch-depth: 0
 
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -51,13 +51,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
           fetch-depth: 0
 
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -68,7 +68,7 @@ jobs:
 
       - name: Upload artifact 1
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshot-report1
           path: /home/runner/work/ScreenshotTests/ScreenshotTests/**/build/reports/tests/testDebugUnitTest/
@@ -95,7 +95,7 @@ jobs:
 
       - name: Upload artifact 2
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshot-report2
           path: /home/runner/work/ScreenshotTests/ScreenshotTests/**/build/reports/tests/testDebugUnitTest/
